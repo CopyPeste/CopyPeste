@@ -17,6 +17,7 @@ function displayHelp {
     echo '-f: ftp server [default = ftp2.fr.openbsd.org]'
     echo '-h: display this message and exit'
     echo '-v: setup OpenBSD vesion [default = 5.8]'
+    exit 0
 }
 
 function initializeTree {
@@ -46,42 +47,34 @@ function updateTree {
     cvs -q up -Pd
 }
 
-function main {
-    ## Test if cvs is installed
+## Test if cvs is installed
 
-    if ! hash cvs 2>/dev/null; then
-	echo "the program 'cvs' is currently not installed on your system."
-	exit 1
-    fi
+if ! hash cvs 2>/dev/null; then
+    echo "the program 'cvs' is currently not installed on your system."
+    exit 1
+fi
 
-    ## Set options
-    while getopts :C:d:fh:v FLAG; do
-	case $FLAG in
-	    C) OPT_CVS=$OPT_CVS ;;
-	    d) OPT_LOCAL_DIRECTORY=$OPTARG ;;
-	    f) OPT_FTP=$OPTARG ;;
-	    h)
-		displayHelp
-		exit 0
-		;;
-	    v) OPT_VERSION=$OPTARG ;;
-	    \?) echo "error";;
-	esac
-    done
+## Set options
+while getopts c:d:f:hv: FLAG; do
+    case $FLAG in
+	c) OPT_CVS=$OPT_CVS ;;
+	d) OPT_LOCAL_DIRECTORY=$OPTARG ;;
+	f) OPT_FTP=$OPTARG ;;
+	h) displayHelp ;;
+	v) OPT_VERSION=$OPTARG ;;
+	\?) echo "error";;
+    esac
+done
 
-       ## create destination directory if it doesn't exists
-    if [ ! -d "$OPT_LOCAL_DIRECTORY" ] ; then
-	echo "Creation of destination directory $OPT_LOCAL_DIRECTORY..."
-	mkdir $OPT_LOCAL_DIRECTORY
-	cd $OPT_LOCAL_DIRECTORY
-	echo "Done!"
-	initializeTree
-    else
-	echo "Destination directory already exists"
-	cd $OPT_LOCAL_DIRECTORY
-	updateTree
-    fi
-    exit 0
-}
-
-main
+## create destination directory if it doesn't exists
+if [ ! -d "$OPT_LOCAL_DIRECTORY" ] ; then
+    echo "Creation of destination directory $OPT_LOCAL_DIRECTORY..."
+    mkdir $OPT_LOCAL_DIRECTORY
+    cd $OPT_LOCAL_DIRECTORY
+    echo "Done!"
+    initializeTree
+else
+    echo "Destination directory already exists"
+    cd $OPT_LOCAL_DIRECTORY
+    updateTree
+fi
