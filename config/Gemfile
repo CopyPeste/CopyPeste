@@ -1,0 +1,6 @@
+# A sample Gemfile
+source "https://rubygems.org"
+source "https://github.com/fazibear/colorize"
+
+gem 'colorize'
+gem 'yaml'

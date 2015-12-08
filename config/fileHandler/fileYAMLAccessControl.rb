@@ -1,6 +1,6 @@
 
 require 'yaml'
-require './fileHandle/objectYAML'
+require './fileHandler/objectYAML'
 
 class FileYAMLAccessControl
 
@@ -61,24 +61,30 @@ class FileYAMLAccessControl
   
   #/* Add elements */
   def addIgnoreFile(fileName)
-    if @IgnoreFile
+    if @IgnoreFile and !@IgnoreFile.include? fileName
       @IgnoreFile.push(fileName)
+    elsif @IgnoreFile.include? fileName
+      puts "Error: '#{fileName}' already contained into '#{@NameFile}' 'compare extension'"
     else
       puts "Error: '#{@NameFile}' does not contain 'ignore file'"      
     end
   end
 
   def addIgnoreExtension(extName)
-    if @IgnoreExt
+    if @IgnoreExt and !@IgnoreExt.include? extName
       @IgnoreExt.push(extName)
+    elsif @IgnoreExt.include? extName
+      puts "Error: '#{extName}' already contained into '#{@NameFile}' 'ignore extension'"
     else
       puts "Error: '#{@NameFile}' does not contain 'ignore extension'"      
     end
   end
 
   def addCompareExtension(extName)
-    if @CompareExt
+    if @CompareExt and !@CompareExt.include? extName
       @CompareExt.push(extName)
+    elsif @CompareExt.include? extName
+      puts "Error: '#{extName}' already contained into '#{@NameFile}' 'compare extension'"
     else
       puts "Error: '#{@NameFile}' does not contain 'compare extension'"      
     end
@@ -109,12 +115,15 @@ class FileYAMLAccessControl
     end
   end
 
-  #/* Methodes for test */
-  def affFile()
+  #/* Methodes for tests */
+  def displayFile()
     puts @LoadingFile
-    puts "affFile"
-    @LoadingFile.first.each do |elem|
+  end
+
+  def displayElementsFile()
+    @LoadingFile.each do |elem|
       puts elem
+      puts "\n"
     end
   end
 
