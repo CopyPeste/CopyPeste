@@ -1,32 +1,67 @@
 -- CUCUMBER CopyPeste --
+========================
 
-(Cette description concerne le dépot ProofOfConcept)
+Unit test - procédure
+=====================
 
+___
+
+1. Introduction:
+-----------------
+
+L'outil Cucumber permet à chacun d'implémenter facilement et rapidement les tests unitaires de CopyPeste.
+https://cucumber.io/
+
+___
+
+2. Utilisations
 ----------------
-*Introduction:
 
-L'outil Cucumber permet à chacun d'implémenter facilement et rapidement les tests unitaires de CopyTeste.
+###	..2. Les commandes
 
-----------------
-*Les commandes:
+Les commandes pour lancer les tests doivent se faire dans le dossier unit_test à la racine du projet.
+```shell
+$rake [options]
+```
 
-Les commandes pour lancer les tests doivent ce faire dans le dossier unit_testing à la racine du projet.
-$rake algorithm
-Execute les tests coté Algorithme.
+###	..2. Les options
 
-$rake framework
-Execute les tests coté Framework.
+Pour obtenir les options possible, il suffit d'utiliser la commande suivante qui affichera les différentes possibilitées.
+"""
+$rake
+"""
+Les options permettent de définir le dossier dans l'arborescence pathTest qui sera executé.
 
-$rake features
-Execute les tests de chaque feature.
+___
 
-----------------
-*Ajout de tests
+3 - Mise en place d'un test unitaire
+------------------------------------
 
-TREE
+### 	..3. Arbre d’arborescence du système de test
 
-└── unit_test
-    ├── pathTest
+unit_test tree
+
+
+unit_test/
+├── example
+│   └── unit_test
+├── features
+│   ├── scenarios
+│   │   ├── app
+│   │   ├── config
+│   │   ├── examples
+│   │   ├── libs
+│   │   ├── modules
+│   │   └── scripts
+│   ├── step_definitions
+│   │   ├── app
+│   │   ├── config
+│   │   ├── examples
+│   │   ├── libs
+│   │   ├── modules
+│   │   └── scripts
+│   └── support
+└── pathTests
     ├── app
     │   ├── commands
     │   └── core
@@ -41,24 +76,43 @@ TREE
     │   └── graphics
     └── scripts
 
+**Description:**
+- example, contient un exemple de code testé, il y a deux types, fonctionnel et un second contenant une erreur.
+- features, répertoire de cucumber qui sera executé via le Rakefile.
+- features -> scenario, contient l'arborescence du projet CopyPeste lié au différent scénario à éxecuter.
+- features -> step_definitions, détient les étapes qui seront éxécutées, il va les chercher dans le dossier "pathTests".
+- features -> support, configuration de Cucumber.
+- pathTest, contient l'arborescence de CopyPeste, chaque dossier doit contenir un lien symbolique vers les tests à executer. 
 
-Les répertoire dans unit_test contiendrons les liens symboliques vers les fichiers de test.
-[ln -s TARGET LINK_NAME]
+Les répertoire dans pathTest contiendrons les liens symboliques vers les fichiers de test.
+$ln -s TARGET LINK_NAME
 
-----------------
-*Prototype fichier test
+###	..3. Prototype fichier test
 
 Les fichiers tests doivent être prototypé d'un certaine manière.
-Tout d'abord le nom du fichier doit commencer par "ccb" (cucumber) cela permet d'avoir un nom global aux fichiers de tests, de plus il doit être de type ruby, exemple: ccbMySuperTest.rb
+Tout d'abord les noms des fichiers doivent commencer par "ccb" (cucumber call back) cela permet d'avoir un nom global aux fichiers de tests, de plus il doit être de type ruby, exemple: ccbMySuperTest.rb
 
-La l'argument contenu dans le fichier appelé par cucumber devra toujours être prototypé de cette manière:
+Le code contenu dans le fichier appelé via cucumber devra **toujours être prototypé de cette manière**:
+```ruby
 Given /^step ccbMySuperTest loading$/ do
       #	Your arguments
 end
 
-Le nom 'ccbMySuperTest' sera la nom du fichier de test sans l'extension.
+When /^step ccbMySuperTest checking$/ do
+end
 
-----------------
-*Indiquer un problème
+Then /^step ccbMySuperTest resulting$/ do
+end
+```
 
-Pour indiquer à cucumber qu'un problème a était constaté, il suffit d'utiliser "pending", cela arrêtera le procésus et cucumber indiquera l'erreur à l'utilisateur.
+Le nom 'ccbMySuperTest' sera le nom du fichier de test sans l'extension.
+
+###	..3. Indiquer un problème
+
+Pour indiquer à cucumber qu'un problème a été constaté, il suffit d'utiliser "pending", cela arrêtera le procésus et cucumber indiquera l'erreur à l'utilisateur.
+Vous pouvez y ajouter un message:
+```ruby
+pending("ccbMySuperTest task x FAIL")
+```
+
+Si vous souhaitez arrêter le programme sans afficher de message spécifique, il suffit d'utiliser "skip_this_scenario".
