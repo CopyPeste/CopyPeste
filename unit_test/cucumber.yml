@@ -1,5 +1,5 @@
 # cucumber config file
-# This file define a set of profiles for the features.
+# This file consist to set of profiles features.
 
 <%
 rerun = File.file?('rerun.txt') ? IO.read('rerun.txt') : ""

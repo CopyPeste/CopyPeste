@@ -1,8 +1,8 @@
-# Sample rake file for Copypeste
+# Sample Rakefile for Copypeste
 
 require 'rubygems'
 
-# Simple message to describe the use of the command
+# Simple message to describe the use of the commands
 task :default do
   abort '$rake [options]
   features		{}

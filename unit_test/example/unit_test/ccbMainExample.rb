@@ -1,7 +1,7 @@
 
 require_relative '../mainExample.rb'
 
-# First step to check if your code worked
+# First step to check if your code works
 Given /^step ccbMainExample loading$/ do
   puts "Step ccbMainExample"
 
@@ -13,9 +13,10 @@ Given /^step ccbMainExample loading$/ do
   end
 end
 
-# Second step to 
+# Second step
 When /^step ccbMainExample checking$/ do
 end
 
+# Third step
 Then /^step ccbMainExample resulting$/ do
 end
