@@ -1,1 +1,0 @@
-../../example/unit_test/ccbMainExample.rb
