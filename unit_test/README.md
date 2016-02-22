@@ -32,7 +32,7 @@ To get possible options, you need use the next command, it show each possibiliti
 ```shell
 $rake
 ```
-The options allow to define directory in "pathTests" tree which will be executed.
+The options allow to define directory in "path_tests" tree which will be executed.
 
 ___
 
@@ -63,7 +63,7 @@ unit_test/
 │   │   ├── modules
 │   │   └── scripts
 │   └── support
-└── pathTests
+└── path_tests
     ├── app
     │   ├── commands
     │   └── core
@@ -83,11 +83,11 @@ unit_test/
 - **example**, it contains example code, there are two type, functional and another with an error.
 - **features**, Cucumber repository will be executed via the Rakefile.
 - **features -> scenario**, it contains project tree of CopyPeste which link with various scenarios executable.
-- **features -> step_definitions**, it contains executable steps, it will find in "pathTests" dossier.
+- **features -> step_definitions**, it contains executable steps, it will find in "path_tests" dossier.
 - **features -> support**, Cucumber configuration.
-- **pathTests**, it contains CopyPeste tree, each repository must have symbolics links toward executable tests.
+- **path_tests**, it contains CopyPeste tree, each repository must have symbolics links toward executable tests.
 
-The dossiers in "pathTests" contains symbolics links toward tests files.
+The dossiers in "path_tests" contains symbolics links toward tests files.
 ```shell
 $ln -s TARGET LINK_NAME
 ```
@@ -95,29 +95,29 @@ $ln -s TARGET LINK_NAME
 ###	b. Prototype of file test
 
 The test files must be prototype in a specific way.
-First of all, the files names must begin with "ccb" (cucumber call back), it allows to have a global tests files name, more it must be ruby type, example: ccbMySuperTest.rb
+First of all, the files names must begin with "ccb" (cucumber call back), it allows to have a global tests files name, more it must be ruby type, example: ccb_my_super_test.rb
 
 The code contained in file called via Cucumber must be **always filled in of the next manner**:
 ```ruby
-Given /^step ccbMySuperTest loading$/ do
+Given /^step ccb_my_super_test loading$/ do
       #	Your arguments
 end
 
-When /^step ccbMySuperTest checking$/ do
+When /^step ccb_my_super_test checking$/ do
 end
 
-Then /^step ccbMySuperTest resulting$/ do
+Then /^step ccb_my_super_test resulting$/ do
 end
 ```
 
-"ccbMySuperTest" will have to be modified under test file name without the extension.
+"ccb_my_super_test" will have to be modified under test file name without the extension.
 
 ###	c. Problem indication
 
 To indicate a note problem at Cucumber, it simply to use "pending", this will stop the process and Cucumber will show the error for user.
 You can add a message, like this:
 ```ruby
-pending("ccbMySuperTest task x FAIL")
+pending("ccb_my_super_test task x FAIL")
 ```
 If you want, you can stop step without the error message, it simply to use:
 ```ruby
@@ -164,7 +164,7 @@ Pour obtenir les options possibles, il suffit d'utiliser la commande suivante qu
 ```shell
 $rake
 ```
-Les options permettent de définir le dossier dans l'arborescence "pathTests" qui sera exécutée.
+Les options permettent de définir le dossier dans l'arborescence "path_tests" qui sera exécutée.
 
 ___
 
@@ -195,7 +195,7 @@ unit_test/
 │   │   ├── modules
 │   │   └── scripts
 │   └── support
-└── pathTests
+└── path_tests
     ├── app
     │   ├── commands
     │   └── core
@@ -215,11 +215,11 @@ unit_test/
 - **example**, contient un exemple de code testé, il y a deux types, fonctionnel et un second contenant une erreur.
 - **features**, répertoire de Cucumber qui sera exécuté via le Rakefile.
 - **features -> scenario**, contient l'arborescence du projet CopyPeste qui est lié aux différents scénarios à exécuter.
-- **features -> step_definitions**, détient les étapes qui seront exécutées, il va les chercher dans le dossier "pathTests".
+- **features -> step_definitions**, détient les étapes qui seront exécutées, il va les chercher dans le dossier "path_tests".
 - **features -> support**, configuration de Cucumber.
-- **pathTests**, contient l'arborescence de CopyPeste, chaque dossier doit contenir un lien symbolique vers les tests à exécuter.
+- **path_tests**, contient l'arborescence de CopyPeste, chaque dossier doit contenir un lien symbolique vers les tests à exécuter.
 
-Les répertoires dans "pathTests" contiendront les liens symboliques vers les fichiers de tests.
+Les répertoires dans "path_tests" contiendront les liens symboliques vers les fichiers de tests.
 ```shell
 $ln -s TARGET LINK_NAME
 ```
@@ -227,29 +227,29 @@ $ln -s TARGET LINK_NAME
 ###	b. Prototype fichier test
 
 Les fichiers test doivent être prototypés d'une certaine manière.
-Tout d'abord, les noms des fichiers doivent commencer par "ccb" (Cucumber Call Back) cela permet d'avoir un nom global aux fichiers de tests, de plus il doit être de type ruby, exemple: ccbMySuperTest.rb
+Tout d'abord, les noms des fichiers doivent commencer par "ccb" (Cucumber Call Back) cela permet d'avoir un nom global aux fichiers de tests, de plus il doit être de type ruby, exemple: ccb_my_super_test.rb
 
 Le code contenu dans le fichier appelé via Cucumber devra **toujours être rempli de cette manière**:
 ```ruby
-Given /^step ccbMySuperTest loading$/ do
+Given /^step ccb_my_super_test loading$/ do
       #	Your arguments
 end
 
-When /^step ccbMySuperTest checking$/ do
+When /^step ccb_my_super_test checking$/ do
 end
 
-Then /^step ccbMySuperTest resulting$/ do
+Then /^step ccb_my_super_test resulting$/ do
 end
 ```
 
-"ccbMySuperTest" devra être modifié selon le nom du fichier test sans l'extension.
+"ccb_my_super_test" devra être modifié selon le nom du fichier test sans l'extension.
 
 ###	c. Indiquer un problème
 
 Pour indiquer à Cucumber qu'un problème a été constaté, il suffit d'utiliser "pending", cela arrêtera le processus et Cucumber indiquera l'erreur à l'utilisateur.
 Vous pouvez y ajouter un message:
 ```ruby
-pending("ccbMySuperTest task x FAIL")
+pending("ccb_my_super_test task x FAIL")
 ```
 
 Si vous souhaitez arrêter l'étape sans afficher de message spécifique, il suffit d'utiliser:

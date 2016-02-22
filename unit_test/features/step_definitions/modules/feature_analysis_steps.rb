@@ -1,14 +1,14 @@
 # Modules Analysis
 Given /^step modules analysis loading$/ do
 
-  Dir["./pathTests/module/analysis/*.rb"].each do | file |
+  Dir["./path_tests/module/analysis/*.rb"].each do | file |
     puts "Steps file: " + File.basename(file)
 
-    nameFile = File.basename(file,File.extname(file))
+    name_file = File.basename(file,File.extname(file))
     steps %{
-        Given step #{nameFile} loading
-        When step #{nameFile} checking
-        Then step #{nameFile} resulting
+        Given step #{name_file} loading
+        When step #{name_file} checking
+        Then step #{name_file} resulting
     }
     puts "--------"
   end

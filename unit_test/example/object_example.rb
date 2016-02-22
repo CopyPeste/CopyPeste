@@ -1,15 +1,15 @@
 
 # Sample object for test 
 
-class ObjectExample
+class Object_example
 
   # This method works
-  def testOK()
+  def test_OK()
     return 0
   end
 
   # This method does not work
-  def testFAIL()
+  def test_FAIL()
     return 1
   end
 end

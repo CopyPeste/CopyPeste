@@ -29,14 +29,14 @@ begin
     Cucumber:: Rake::Task.new(:commands) do |t|
         t.cucumber_opts = "--format pretty
      	  	       	  --require features features/scenarios/app/feature_commands.feature
-     		       	  -r pathTests/app/commands"
+     		       	  -r path_tests/app/commands"
     end
 
     # Analysis Task
     Cucumber::Rake::Task.new(:core) do |t|
        t.cucumber_opts = "--format pretty
       		       	 --require features features/scenarios/app/feature_core.feature
-     		       	 -r pathTests/app/core"
+     		       	 -r path_tests/app/core"
     end
   end
 
@@ -44,7 +44,7 @@ begin
   Cucumber:: Rake::Task.new(:config) do |t|
       t.cucumber_opts = "--format pretty
    	  	       	 --require features features/scenarios/config/feature_config.feature
-     		       	 -r pathTests/config"
+     		       	 -r path_tests/config"
     end
 
 
@@ -52,7 +52,7 @@ begin
   Cucumber::Rake::Task.new(:examples) do |t|
      t.cucumber_opts = "--format pretty
      		       --require features features/scenarios/examples/feature_examples.feature
-     		       -r pathTests/examples/"
+     		       -r path_tests/examples/"
   end
 
   # Libs Namespace
@@ -61,21 +61,21 @@ begin
     Cucumber:: Rake::Task.new(:app) do |t|
         t.cucumber_opts = "--format pretty
      	  	       	  --require features features/scenarios/libs/feature_app.feature
-     		       	  -r pathTests/libs/app"
+     		       	  -r path_tests/libs/app"
     end
 
     # Graphics Task
     Cucumber::Rake::Task.new(:graphics) do |t|
        t.cucumber_opts = "--format pretty
       		       	 --require features features/scenarios/libs/feature_graphics.feature
-     		       	 -r pathTests/libs/graphics"
+     		       	 -r path_tests/libs/graphics"
     end
 
     # Modules Task
     Cucumber::Rake::Task.new(:modules) do |t|
        t.cucumber_opts = "--format pretty
       		       	 --require features features/scenarios/libs/feature_modules.feature
-     		       	 -r pathTests/libs/modules"
+     		       	 -r path_tests/libs/modules"
     end
   end
 
@@ -85,14 +85,14 @@ begin
     Cucumber:: Rake::Task.new(:graphics) do |t|
         t.cucumber_opts = "--format pretty
      	  	       	  --require features features/scenarios/modules/feature_graphics.feature
-     		       	  -r pathTests/modules/graphics"
+     		       	  -r path_tests/modules/graphics"
     end
 
     # Analysis Task
     Cucumber::Rake::Task.new(:analysis) do |t|
        t.cucumber_opts = "--format pretty
       		       	 --require features features/scenarios/modules/feature_analysis.feature
-     		       	 -r pathTests/modules/analysis"
+     		       	 -r path_tests/modules/analysis"
     end
   end
 
@@ -100,7 +100,7 @@ begin
   Cucumber::Rake::Task.new(:scripts) do |t|
      t.cucumber_opts = "--format pretty
     		       --require features features/scenarios/scripts/feature_scripts.feature
-     		       -r pathTests/scripts"
+     		       -r path_tests/scripts"
     end
 
   # Running all feature
