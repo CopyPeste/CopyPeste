@@ -1,6 +1,5 @@
 
-require './fileHandler/fileYAMLAccessControl.rb'
-require 'colorize'
+require_relative '../fileYAMLAccessControl.rb'
 
 fileAccess = FileYAMLAccessControl.new()
 
