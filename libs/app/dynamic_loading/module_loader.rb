@@ -51,7 +51,7 @@ module ModuleLoading
    module DSLMethods
       def usage(&block) set_usage(&block) end
       def author(&block) set_author(&block) end
-      def run(&block) set_run(&block) end
+      def init(&block) set_init(&block) end
       def description(&block) set_description(&block) end
     end # !DSLMethods
 

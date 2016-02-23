@@ -1,5 +1,3 @@
-require 'socket'
-require '../../libs/app/threads_communication/selector'
 
 consoleGraphicalModule  do
 	description {
@@ -10,62 +8,36 @@ consoleGraphicalModule  do
 
 	usage { 'Just run it!' }
 
-	run { ConsoleMode.new().run }
+	init { ConsoleMode.new() }
 
 	impl {
+		require 'tty-cursor'
+		require './console_ui.rb'
+		require './received_msgs_mng.rb'
+		require './core_requests_handler.rb'
+		
 		class ConsoleMode
-			def initialize
-				puts "Console mode is instantiate."
-				client = TCPSocket.new("0.0.0.0", 4242)
-				@selector = Selector.new(nil)
-				@prompt = false
+                def initialize
+                	@ui = ConsoleUi.new
+                	@rcv_msgs_mng = ReceivedMessagesManager.new
+                	@core_requests_handler = CoreRequestsHandler.new
+                end
 
-				# attaching the io to the selector
-				@client_stream = @selector.register_io client
+                def _loop(selector)
+                	json_request = @rcv_msgs_mng.jsonize_last_msg
+                	@core_requests_handler.execute json_request unless json_request.nil?
+                	@ui.display_prompt if @rcv_msgs_mng.is_msg_treated?
+                end
 
-				# configuring the callback used after the stream write something
-				@client_stream.callback_for_read do |client_stream|
-					message = @client_stream.dequeue
-					puts "Received '%s' from server." % message
-				end
-
-				@client_stream.callback_for_write do |client_stream|
-					puts "Just wrote a message"
-					@prompt = false
-				end
-
-				@client_stream.callback_for_close do |client_stream|
-					puts "Connection closed by the server"
-					exit
-				end
-
-				# starting the monitoring of the stream
-				@client_stream.listen :read
-
-
-				console_stream = @selector.register_io STDIN
-				console_stream.callback_for_read(@client_stream) do |console_s, client_s|
-					message = console_s.dequeue
-					client_s.queue message
-				end
-				console_stream.listen :read
-				
-				end
-
-			def run
-				puts 'Run method called.'
-				print '$> '
-				@selector.loop() do |selector, *_|
-					puts "loop start"
-  					print '$> ' if @prompt == true
-  					@prompt = true if @prompt == false
-  					puts "loop end"
-				end
-				@client_stream = @client_stream.close!
-
-				sleep 2
-				puts "Bye world"
-			end
+                def _callback_read(source_stream)
+					message = source_stream.dequeue.chomp()
+					puts "|_ Received '#{message}' from server."
+					@rcv_msgs_mng.add_new_msg message
+                end
+      
+                def _callback_write(source_stream)
+                	puts "Just wrote a message"
+                end
 		end
 	}	
 
