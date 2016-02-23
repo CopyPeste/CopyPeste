@@ -70,7 +70,6 @@ class Selector
     args.each do |event|
       if event.kind_of? Hash
         event.each do |event_type, status|
-          puts "~~~~ #{event_type} => #{status}"
           update_stream_monitoring_status(stream, event_type, status)
         end
 
@@ -93,10 +92,7 @@ class Selector
 
     @must_stop = false
     until @must_stop
-      puts "I'm the client's selector and I'm entering a new round" if args.empty? # DEBUG
-      puts "I'm the client's selector and I'm listening for '#{@looking_to_write}' streams on write" if args.empty? # DEBUG
       all_events = select(@looking_to_read, @looking_to_write, [], @timeout)
-      puts "I'm the client's selector and I just passed the select()" if args.empty? # DEBUG
       # if events are registered
       unless all_events.nil?
 
@@ -107,24 +103,18 @@ class Selector
         # associated callback
 
         read_events.each do |io|
-          puts "I'm the client's selector and I'm going to read" if args.empty? # DEBUG
           stream = find_stream_from_io(io)
           action = ( stream.can_accept? || !io.eof?) ? :read : :close
           stream.trigger_callback_for(action)
-          puts "I'm the client's selector and I just read" if args.empty? # DEBUG
         end
 
         write_events.each do |io|
-          puts "I'm the client's selector and I'm going to write" if args.empty? # DEBUG
           stream = find_stream_from_io(io)
           stream.trigger_callback_for(:write)
-          puts "I'm the client's selector and I just wrote" if args.empty? # DEBUG
         end
       end
 
-      puts "I'm the client's selector and I'm entering the yield" if args.empty? # DEBUG
       yield(self, *args) if block_given?
-      puts "I'm the client's selector and I'm exiting the yield" if args.empty? # DEBUG
     end
 
     # unregister every streams but the server-stream
@@ -293,9 +283,7 @@ class Selector
       unless @buffer_of_writes.nil?
         message = @buffer_of_writes.shift
         io.puts message
-        puts "=========== wrote #{message}" # DEBUG
         stop_listening(:write) if @buffer_of_writes.empty?
-        puts "=========== #{@buffer_of_writes.size} #{@buffer_of_writes.empty?}" # DEBUG
       end
 
       nil
@@ -352,9 +340,7 @@ class Selector
       end
 
     else # un-monitor it
-      puts "before: #{looking_to_(event_type)}" # DEBUG
       looking_to_(event_type).delete stream.io
-      puts "after: #{looking_to_(event_type)}" # DEBUG
     end
 
     nil
