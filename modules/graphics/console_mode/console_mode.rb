@@ -12,9 +12,9 @@ consoleGraphicalModule  do
 
 	impl {
 		require 'tty-cursor'
-		require './console_ui.rb'
-		require './received_msgs_mng.rb'
-		require './core_requests_handler.rb'
+		require '../modules/graphics/console_ui.rb'
+		require '../modules/graphics/received_msgs_mng.rb'
+		require '../modules/graphics/core_requests_handler.rb'
 		
 		class ConsoleMode
                 def initialize
@@ -29,13 +29,13 @@ consoleGraphicalModule  do
                 	@ui.display_prompt if @rcv_msgs_mng.is_msg_treated?
                 end
 
-                def _callback_read(source_stream)
+                def _callback_for_read(source_stream)
 					message = source_stream.dequeue.chomp()
 					puts "|_ Received '#{message}' from server."
 					@rcv_msgs_mng.add_new_msg message
                 end
       
-                def _callback_write(source_stream)
+                def _callback_for_write(source_stream)
                 	puts "Just wrote a message"
                 end
 		end
