@@ -90,6 +90,7 @@ class Selector
   def loop(*args, &block)
     return if block_given? && block.arity.zero?
 
+    @must_stop = false
     until @must_stop
       all_events = select(@looking_to_read, @looking_to_write, [], @timeout)
       # if events are registered
@@ -116,6 +117,7 @@ class Selector
       yield(self, *args) if block_given?
     end
 
+    # unregister every streams but the server-stream
     nil
   end
 
@@ -128,7 +130,7 @@ class Selector
   class Stream
     CALLBACKABLE_EVENTS = (Selector::MONITORABLE_EVENT_TYPES << :close).uniq
 
-    attr_reader :io, :cannot_read
+    attr_reader :io
 
     # Initialize a new Selector::Stream object
     #
@@ -136,7 +138,6 @@ class Selector
     # @param [Selector] selector handling the stream
     def initialize(io, selector)
       @io, @selector = io, selector
-      @cannot_read = false
       CALLBACKABLE_EVENTS.each do |event_type|
         self.instance_variable_set "@on_#{event_type}", []
         self.instance_variable_set "@buffer_of_#{event_type}s", []
