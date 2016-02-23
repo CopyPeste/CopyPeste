@@ -3,6 +3,6 @@ class CoreRequestsHandler
 	end
 
 	def execute(json_req)
-		puts "-> #{json_req["test"]}"
+		puts "-> #{json_req["data"]["name"]}"
 	end
 end
