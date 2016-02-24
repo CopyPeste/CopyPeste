@@ -1,19 +1,13 @@
 require './ScanSystem'
 require './SortFile'
-require './MongoDb'
 require './DbHdlr'
 require 'mongo'
 require 'json'
 
-def mongoDb(mongo)
-#  mongo.initMongo(nil)
-#  mongo.creatDB("MongoJeTest30")
-#  mongo.creatCollection("Fichier")
-end
-
 def fill_db(mongo, collection, json_tab, multifile)
   mongo.ins_data(collection, json_tab, multifile)
 end
+
 
 def set_extension_json(document)
   tab = Array.new
@@ -26,6 +20,7 @@ def set_extension_json(document)
   json_document["files_id"] = tab
   return json_document
 end
+
 
 def set_collection_extension(mongo, file, key)
   file_tab = mongo.get_document("Fichier", "ext", file["ext"])
@@ -41,8 +36,9 @@ def set_collection_extension(mongo, file, key)
   fill_db(mongo, "Extension", json_document, false)
 end
 
-def sort_insert_db(fileHash, mongo, scan)
-  fileHash.each do |key, value|
+
+def sort_insert_db(file_hash, mongo, scan)
+  file_hash.each do |key, value|
     json_tab = Array.new
     ext_id = BSON::ObjectId.from_time(Time.now, unique: true)
     value.each do |file|
@@ -60,16 +56,15 @@ def sort_insert_db(fileHash, mongo, scan)
   mongo.debug("Extension")
 end
 
-def scanSys(scan, mongo)
+
+def scan_sys(scan, mongo)
   scan.init()
-  scan.sendToSort()
-  fileHash = scan.getSortFile()
-  mongoDb(mongo)
-  sort_insert_db(fileHash, mongo, scan)
+  scan.send_to_sort()
+  file_hash = scan.get_sort_file()
+  sort_insert_db(file_hash, mongo, scan)
 end
 
 scan = ScanSystem.new("/home/edouard/test")
-#mongo = MongoDb.new("127.0.0.1", "27017")
 mongo = DbHdlr.new()
 
-scanSys(scan, mongo)
+scan_sys(scan, mongo)

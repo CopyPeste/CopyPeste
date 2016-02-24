@@ -9,7 +9,7 @@ class DbHdlr
 	# @param [String] the host where the db is stored (whether an ip address or a resolved server)
 	# @param [String] port to access the db service
 	# @param [String] the selected database
-	def initialize(host="127.0.0.1", port="27017", db="CPeste44")
+	def initialize(host="127.0.0.1", port="27017", db="CPeste53")
 		begin
 			@db_inst = Mongo::Client.new(["#{host}:#{port}"], :database => db)
 		rescue

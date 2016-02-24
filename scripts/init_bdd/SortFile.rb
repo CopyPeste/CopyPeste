@@ -10,62 +10,62 @@ class SortFile
   def initialize(list, octe)
     @list = list
     @octe = octe
-    @fileHash = Hash.new
+    @file_hash = Hash.new
   end
 
 
-  def getextension(fileName)
+  def get_extension(fileName)
     file_extension = File.extname(fileName)
     file_extension = file_extension.split('.')
-    return file_extension.last
+    file_extension.last
   end
 
 
-  def fillHashWithOcte(tabfile, extension, i)
-    if @fileHash[:"#{extension}"] == nil
-      newHash = Hash.new
-      newHash[:"#{@octe[i]}"] = tabfile
-      @fileHash[:"#{extension}"] = newHash
+  def fill_hash_with_octe(tab_file, extension, i)
+    if @file_hash[:"#{extension}"] == nil
+      new_hash = Hash.new
+      new_hash[:"#{@octe[i]}"] = tab_file
+      @file_hash[:"#{extension}"] = new_hash
     else
-      myHash = @fileHash[:"#{extension}"]
-      if myHash[:"#{@octe[i]}"] == nil
-        myHash[:"#{@octe[i]}"] = tabfile
+      my_hash = @file_hash[:"#{extension}"]
+      if my_hash[:"#{@octe[i]}"] == nil
+        my_hash[:"#{@octe[i]}"] = tab_file
       else
-        myHash[:"#{@octe[i]}"] << tabfile[0]
+        my_hash[:"#{@octe[i]}"] << tab_file[0]
       end
-      @fileHash[:"#{extension}"] = myHash
+      @file_hash[:"#{extension}"] = my_hash
     end
   end
 
 
-  def fillHash(tabfile, extension)
-    if @fileHash[:"#{extension}"] == nil
-      @fileHash[:"#{extension}"] = tabfile
+  def fill_hash(tab_file, extension)
+    if @file_hash[:"#{extension}"] == nil
+      @file_hash[:"#{extension}"] = tab_file
     else
-      myHash = @fileHash[:"#{extension}"]
-      @fileHash[:"#{extension}"] << tabfile[0]
+      my_hash = @file_hash[:"#{extension}"]
+      @file_hash[:"#{extension}"] << tab_file[0]
     end
   end
 
 
   def start
     i = 0
-    list.each do |fileName|
-      if (extension = getextension(fileName)) == ""
+    list.each do |file_name|
+      if (extension = get_extension(file_name)) == ""
         extension = "Other"
       end
-      tabfile = Array.new
-      tabfile << fileName
+      tab_file = Array.new
+      tab_file << file_name
       if @octe == nil || @octe.empty? == true
-        fillHash(tabfile, extension)
+        fill_hash(tab_file, extension)
       else
-        fillHashWithOcte(tabfile, extension, i)
+        fill_hash_with_octe(tab_file, extension, i)
       end
       i += 1
     end
   end
 
-  def getHash
-    return @fileHash
+  def get_hash
+    return @file_hash
   end
 end
