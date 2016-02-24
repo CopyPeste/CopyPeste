@@ -10,7 +10,7 @@ end
 
 
 def set_extension_json(document)
-  tab = Array.new
+  tab = []
   json_document = JSON.parse(document.to_json)
   json_document["_id"] = BSON::ObjectId.from_string(document['_id']['$oid'])
   (json_document["files_id"]).each do |data|
@@ -24,8 +24,8 @@ end
 
 def set_collection_extension(mongo, file, key)
   file_tab = mongo.get_document("Fichier", "ext", file["ext"])
-  document = Hash.new
-  tab_id = Array.new
+  document = {}
+  tab_id = []
   file_tab.each do |data|
     tab_id << data["_id"]
   end
@@ -39,7 +39,7 @@ end
 
 def sort_insert_db(file_hash, mongo, scan)
   file_hash.each do |key, value|
-    json_tab = Array.new
+    json_tab = []
     ext_id = BSON::ObjectId.from_time(Time.now, unique: true)
     value.each do |file|
       json_document = scan.set_info_file(ext_id, file)

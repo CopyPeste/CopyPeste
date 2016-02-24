@@ -10,7 +10,7 @@ class SortFile
   def initialize(list, octe)
     @list = list
     @octe = octe
-    @file_hash = Hash.new
+    @file_hash = {}
   end
 
 
@@ -23,7 +23,7 @@ class SortFile
 
   def fill_hash_with_octe(tab_file, extension, i)
     if @file_hash[:"#{extension}"] == nil
-      new_hash = Hash.new
+      new_hash = {}
       new_hash[:"#{@octe[i]}"] = tab_file
       @file_hash[:"#{extension}"] = new_hash
     else
@@ -54,7 +54,7 @@ class SortFile
       if (extension = get_extension(file_name)) == ""
         extension = "Other"
       end
-      tab_file = Array.new
+      tab_file = []
       tab_file << file_name
       if @octe == nil || @octe.empty? == true
         fill_hash(tab_file, extension)

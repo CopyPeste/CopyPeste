@@ -8,8 +8,8 @@ class ScanSystem
   def initialize(start_point)
     @start_point = start_point
     @dir = Dir.new(@start_point)
-    @file_hash = Hash.new
-    @tab_file = Array.new
+    @file_hash = {}
+    @tab_file = []
     @index = 0
   end
   
@@ -57,7 +57,7 @@ class ScanSystem
   
 
   def set_info_file(ext_id, files)
-    hash_info = Hash.new
+    hash_info = {}
     if File.readable?(files)
       name = File.split(files)
       name = name.last
