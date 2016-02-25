@@ -4,9 +4,9 @@
 require 'json'
 require './UseLevenshtein'
 require './UseRsync'
-require_relative '../../../libs/modules/analysis/algorithms'
+require '../../../libs/modules/analysis/algorithms'
 require '../../../libs/modules/analysis/SortFile'
-require '../../../libs/BDD/DbHdlr'
+require '../../../libs/database/DbHdlr'
 
 # Call levenshtein class
 #
