@@ -31,7 +31,8 @@ class SortFile
 
   # fill the hash who contain all file sort by extension and size (octe)
   #
-  # @param [Array] array containing the file sort by extension and size, if the hash[extension] and   # hash[octe] exsit it will take only the last file insert into the tab
+  # @param [Array] array containing the file sort by extension and size, if the hash[extension] and
+  # hash[octe] exsit it will take only the last file insert into the tab
   # @param [String] the extension of the files contain in tab_file
   # @param [Integer] index use to increment the @octe list to sort by extension the différent file
   def fill_hash_with_octe(tab_file, extension, i)
