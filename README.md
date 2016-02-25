@@ -1,10 +1,12 @@
-Welcome to The project CopyPeste.
+Welcome to the CopyPestte project.
 
-Development in progress.
+Development currently in progress.  
 
-##Initialiazation:
+### Initialiazation:
 
+```sh
 $> cd scripts/  
 $> bundle install  
 $> cd init_bdd  
 $> ruby main.rb /usr/ports  
+```
