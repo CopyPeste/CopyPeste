@@ -1,19 +1,12 @@
 
 # FDF V1.1
 
+require 'json'
 require './UseLevenshtein'
 require './UseRsync'
-require 'ffi'
-
-# Not important will be remove soon
-module Algorithms
-  extend FFI::Library
-  ffi_lib '../../../libs/modules/analysis/libs/algorithms.so'
-  attach_function :levenshtein, [:string, :string], :int
-  attach_function :compare_files_match, [:string, :string, :int], :int
-
-end
-
+require '../../../libs/modules/analysis/algorithms'
+require '../../../libs/modules/analysis/SortFile'
+require '../../../libs/database/DbHdlr'
 
 # Call levenshtein class
 #
@@ -67,8 +60,6 @@ def sort_tab(documents)
       list << file["path"] + "/" + file["name"]
     end
   end
-  puts "=========LIST=========== \n\n"
-  puts list
   return list
 end
 
@@ -104,4 +95,5 @@ def init_fdf(mongo)
   fdf(list)
 end
 
-# init_fdf() # remove com if need to test without the BDD
+mongo = DbHdlr.new()
+init_fdf(mongo) # remove com if need to test without the BDD
