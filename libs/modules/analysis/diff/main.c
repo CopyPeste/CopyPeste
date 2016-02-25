@@ -22,7 +22,8 @@ int	main()
   int	ret;
 
   char test1[] = "my beautiful\ntest work !";
-  char test2[] = "my second\n\n\ntest work to !";
+  char test2[] = "my beautiful\ntest1 work !";
+  /* char test2[] = "my second\n\n\ntest work to !"; */
 
   str_one = strdup(test1);
   str_two = strdup(test2);
