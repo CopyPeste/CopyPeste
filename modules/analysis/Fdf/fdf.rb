@@ -4,7 +4,7 @@
 require 'json'
 require './UseLevenshtein'
 require './UseRsync'
-require '../../../libs/modules/analysis/algorithms'
+require_relative '../../../libs/modules/analysis/algorithms'
 require '../../../libs/modules/analysis/SortFile'
 require '../../../libs/BDD/DbHdlr'
 
