@@ -14,7 +14,7 @@ require '../../../libs/database/DbHdlr'
 def call_levenshtein(file_hash)  
   lev = UseLevenshtein.new(file_hash)
   lev.start()
-  return lev.get_result()
+  lev.get_result()
 end
 
 
@@ -46,7 +46,7 @@ end
 # @param [Object] ScanSystem object.
 def get_file_from_scan(scan)
   scan.init()
-  return scan.get_tab_file
+  scan.get_tab_file
 end
 
 
@@ -81,7 +81,7 @@ def get_doc_to_analyse(mongo, ext = nil)
     data["_id"] = BSON::ObjectId.from_string(data['_id']['$oid'])
     documents << mongo.get_document("Fichier", "ext", data["_id"])
   end
-  return sort_tab(documents)
+  sort_tab(documents)
 end
 
 
