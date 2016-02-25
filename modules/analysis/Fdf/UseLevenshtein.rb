@@ -1,8 +1,4 @@
 
-# This object is use to send filname to the Levenshtein
-# This object take an hash off all file needed to be compare. You can give any level of hash ex : A simple Hash. Or a Hash in a Hash etc
-# for v1.1 It will return a tab containing the path of all identical file  (Voir si il y a mieux a retourner j'expliquerai plus tard)
-
 class UseLevenshtein
   attr_accessor :file_hash
 
@@ -12,6 +8,9 @@ class UseLevenshtein
   end
 
 
+  # Send file 2 by 2 for analyse
+  #
+  # @param [Array] array of file who will be compare (each fill is compare with the other file in the Array)
   def send_levenshtein(file_to_send)
     tab = []
     i = 0
@@ -34,6 +33,11 @@ class UseLevenshtein
   end
 
 
+  # The level is use to get the files from a hash. The hash can have infinit level
+  # What is call level is : hash[:c] => tab. There is one level of hash.
+  #                         hash[:c] => hash[:size_file] => tab. There is two level of hash.
+  #
+  # @param [Hash] who contain a tab of files witch will be analyse
   def level(val)
     if val.instance_of? Hash
       val.each_value {|value| level(value)}
@@ -43,6 +47,7 @@ class UseLevenshtein
   end
   
 
+  # start the process for analyse (first function to call)
   def start
     if @file_hash.empty? == true
       return nil
@@ -51,6 +56,8 @@ class UseLevenshtein
   end
   
 
+  # Return the rsync_tab witch is the tab that contain multiple pair of files who matched
+  # Usaly send to the Rsync to compare the content of those files
   def get_result
     return @rsync_tab
   end
