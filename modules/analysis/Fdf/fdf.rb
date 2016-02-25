@@ -11,7 +11,6 @@ module Algorithms
   ffi_lib '../../../libs/modules/analysis/libs/algorithms.so'
   attach_function :levenshtein, [:string, :string], :int
   attach_function :compare_files_match, [:string, :string, :int], :int
-
 end
 
 
@@ -67,8 +66,6 @@ def sort_tab(documents)
       list << file["path"] + "/" + file["name"]
     end
   end
-  puts "=========LIST=========== \n\n"
-  puts list
   return list
 end
 
@@ -104,4 +101,5 @@ def init_fdf(mongo)
   fdf(list)
 end
 
-# init_fdf() # remove com if need to test without the BDD
+mongo = DbHldr.new()
+init_fdf() # remove com if need to test without the BDD

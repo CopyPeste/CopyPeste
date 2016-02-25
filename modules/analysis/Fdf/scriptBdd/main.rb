@@ -95,9 +95,3 @@ end
 scan = ScanSystem.new(ARGV[0])
 mongo = DbHdlr.new()
 scan_sys(scan, mongo)
-
-##############################################################
-### Start the Fdf Module, will be removed on final version ###
-##############################################################
-
-init_fdf(mongo)
