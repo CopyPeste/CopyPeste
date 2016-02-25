@@ -1,12 +1,17 @@
+# -*- coding: utf-8 -*-
 
 # SortFile is use to sort any file by their extension and optionnal with their octe.
 # It take a array of file to sort, and a array of octe or nil
-# It will return an Hash with a tab for value {:c=>["path1/fichier1.c", "path8/fichier1.c"]} 
-# Or with octe it will return an Hash in a hash with a tab for value {:c=>{:"500"=>["path1/fichier1.c", "path8/fichier1.c"]}}
 
 class SortFile
   attr_accessor :list, :octe, :fileHash, :rsynctab
 
+
+  # creat a instance of SortFile
+  #
+  # @param [Array] list of file to be sort
+  # @param [Array] list of the size of each file witch will be use to sort the files,
+  # can be nil if you do not want to sort by size (octe)
   def initialize(list, octe)
     @list = list
     @octe = octe
@@ -14,6 +19,9 @@ class SortFile
   end
 
 
+  # return the extension of a file
+  #
+  # @param [String] th complete path of th file
   def get_extension(fileName)
     file_extension = File.extname(fileName)
     file_extension = file_extension.split('.')
@@ -21,6 +29,11 @@ class SortFile
   end
 
 
+  # fill the hash who contain all file sort by extension and size (octe)
+  #
+  # @param [Array] array containing the file sort by extension and size, if the hash[extension] and   # hash[octe] exsit it will take only the last file insert into the tab
+  # @param [String] the extension of the files contain in tab_file
+  # @param [Integer] index use to increment the @octe list to sort by extension the différent file
   def fill_hash_with_octe(tab_file, extension, i)
     if @file_hash[:"#{extension}"] == nil
       new_hash = {}
@@ -37,7 +50,12 @@ class SortFile
     end
   end
 
-
+  
+  # fill th hash who all file sort by extension
+  #
+  # @param [Array] array containing the file sort by extension, 
+  # if the hash[extension] exsiste it will insert the last file of the tab
+  # @parma [String] the extension of the files contain in tab_file
   def fill_hash(tab_file, extension)
     if @file_hash[:"#{extension}"] == nil
       @file_hash[:"#{extension}"] = tab_file
@@ -48,6 +66,8 @@ class SortFile
   end
 
 
+  # start to sort file from the array list who contain the list of files to sort,
+  # call fill_hash in each loop and add file one by one in tab_file
   def start
     i = 0
     list.each do |file_name|
@@ -65,6 +85,8 @@ class SortFile
     end
   end
 
+
+  # return the hash containing all the file sort
   def get_hash
     return @file_hash
   end

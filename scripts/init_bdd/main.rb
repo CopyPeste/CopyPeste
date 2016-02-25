@@ -4,11 +4,23 @@ require './DbHdlr'
 require 'mongo'
 require 'json'
 
+
+# Add document in the database
+#
+# @param [Object] DbHdlr object
+# @param [String] name of the collection to use
+# @param [Array]/[Json] a json tab (tab[0] => json_document, tab[1] => json_document).
+# Or a simple json file
+# @param [Bool] true = multiple insertion in databse (if you have a json tab).
+# false = simple insertion (if you have a simple json file)
 def fill_db(mongo, collection, json_tab, multifile)
   mongo.ins_data(collection, json_tab, multifile)
 end
 
 
+# Creat a json document from a string (use when you get a document from the database)
+#
+# @param [String] document from the database in string form
 def set_extension_json(document)
   tab = []
   json_document = JSON.parse(document.to_json)
@@ -22,6 +34,11 @@ def set_extension_json(document)
 end
 
 
+# Creat th document for the Extension collection
+#
+# @param [Object] DbHdlr object (mongo object)
+# @param [Hash] a hash on one file wich corresponde to one type of extesion
+# @param [String] the extension ("c", "cpp", etc)
 def set_collection_extension(mongo, file, key)
   file_tab = mongo.get_document("Fichier", "ext", file["ext"])
   document = {}
@@ -37,6 +54,11 @@ def set_collection_extension(mongo, file, key)
 end
 
 
+# Creat json document from hash and send it to mongodb
+#
+# @parma [Hash] an hash containing file to sort and send to mongodb
+# @parma [Object] an DbHdlr object (mongo object)
+# @parma [Object] an ScanSystem object
 def sort_insert_db(file_hash, mongo, scan)
   file_hash.each do |key, value|
     json_tab = []
@@ -52,11 +74,15 @@ def sort_insert_db(file_hash, mongo, scan)
   end
   puts "\n\n"
   mongo.debug("Fichier")
-  puts "\n===================================================================================\n"
+  puts "\n=============\n"
   mongo.debug("Extension")
 end
 
 
+#  Start the scan of the system
+#
+# @param [Object] Object ScanSystem
+# @param [Object] Object DbHdlr (mongo object)
 def scan_sys(scan, mongo)
   scan.init()
   scan.send_to_sort()
