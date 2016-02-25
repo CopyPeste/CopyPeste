@@ -8,15 +8,6 @@ require_relative '../../../libs/modules/analysis/algorithms'
 require '../../../libs/modules/analysis/SortFile'
 require '../../../libs/BDD/DbHdlr'
 
-# Not important will be remove soon
-module Algorithms
-  extend FFI::Library
-  ffi_lib '../../../libs/modules/analysis/libs/algorithms.so'
-  attach_function :levenshtein, [:string, :string], :int
-  attach_function :compare_files_match, [:string, :string, :int], :int
-end
-
-
 # Call levenshtein class
 #
 # @param [Hash] hash of file who will be analyse
