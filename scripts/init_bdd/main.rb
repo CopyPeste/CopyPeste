@@ -1,7 +1,6 @@
-require './scriptBdd/ScanSystem'
-require './scriptBdd/SortFile'
-require './scriptBdd/DbHdlr'
-require './fdf'
+require './ScanSystem'
+require '../../libs/modules/analysis/SortFile'
+require '../../libs/BDD/DbHdlr'
 require 'mongo'
 require 'json'
 

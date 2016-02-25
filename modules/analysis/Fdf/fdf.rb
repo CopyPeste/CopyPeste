@@ -1,9 +1,12 @@
 
 # FDF V1.1
 
+require 'json'
 require './UseLevenshtein'
 require './UseRsync'
-require 'ffi'
+require '../../../libs/modules/analysis/algorithms'
+require '../../../libs/modules/analysis/SortFile'
+require '../../../libs/BDD/DbHdlr'
 
 # Not important will be remove soon
 module Algorithms
@@ -101,5 +104,5 @@ def init_fdf(mongo)
   fdf(list)
 end
 
-mongo = DbHldr.new()
-init_fdf() # remove com if need to test without the BDD
+mongo = DbHdlr.new()
+init_fdf(mongo) # remove com if need to test without the BDD
