@@ -1,4 +1,4 @@
-Welcome to the CopyPestte project.
+Welcome to the CopyPeste project.
 
 Development currently in progress.  
 
