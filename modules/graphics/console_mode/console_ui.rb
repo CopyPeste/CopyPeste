@@ -1,3 +1,5 @@
+require 'tty-cursor'
+
 class ConsoleUi
 	def initialize
 		@prompt = "$>"
@@ -5,5 +7,5 @@ class ConsoleUi
 
 	def display_prompt
 		print "#{@prompt} "
-	end
+  end
 end

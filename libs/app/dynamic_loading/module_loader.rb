@@ -7,7 +7,7 @@ module ModuleLoading
     def self.load(path)
       @@loading_module = LoadedModule.new
       self.instance_eval(File.read path)
-    
+
       required_methods = DSLMethods.instance_methods
       implemented_methods = @@loading_module.singleton_methods
       raise NotImplementedError unless required_methods.all? { |rm|
@@ -49,13 +49,13 @@ module ModuleLoading
    end
 
    module DSLMethods
-      def usage(&block) set_usage(&block) end
-      def author(&block) set_author(&block) end
-      def init(&block) set_init(&block) end
-      def description(&block) set_description(&block) end
-    end # !DSLMethods
+    def usage(&block) set_usage(&block) end
+    def author(&block) set_author(&block) end
+    def init(&block) set_init(&block) end
+    def description(&block) set_description(&block) end
+   end # !DSLMethods
 
-    module DSLBlocks
+   module DSLBlocks
      def impl(&block) set_impl(&block) end
     end # !DSLBlocks
 
