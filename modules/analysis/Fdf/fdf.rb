@@ -1,10 +1,8 @@
 
 # FDF V1.1
 
-require './SortFile'
 require './UseLevenshtein'
 require './UseRsync'
-require './ScanSystem'
 require 'ffi'
 
 module Algorithms
@@ -40,6 +38,40 @@ def get_file_from_scan(scan)
   return scan.get_tab_file
 end
 
-scan = ScanSystem.new(ARGV[0])
-list = get_file_from_scan(scan)
-fdf(list, nil)
+def sort_tab(tab)
+  list = []
+  tab.each do |data|
+    data.each do |document|
+      list << document["path"] + "/" + document["name"]
+    end
+  end
+  puts "=========LIST=========== \n\n"
+  puts list
+  return list
+end
+
+def get_doc_to_analyse(mongo, ext = nil)
+  query = {}
+  tab = []
+  query["name"] = ext
+  if ext == nil
+    query = nil
+  end
+  result = mongo.get_data("Extension", query, nil)
+  result.each do |data|
+    data = JSON.parse(data.to_json)
+    data["_id"] = BSON::ObjectId.from_string(data['_id']['$oid'])
+    documents = mongo.get_document("Fichier", "ext", data["_id"])
+    tab << documents
+  end
+  return sort_tab(tab)
+end
+
+def init_fdf(mongo)
+  list = get_doc_to_analyse(mongo, nil)     # place com if need to test without BDD  else remove it
+  #scan = ScanSystem.new(ARGV[0]) # remove com if need to test without the BDD
+  #list = get_file_from_scan(scan) # remove com if need to test without the BDD
+  fdf(list, nil)
+end
+
+# init_fdf() # remove com if need to test without the BDD

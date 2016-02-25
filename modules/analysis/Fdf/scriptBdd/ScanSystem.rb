@@ -100,7 +100,7 @@ class ScanSystem
       hash_info["path"] = set_path(files)
       hash_info["size"] = File.size(files)
       hash_info["ext"] = ext_id
-      hash_info["Sum"] = Digest::MD5.file(files)
+      #hash_info["Sum"] = Digest::MD5.file(files)
     end
     hash_info.to_json
   end  
