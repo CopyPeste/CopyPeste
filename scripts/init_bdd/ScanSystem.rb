@@ -42,7 +42,7 @@ class ScanSystem
   
   # return tab_file
   def get_tab_file
-    return @tab_file
+    @tab_file
   end
   
   
@@ -67,7 +67,7 @@ class ScanSystem
 
   # Return an hash of all the file sort by extension. and optionnaly extension plus size
   def get_sort_file
-    return @file_hash
+    @file_hash
   end
   
   
@@ -83,7 +83,7 @@ class ScanSystem
         path = path + "/" + part_path 
       end
     end
-    return path
+    path
   end
   
 

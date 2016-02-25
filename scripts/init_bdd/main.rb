@@ -30,7 +30,7 @@ def set_extension_json(document)
     tab << data
   end
   json_document["files_id"] = tab
-  return json_document
+  json_document
 end
 
 
