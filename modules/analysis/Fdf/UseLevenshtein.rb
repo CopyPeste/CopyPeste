@@ -4,26 +4,25 @@
 # for v1.1 It will return a tab containing the path of all identical file  (Voir si il y a mieux a retourner j'expliquerai plus tard)
 
 class UseLevenshtein
-  attr_accessor :fileHash
+  attr_accessor :file_hash
 
-  def initialize(fileHash)
-    @fileHash = fileHash
-    @rsynctab = []
+  def initialize(file_hash)
+    @file_hash = file_hash
+    @rsync_tab = []
   end
 
-  def sendLevenshtein(fileToSend)
+
+  def send_levenshtein(file_to_send)
     tab = []
     i = 0
     j = 1
-    firstpass = true
-    sizeTab = fileToSend.size()
-    while i != fileToSend.size() - 1
-      while j != fileToSend.size()
-        file1 = fileToSend[i].split('/')
-        file2 = fileToSend[j].split('/')
+    while i != file_to_send.size() - 1
+      while j != file_to_send.size()
+        file1 = file_to_send[i].split('/')
+        file2 = file_to_send[j].split('/')
         if (result = Algorithms.levenshtein(file1.last(), file2.last())) == 0
-          @rsynctab << fileToSend[i]
-          @rsynctab << fileToSend[j]
+          @rsync_tab << file_to_send[i]
+          @rsync_tab << file_to_send[j]
         end
         puts "#{file1.last} comparer avec  #{file2.last} pour le lev distance = #{result} \n"
         j += 1
@@ -31,25 +30,28 @@ class UseLevenshtein
       i += 1
       j = i+1
     end
-    fileToSend.delete(fileToSend[0])
+    file_to_send.delete(file_to_send[0])
   end
+
 
   def level(val)
     if val.instance_of? Hash
       val.each_value {|value| level(value)}
     else
-      sendLevenshtein(val)
+      send_levenshtein(val)
     end
   end
   
+
   def start
-    if @fileHash.empty? == true
+    if @file_hash.empty? == true
       return nil
     end
-    @fileHash.each_value {|value| level(value)}
+    @file_hash.each_value {|value| level(value)}
   end
   
-  def getResult
-    return @rsynctab
+
+  def get_result
+    return @rsync_tab
   end
 end

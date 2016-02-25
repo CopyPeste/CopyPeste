@@ -4,18 +4,18 @@
 # nothing is return for the moments 
 
 class UseRsync
-  attr_accessor :rsynctab
+  attr_accessor :rsync_tab
 
-  def initialize(rsynctab)
-    @rsynctab = rsynctab
+  def initialize(rsync_tab)
+    @rsync_tab = rsync_tab
   end
 
   def start
     i = 0
     puts "\n"
-    while i != @rsynctab.size()
-      puts "#{@rsynctab[i]} comparer avec  #{@rsynctab[i+1]} pour le rsync\n"
-      if (Algorithms.compare_files_match(@rsynctab[i], @rsynctab[i+1], 512) == 0) then
+    while i != @rsync_tab.size()
+      puts "#{@rsync_tab[i]} comparer avec  #{@rsync_tab[i+1]} pour le rsync\n"
+      if (Algorithms.compare_files_match(@rsync_tab[i], @rsync_tab[i+1], 512) == 0) then
         puts "SIMILARE"
       else
         puts "DIFFERENT"

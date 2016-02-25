@@ -4,39 +4,42 @@
 require './SortFile'
 require './UseLevenshtein'
 require './UseRsync'
+require './ScanSystem'
 require 'ffi'
 
 module Algorithms
   extend FFI::Library
-  ffi_lib '../libs/algorithms.so' #chemin vers la lib
+  ffi_lib '../../../libs/modules/analysis/libs/algorithms.so' #chemin vers la lib
   attach_function :levenshtein, [:string, :string], :int
   attach_function :compare_files_match, [:string, :string, :int], :int
 
 end
 
-def callLevenshtein(fileHash)  
-  lev = UseLevenshtein.new(fileHash)
+def call_levenshtein(file_hash)  
+  lev = UseLevenshtein.new(file_hash)
   lev.start()
-  return lev.getResult()
+  return lev.get_result()
 end
 
-def callRsync(result)
+def call_rsync(result)
   rsync = UseRsync.new(result)
   rsync.start()
 end
 
 def fdf(list, octe)
-  fileHash = Hash.new
-  
+  file_hash = {}
   fichier = SortFile.new(list, nil) #nil ou octe pour le moment
   fichier.start()
-  fileHash = fichier.getHash()
-  result = callLevenshtein(fileHash)
-  callRsync(result)
+  file_hash = fichier.get_hash()
+  result = call_levenshtein(file_hash)
+  call_rsync(result)
 end
 
-list = ["path1/fichier1.c", "path2/fichier16.cpp", "path3/fichier3.java", "path4/fichier4.txt", "path5/fichier5.rb", "path6/fichier6.php", "path7/fichier7.xml", "path8/fichier1.c", "path9/fichier16.cpp", "path10/fichier10.java", "path11/fichier11.java", "path12/fichier12.rb", "path13/fichier13.php", "path14/fichier14.xml", "path15/fichier15.c", "path16/fichier168945.cpp", "/home/edouard/Documents/EIP/Ruby/algorithm/test.c", "/home/edouard/Documents/EIP/Ruby/algorithm/Test/test.c", "/home/edouard/Documents/EIP/Ruby/algorithm/Test/test2.cpp", "/home/edouard/Documents/EIP/Ruby/algorithm/test2.cpp", "toto", "toto"]
+def get_file_from_scan(scan)
+  scan.init()
+  return scan.get_tab_file
+end
 
-octe =["500", "2542", "500", "98745", "584", "65452", "6451215", "500", "2542", "507", "507", "8790", "575", "744", "565489", "2542", "57", "57", "38", "38", "2", "2"]
-
-fdf(list, octe)
+scan = ScanSystem.new(ARGV[0])
+list = get_file_from_scan(scan)
+fdf(list, nil)
