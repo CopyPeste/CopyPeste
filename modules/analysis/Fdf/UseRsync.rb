@@ -1,21 +1,23 @@
 
-# This Object is use to send all the file who needs to be compare
-# It take a simple array with the path of the files
-# nothing is return for the moments 
-
 class UseRsync
-  attr_accessor :rsynctab
+  attr_accessor :rsync_tab
 
-  def initialize(rsynctab)
-    @rsynctab = rsynctab
+  # init UseRsync class
+  #
+  # @param [tab] tab of file wwitch will be compair.
+  # be shure to have the good organisation : tab[0] compair with tab[1], tab[2] compair with tab[3]
+  def initialize(rsync_tab)
+    @rsync_tab = rsync_tab
   end
 
+
+  # Send files to the Rsync algorithm
   def start
     i = 0
     puts "\n"
-    while i != @rsynctab.size()
-      puts "#{@rsynctab[i]} comparer avec  #{@rsynctab[i+1]} pour le rsync\n"
-      if (Algorithms.compare_files_match(@rsynctab[i], @rsynctab[i+1], 512) == 0) then
+    while i != @rsync_tab.size()
+      puts "#{@rsync_tab[i]} comparer avec  #{@rsync_tab[i+1]} pour le rsync\n"
+      if (Algorithms.compare_files_match(@rsync_tab[i], @rsync_tab[i+1], 512) == 0) then
         puts "SIMILARE"
       else
         puts "DIFFERENT"

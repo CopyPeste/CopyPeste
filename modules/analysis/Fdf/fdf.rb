@@ -1,42 +1,99 @@
 
 # FDF V1.1
 
-require './SortFile'
+require 'json'
 require './UseLevenshtein'
 require './UseRsync'
-require 'ffi'
+require '../../../libs/modules/analysis/algorithms'
+require '../../../libs/modules/analysis/SortFile'
+require '../../../libs/database/DbHdlr'
 
-module Algorithms
-  extend FFI::Library
-  ffi_lib '../libs/algorithms.so' #chemin vers la lib
-  attach_function :levenshtein, [:string, :string], :int
-  attach_function :compare_files_match, [:string, :string, :int], :int
-
-end
-
-def callLevenshtein(fileHash)  
-  lev = UseLevenshtein.new(fileHash)
+# Call levenshtein class
+#
+# @param [Hash] hash of file who will be analyse
+def call_levenshtein(file_hash)  
+  lev = UseLevenshtein.new(file_hash)
   lev.start()
-  return lev.getResult()
+  return lev.get_result()
 end
 
-def callRsync(result)
+
+# Call the Rsync class
+#
+# @param []
+def call_rsync(result)
   rsync = UseRsync.new(result)
   rsync.start()
 end
 
-def fdf(list, octe)
-  fileHash = Hash.new
-  
-  fichier = SortFile.new(list, nil) #nil ou octe pour le moment
+
+# Main function of the fdf, call the sort class and the levenshtein/resync methode
+#
+# @param [Array] list of all the file who will be analyse
+# @param [Array]/[nil] list of all the size of each file to be sort by extension and size or nil. nil by default
+def fdf(list, octe = nil)
+  file_hash = {}
+  fichier = SortFile.new(list, octe)
   fichier.start()
-  fileHash = fichier.getHash()
-  result = callLevenshtein(fileHash)
-  callRsync(result)
+  file_hash = fichier.get_hash()
+  result = call_levenshtein(file_hash)
+  call_rsync(result)
 end
 
-list = ["path1/fichier1.c", "path2/fichier16.cpp", "path3/fichier3.java", "path4/fichier4.txt", "path5/fichier5.rb", "path6/fichier6.php", "path7/fichier7.xml", "path8/fichier1.c", "path9/fichier16.cpp", "path10/fichier10.java", "path11/fichier11.java", "path12/fichier12.rb", "path13/fichier13.php", "path14/fichier14.xml", "path15/fichier15.c", "path16/fichier168945.cpp", "/home/edouard/Documents/EIP/Ruby/algorithm/test.c", "/home/edouard/Documents/EIP/Ruby/algorithm/Test/test.c", "/home/edouard/Documents/EIP/Ruby/algorithm/Test/test2.cpp", "/home/edouard/Documents/EIP/Ruby/algorithm/test2.cpp", "toto", "toto"]
 
-octe =["500", "2542", "500", "98745", "584", "65452", "6451215", "500", "2542", "507", "507", "8790", "575", "744", "565489", "2542", "57", "57", "38", "38", "2", "2"]
+# Function use for test when the bdd is not use
+#
+# @param [Object] ScanSystem object.
+def get_file_from_scan(scan)
+  scan.init()
+  return scan.get_tab_file
+end
 
-fdf(list, octe)
+
+# Extraxt the path and name of files and put return a Array of the complete file with path (/home/test/expemple.c)
+#
+# @param [Array][Array][Hash] take an Array of Array of hash. [files by extension][one file][hash of the file]
+def sort_tab(documents)
+  list = []
+  documents.each do |data|
+    data.each do |file|
+      list << file["path"] + "/" + file["name"]
+    end
+  end
+  return list
+end
+
+
+# Get the files from the databases witch will be analyses
+#
+# @param [Object] DbHdlr, mongo object
+# @param [String] extension of file to analyse. Nil by default (take all th file from the databases). 
+def get_doc_to_analyse(mongo, ext = nil)
+  query = {}
+  documents = []
+  query["name"] = ext
+  if ext == nil
+    query = nil
+  end
+  result = mongo.get_data("Extension", query, nil)
+  result.each do |data|
+    data = JSON.parse(data.to_json)
+    data["_id"] = BSON::ObjectId.from_string(data['_id']['$oid'])
+    documents << mongo.get_document("Fichier", "ext", data["_id"])
+  end
+  return sort_tab(documents)
+end
+
+
+# function use to init the list of file for fdf
+#
+# @parma [Object] DbHdlr, will be removed when test will be finished 
+def init_fdf(mongo)
+  list = get_doc_to_analyse(mongo, nil)     # place com if need to test without BDD  else remove it
+  #scan = ScanSystem.new(ARGV[0])           # remove com if need to test without the BDD
+  #list = get_file_from_scan(scan)          # remove com if need to test without the BDD
+  fdf(list)
+end
+
+mongo = DbHdlr.new()
+init_fdf(mongo) # remove com if need to test without the BDD

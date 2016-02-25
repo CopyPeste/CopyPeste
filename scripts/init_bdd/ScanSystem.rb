@@ -40,6 +40,12 @@ class ScanSystem
   end
   
   
+  # return tab_file
+  def get_tab_file
+    return @tab_file
+  end
+  
+  
   # Send the file to SortFile object to be sort by there extension
   #
   # @parma [Array] array of the file scaned
@@ -94,7 +100,7 @@ class ScanSystem
       hash_info["path"] = set_path(files)
       hash_info["size"] = File.size(files)
       hash_info["ext"] = ext_id
-      hash_info["Sum"] = Digest::MD5.file(files)
+      #hash_info["Sum"] = Digest::MD5.file(files)
     end
     hash_info.to_json
   end  

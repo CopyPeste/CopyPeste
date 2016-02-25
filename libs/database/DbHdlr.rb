@@ -9,7 +9,7 @@ class DbHdlr
 	# @param [String] the host where the db is stored (whether an ip address or a resolved server)
 	# @param [String] port to access the db service
 	# @param [String] the selected database
-	def initialize(host="127.0.0.1", port="27017", db="CPeste02")
+	def initialize(host="127.0.0.1", port="27017", db="CPeste042")
 		begin
 			@db_inst = Mongo::Client.new(["#{host}:#{port}"], :database => db)
 		rescue
@@ -87,7 +87,10 @@ class DbHdlr
 	# @param [Hash] the options 
 	# @return [Hash] documents matching the query
 	def get_data(collection, query, options = nil)
-		return @db_inst[collection].find(query, options).to_a
+          hash = {}
+          data = @db_inst[collection].find(query, options).to_a
+          hash = JSON.parse(data.to_json)
+          return hash 
 	end
 
         
