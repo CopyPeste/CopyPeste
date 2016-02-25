@@ -90,7 +90,7 @@ def scan_sys(scan, mongo)
   sort_insert_db(file_hash, mongo, scan)
 end
 
-scan = ScanSystem.new("/home/edouard/test")
-mongo = DbHdlr.new()
 
+scan = ScanSystem.new(ARGV[0])
+mongo = DbHdlr.new()
 scan_sys(scan, mongo)
