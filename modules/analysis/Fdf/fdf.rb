@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 # FDF V1.1
 
@@ -11,10 +12,9 @@ require '../../../libs/database/DbHdlr'
 # Call levenshtein class
 #
 # @param [Hash] hash of file who will be analyse
-def call_levenshtein(file_hash)  
-  lev = UseLevenshtein.new(file_hash)
+def call_levenshtein()
   lev.start()
-  lev.get_result()
+  lev.get_result_matched()
 end
 
 
@@ -27,6 +27,18 @@ def call_rsync(result)
 end
 
 
+#
+#        Idée de rangement des donnée
+#
+#        ex : tab[0]-> hash[% de ressemblance] -> tab[0] -> [file1, file2, distance?]
+#             tab[0]-> hash[extension] -> hash[% de ressemblance] -> tab[0] -> [file1, file2, , distance?]
+#           
+def put_result_in_database(mongo, lev)
+  lev.get_global_result()
+  #mongo.ins_data("Fdf", )
+end
+
+
 # Main function of the fdf, call the sort class and the levenshtein/resync methode
 #
 # @param [Array] list of all the file who will be analyse
@@ -36,17 +48,10 @@ def fdf(list, octe = nil)
   fichier = SortFile.new(list, octe)
   fichier.start()
   file_hash = fichier.get_hash()
-  result = call_levenshtein(file_hash)
+  lev = UseLevenshtein.new(file_hash)
+  result = call_levenshtein()
   call_rsync(result)
-end
-
-
-# Function use for test when the bdd is not use
-#
-# @param [Object] ScanSystem object.
-def get_file_from_scan(scan)
-  scan.init()
-  scan.get_tab_file
+  put_lev_result_in_database()
 end
 
 
@@ -60,7 +65,7 @@ def sort_tab(documents)
       list << file["path"] + "/" + file["name"]
     end
   end
-  return list
+  list
 end
 
 
@@ -89,11 +94,10 @@ end
 #
 # @parma [Object] DbHdlr, will be removed when test will be finished 
 def init_fdf(mongo)
-  list = get_doc_to_analyse(mongo, nil)     # place com if need to test without BDD  else remove it
-  #scan = ScanSystem.new(ARGV[0])           # remove com if need to test without the BDD
-  #list = get_file_from_scan(scan)          # remove com if need to test without the BDD
-  fdf(list)
+  list = get_doc_to_analyse(mongo, nil)
+  fdf(list, mongo)
 end
 
+
 mongo = DbHdlr.new()
-init_fdf(mongo) # remove com if need to test without the BDD
+init_fdf(mongo)

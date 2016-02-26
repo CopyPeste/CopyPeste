@@ -5,6 +5,7 @@ class UseLevenshtein
   def initialize(file_hash)
     @file_hash = file_hash
     @rsync_tab = []
+    @results = []
   end
 
 
@@ -23,6 +24,7 @@ class UseLevenshtein
           @rsync_tab << file_to_send[i]
           @rsync_tab << file_to_send[j]
         end
+        @results << result
         puts "#{file1.last} comparer avec  #{file2.last} pour le lev distance = #{result} \n"
         j += 1
       end
@@ -30,6 +32,7 @@ class UseLevenshtein
       j = i + 1
     end
     file_to_send.delete(file_to_send[0])
+    tab
   end
 
 
@@ -56,9 +59,15 @@ class UseLevenshtein
   end
   
 
+  # Return all the results from the levenshtein
+  def get_global_result
+    @results
+  end
+
+
   # Return the rsync_tab witch is the tab that contain multiple pair of files who matched
   # Usaly send to the Rsync to compare the content of those files
-  def get_result
+  def get_result_matched
     @rsync_tab
   end
 end
