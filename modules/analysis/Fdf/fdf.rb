@@ -33,6 +33,9 @@ end
 #        ex : tab[0]-> hash[% de ressemblance] -> tab[0] -> [file1, file2, distance?]
 #             tab[0]-> hash[extension] -> hash[% de ressemblance] -> tab[0] -> [file1, file2, , distance?]
 #           
+#             tab -> [file1, file2]
+#             %de ressemblance (distance +rsync ?)
+#             _id document
 def put_result_in_database(mongo, lev)
   lev.get_global_result()
   #mongo.ins_data("Fdf", )
