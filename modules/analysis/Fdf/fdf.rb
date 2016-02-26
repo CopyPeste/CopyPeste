@@ -12,7 +12,7 @@ require '../../../libs/database/DbHdlr'
 # Call levenshtein class
 #
 # @param [Hash] hash of file who will be analyse
-def call_levenshtein()
+def call_levenshtein(lev)
   lev.start()
   lev.get_result_matched()
 end
@@ -21,24 +21,15 @@ end
 # Call the Rsync class
 #
 # @param []
-def call_rsync(result)
-  rsync = UseRsync.new(result)
+def call_rsync(rsync_tab, lev_result)
+  rsync = UseRsync.new(rsync_tab, lev_result)
   rsync.start()
+  rsync.get_result_data()
 end
 
 
-#
-#        Idée de rangement des donnée
-#
-#        ex : tab[0]-> hash[% de ressemblance] -> tab[0] -> [file1, file2, distance?]
-#             tab[0]-> hash[extension] -> hash[% de ressemblance] -> tab[0] -> [file1, file2, , distance?]
-#           
-#             tab -> [file1, file2]
-#             %de ressemblance (distance +rsync ?)
-#             _id document
-def put_result_in_database(mongo, lev)
-  lev.get_global_result()
-  #mongo.ins_data("Fdf", )
+def put_result_in_database(mongo, data)
+  mongo.ins_data("Duplicate", data, true)
 end
 
 
@@ -46,15 +37,18 @@ end
 #
 # @param [Array] list of all the file who will be analyse
 # @param [Array]/[nil] list of all the size of each file to be sort by extension and size or nil. nil by default
-def fdf(list, octe = nil)
+def fdf(list, mongo, octe = nil)
   file_hash = {}
   fichier = SortFile.new(list, octe)
   fichier.start()
   file_hash = fichier.get_hash()
   lev = UseLevenshtein.new(file_hash)
-  result = call_levenshtein()
-  call_rsync(result)
-  put_lev_result_in_database()
+  rsync_tab = call_levenshtein(lev)
+  lev_result = lev.get_levenshtein_result()
+  final_data = call_rsync(rsync_tab, lev_result)
+  put_result_in_database(mongo, final_data)
+  puts "\n\n ===========Duplicates==========\n\n"
+  mongo.debug("Duplicate")
 end
 
 
@@ -80,9 +74,7 @@ def get_doc_to_analyse(mongo, ext = nil)
   query = {}
   documents = []
   query["name"] = ext
-  if ext == nil
-    query = nil
-  end
+  ext == nil ? query = nil : query
   result = mongo.get_data("Extension", query, nil)
   result.each do |data|
     data = JSON.parse(data.to_json)

@@ -34,7 +34,7 @@ def set_extension_json(document)
 end
 
 
-# Creat th document for the Extension collection
+# Creat the document for the Extension collection
 #
 # @param [Object] DbHdlr object (mongo object)
 # @param [Hash] a hash on one file wich corresponde to one type of extesion
