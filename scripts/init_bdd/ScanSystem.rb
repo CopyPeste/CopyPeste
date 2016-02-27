@@ -92,8 +92,8 @@ class ScanSystem
   # @param [ObjectId] the ObjectId of the extension (same ObjectId for all same extension)
   # @param [String] the complete path of the file
   def set_info_file(ext_id, files)
-    hash_info = {}
-    if File.readable?(files)
+    if File.readable?(files) 
+      hash_info = {}  # && File.stat(files).readable_real?
       name = File.split(files)
       name = name.last
       hash_info["name"] = name
@@ -101,7 +101,7 @@ class ScanSystem
       hash_info["size"] = File.size(files)
       hash_info["ext"] = ext_id
       #hash_info["Sum"] = Digest::MD5.file(files)
+      hash_info.to_json
     end
-    hash_info.to_json
   end  
 end

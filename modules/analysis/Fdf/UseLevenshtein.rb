@@ -14,9 +14,10 @@ class UseLevenshtein
   def send_levenshtein(file_to_send)
     tab = []
     i = 0
-    while i != file_to_send.size() - 1
+    size = file_to_send.size()
+    while i !=  size - 1
       j = i + 1
-      while j != file_to_send.size()
+      while j != size
         file1 = file_to_send[i].split('/')
         file2 = file_to_send[j].split('/')
         if (result = Algorithms.levenshtein(file1.last(), file2.last())) == 0
@@ -24,9 +25,9 @@ class UseLevenshtein
           @rsync_tab << file_to_send[j]
           @results << result
         end
-        puts "#{file1.last} comparer avec  #{file2.last} pour le lev distance = #{result} \n"
         j += 1
       end
+      #puts "#{i}/#{size-1} - #{file1.last} comparer avec  #{file2.last} pour le lev distance = #{result}"
       i += 1
     end
     file_to_send.delete(file_to_send[0])
