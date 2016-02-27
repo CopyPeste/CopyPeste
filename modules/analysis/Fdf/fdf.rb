@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 # FDF V1.1
 
@@ -11,19 +12,24 @@ require '../../../libs/database/DbHdlr'
 # Call levenshtein class
 #
 # @param [Hash] hash of file who will be analyse
-def call_levenshtein(file_hash)  
-  lev = UseLevenshtein.new(file_hash)
+def call_levenshtein(lev)
   lev.start()
-  lev.get_result()
+  lev.get_result_matched()
 end
 
 
 # Call the Rsync class
 #
 # @param []
-def call_rsync(result)
-  rsync = UseRsync.new(result)
+def call_rsync(rsync_tab, lev_result)
+  rsync = UseRsync.new(rsync_tab, lev_result)
   rsync.start()
+  rsync.get_result_data()
+end
+
+
+def put_result_in_database(mongo, data)
+  mongo.ins_data("Duplicate", data, true)
 end
 
 
@@ -31,22 +37,18 @@ end
 #
 # @param [Array] list of all the file who will be analyse
 # @param [Array]/[nil] list of all the size of each file to be sort by extension and size or nil. nil by default
-def fdf(list, octe = nil)
+def fdf(list, mongo, octe = nil)
   file_hash = {}
   fichier = SortFile.new(list, octe)
   fichier.start()
   file_hash = fichier.get_hash()
-  result = call_levenshtein(file_hash)
-  call_rsync(result)
-end
-
-
-# Function use for test when the bdd is not use
-#
-# @param [Object] ScanSystem object.
-def get_file_from_scan(scan)
-  scan.init()
-  scan.get_tab_file
+  lev = UseLevenshtein.new(file_hash)
+  rsync_tab = call_levenshtein(lev)
+  lev_result = lev.get_levenshtein_result()
+  final_data = call_rsync(rsync_tab, lev_result)
+  put_result_in_database(mongo, final_data)
+  puts "\n\n ===========Duplicates==========\n\n"
+  mongo.debug("Duplicate")
 end
 
 
@@ -60,7 +62,7 @@ def sort_tab(documents)
       list << file["path"] + "/" + file["name"]
     end
   end
-  return list
+  list
 end
 
 
@@ -72,9 +74,7 @@ def get_doc_to_analyse(mongo, ext = nil)
   query = {}
   documents = []
   query["name"] = ext
-  if ext == nil
-    query = nil
-  end
+  ext == nil ? query = nil : query
   result = mongo.get_data("Extension", query, nil)
   result.each do |data|
     data = JSON.parse(data.to_json)
@@ -89,11 +89,10 @@ end
 #
 # @parma [Object] DbHdlr, will be removed when test will be finished 
 def init_fdf(mongo)
-  list = get_doc_to_analyse(mongo, nil)     # place com if need to test without BDD  else remove it
-  #scan = ScanSystem.new(ARGV[0])           # remove com if need to test without the BDD
-  #list = get_file_from_scan(scan)          # remove com if need to test without the BDD
-  fdf(list)
+  list = get_doc_to_analyse(mongo, nil)
+  fdf(list, mongo)
 end
 
+
 mongo = DbHdlr.new()
-init_fdf(mongo) # remove com if need to test without the BDD
+init_fdf(mongo)

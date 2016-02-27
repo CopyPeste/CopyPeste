@@ -77,11 +77,11 @@ class SortFile
       end
       tab_file = []
       tab_file << file_name
-      if @octe == nil || @octe.empty? == true
+      #if @octe.empty? == true || @octe == nil
         fill_hash(tab_file, extension)
-      else
-        fill_hash_with_octe(tab_file, extension, i)
-      end
+      #else
+        #fill_hash_with_octe(tab_file, extension, i)
+      #end
       i += 1
     end
   end
