@@ -12,24 +12,31 @@
 #include <stdint.h>
 #include "levenshtein.h"
 
+void			define_max_word_length(char *str1, char *str2)
+{
+  strlen(str1) > strlen(str2) ? return strlen(str1) : return strlen(str2);
+}
+
 int			levenshtein(char *str1, char *str2)
 {
-  static int32_t	matrice[MAXWORD][MAXWORD];
   static bool_t		hasBeenInit = FALSE;
   int32_t		i = 0;
   int32_t		j = 0;
 
-  if (hasBeenInit == FALSE)
+  //  if (hasBeenInit == FALSE)
+  // {
+  MAXWORD = define_max_word_length(str1, str2);
+  static int32_t	matrice[MAXWORD][MAXWORD];
+  printf("Maxword = %d", MAXWORD);
+  while (i < MAXWORD)
     {
-      while (i < MAXWORD)
-	{
-	  matrice[i][0] = i;
-	  matrice[0][i] = i;
-	  ++i;
-	}
-      hasBeenInit = TRUE;
+      matrice[i][0] = i;
+      matrice[0][i] = i;
+      ++i;
     }
-
+  //hasBeenInit = TRUE;
+  // }
+  
   /* algo complet */
   for (i = 0; str1[i]; i++) 
     {
