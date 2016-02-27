@@ -27,7 +27,6 @@ class UseLevenshtein
         end
         j += 1
       end
-      #puts "#{i}/#{size-1} - #{file1.last} comparer avec  #{file2.last} pour le lev distance = #{result}"
       i += 1
     end
     file_to_send.delete(file_to_send[0])
