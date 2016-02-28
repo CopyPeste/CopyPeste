@@ -1,7 +1,7 @@
+# -*- coding: utf-8 -*-
 
 class UseLevenshtein
   attr_accessor :file_hash
-
 
   # Initialize UseLevenshtein class
   #
@@ -10,6 +10,26 @@ class UseLevenshtein
     @file_hash = file_hash
     @rsync_tab = []
     @lev_results = []
+  end
+
+  
+
+  # The threads of send_levenshtein
+  def loop_and_send(i, j, file_to_send, rsync_tab, result_lev, size, range)
+    while i <  size - 1
+      j = i + 1
+      while j < size
+        file1 = file_to_send[i].split('/')
+        file2 = file_to_send[j].split('/')
+        if (result = Algorithms.levenshtein(file1.last(), file2.last())) == 0
+          rsync_tab << file_to_send[i]
+          rsync_tab << file_to_send[j]
+          result_lev << result
+        end
+        j += 1
+      end
+      i += range
+    end
   end
   
   # Send file 2 by 2 at the levenshtein.
@@ -20,22 +40,32 @@ class UseLevenshtein
   # @param [Array] Array of file that will be send to the levenshtein. 
   # Each fill is send to the levenshtein with all files in the Array.
   def send_levenshtein(file_to_send)
-    i = 0
+    index = 0
+    nb_thread = 1
+    threads = []
     size = file_to_send.size()
-    while i !=  size - 1
-      j = i + 1
-      while j != size
-        file1 = file_to_send[i].split('/')
-        file2 = file_to_send[j].split('/')
-        if (result = Algorithms.levenshtein(file1.last(), file2.last())) == 0
-          @rsync_tab << file_to_send[i]
-          @rsync_tab << file_to_send[j]
-          @lev_results << result
-        end
-        j += 1
+
+    #debut du thread
+    while index < nb_thread
+      threads << Thread.new(index, nb_thread) do |i, range|
+        rsync_tab = []
+        result_lev = []
+        loop_and_send(i, 0, file_to_send, rsync_tab, result_lev, size, range)
+        thread = Thread.current
+        thread[:rsync] = rsync_tab
+        thread[:result] = result_lev
       end
-      i += 1
+      index += 1
     end
+    threads.each { |t| t.join }
+    #fin du thread
+
+    threads.each do |thread|
+      thread[:rsync].each { |data| @rsync_tab << data }
+      thread[:result].each { |data| @lev_results << data }
+      thread.kill
+    end
+    puts "End of first ext"
   end
 
 
