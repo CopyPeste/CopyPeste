@@ -24,7 +24,11 @@ class ScanSystem
   def start(path)
     Dir.foreach(path) do |file|
       if file != "." && file != ".."
-        tmp = path + "/" + file
+        if path[path.length - 1] != '/'
+          tmp = path + "/" + file
+        else
+          tmp = path + file
+        end
         File.directory?(tmp) ? start(tmp) : put_in_list(tmp)
       end
     end

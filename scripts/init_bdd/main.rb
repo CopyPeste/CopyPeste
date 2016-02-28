@@ -93,6 +93,7 @@ def scan_sys(scan, mongo)
   scan.init()
   scan.send_to_sort()
   file_hash = scan.get_sort_file()
+  puts file_hash
   sort_insert_db(file_hash, mongo, scan)
 end
 
