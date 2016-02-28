@@ -12,30 +12,6 @@ class UseLevenshtein
     @lev_results = []
   end
 
-
-  # The threads of send_levenshtein
-  def loop_and_send(i, j, file_to_send, size, range)
-    rsync_tab = []
-    result_lev = []
-    while i <  size - 1
-      j = i + 1
-      while j < size
-        file1 = file_to_send[i].split('/')
-        file2 = file_to_send[j].split('/')
-        if (result = Algorithms.levenshtein(file1.last(), file2.last())) == 0
-          rsync_tab << file_to_send[i]
-          rsync_tab << file_to_send[j]
-          result_lev << result
-        end
-        j += 1
-      end
-      i += range
-    end
-    thread = Thread.current
-    thread[:rsync] = rsync_tab
-    thread[:result] = result_lev
-  end
-
   
   # Send file 2 by 2 at the levenshtein.
   # Fill rsync_tab, Array that will contain files that will matched
@@ -45,27 +21,20 @@ class UseLevenshtein
   # @param [Array] Array of file that will be send to the levenshtein. 
   # Each fill is send to the levenshtein with all files in the Array.
   def send_levenshtein(file_to_send)
+    i = 0 
     index = 0
-    nb_thread = 1
-    threads = []
     size = file_to_send.size()
-
-    #debut du thread
-    while index < nb_thread
-      threads << Thread.new(index, nb_thread) do |i, range|
-        loop_and_send(i, 0, file_to_send, size, range)
+    (index..(size - 2)).each do |i|
+      ((i+1)..size - 1).each do |j|
+        file1 = file_to_send[i].split('/')
+        file2 = file_to_send[j].split('/')
+        if (result = Algorithms.levenshtein(file1.last(), file2.last())) == 0
+          @rsync_tab << file_to_send[i]
+          @rsync_tab << file_to_send[j]
+          @lev_results << result
+        end
       end
-      #fin du thread
-      index += 1
     end
-
-    threads.each { |t| t.join }
-    threads.each do |thread|
-      thread[:rsync].each { |data| @rsync_tab << data }
-      thread[:result].each { |data| @lev_results << data }
-      thread.kill
-    end
-    puts "End of first ext"
   end
 
 
