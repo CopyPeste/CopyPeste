@@ -54,9 +54,11 @@ def set_collection_extension(mongo, file, key)
 end
 
 
-# Creat json document from hash and send it to mongodb
+# Insert all document scaned in the mongo database,
+# by creating a json document from an hash that contain file inforamtion.
+# One hash egals to one file witch became one documment.
 #
-# @parma [Hash] an hash containing file to sort and send to mongodb
+# @parma [Hash] an hash containing file to sort and send to mongodb.
 # @parma [Object] an DbHdlr object (mongo object)
 # @parma [Object] an ScanSystem object
 def sort_insert_db(file_hash, mongo, scan)
@@ -83,7 +85,7 @@ def sort_insert_db(file_hash, mongo, scan)
 end
 
 
-#  Start the scan of the system
+# Start the scan of the system
 #
 # @param [Object] Object ScanSystem
 # @param [Object] Object DbHdlr (mongo object)

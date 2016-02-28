@@ -9,18 +9,21 @@ require '../../../libs/modules/analysis/algorithms'
 require '../../../libs/modules/analysis/SortFile'
 require '../../../libs/database/DbHdlr'
 
-# Call levenshtein class
+# Start levenshtein and get the result of the analyses
 #
 # @param [Hash] hash of file who will be analyse
+# Return a Array containning files that matched
 def call_levenshtein(lev)
   lev.start()
   lev.get_result_matched()
 end
 
 
-# Call the Rsync class
+# Start Rsync and get the result of the analyses
 #
-# @param []
+# @param [Array] Array containing files witch matched
+# @param [Array] Array containing the result of the levenshtein for each files who matched
+# Return an Array of Hash. one Hash is a result of two file analyses
 def call_rsync(rsync_tab, lev_result)
   rsync = UseRsync.new(rsync_tab, lev_result)
   rsync.start()
@@ -36,7 +39,7 @@ end
 # Main function of the fdf, call the sort class and the levenshtein/resync methode
 #
 # @param [Array] list of all the file who will be analyse
-# @param [Array]/[nil] list of all the size of each file to be sort by extension and size or nil. nil by default
+# @param [Array]/[nil] Array of all the size for each file or nil. nil is the value by default
 def fdf(list, mongo, octe = nil)
   file_hash = {}
   fichier = SortFile.new(list, octe)
@@ -52,9 +55,10 @@ def fdf(list, mongo, octe = nil)
 end
 
 
-# Extraxt the path and name of files and put return a Array of the complete file with path (/home/test/expemple.c)
+# Extraxt the path and name for each files and concat them. 
 #
 # @param [Array][Array][Hash] take an Array of Array of hash. [files by extension][one file][hash of the file]
+# Return a Array of files with the complete file path :  Array[0] = /home/test/expemple.c
 def sort_tab(documents)
   list = []
   documents.each do |data|
@@ -66,10 +70,11 @@ def sort_tab(documents)
 end
 
 
-# Get the files from the databases witch will be analyses
+# Get files from the database that will be analyses
 #
 # @param [Object] DbHdlr, mongo object
-# @param [String] extension of file to analyse. Nil by default (take all th file from the databases). 
+# @param [String] Extension of file to analyses. Nil by default (take all th file from the database).
+# Return a Array of files with the complete file path :  Array[0] = /home/test/expemple.c
 def get_doc_to_analyse(mongo, ext = nil)
   query = {}
   documents = []
@@ -85,9 +90,9 @@ def get_doc_to_analyse(mongo, ext = nil)
 end
 
 
-# function use to init the list of file for fdf
+# Function use to initialize and get the list of file witch will be analyses.
 #
-# @parma [Object] DbHdlr, will be removed when test will be finished 
+# @parma [Object] DbHdlr, mongo object
 def init_fdf(mongo)
   list = get_doc_to_analyse(mongo, nil)
   fdf(list, mongo)

@@ -2,17 +2,24 @@
 class UseLevenshtein
   attr_accessor :file_hash
 
+
+  # Initialize UseLevenshtein class
+  #
+  # @param [Array] Array of hash that contain files to send to the levenshtein
   def initialize(file_hash)
     @file_hash = file_hash
     @rsync_tab = []
-    @results = []
+    @lev_results = []
   end
   
-  # Send file 2 by 2 for analyse
+  # Send file 2 by 2 at the levenshtein.
+  # Fill rsync_tab, Array that will contain files that will matched
+  # Fill lev_results, Array that will cnotain lev_results og the levenshtein for each compared files
+  # lev_results[0] = rsync_tab[0] && rsync_tab[1]
   #
-  # @param [Array] array of file who will be compare (each fill is compare with the other file in the Array)
+  # @param [Array] Array of file that will be send to the levenshtein. 
+  # Each fill is send to the levenshtein with all files in the Array.
   def send_levenshtein(file_to_send)
-    tab = []
     i = 0
     size = file_to_send.size()
     while i !=  size - 1
@@ -23,14 +30,12 @@ class UseLevenshtein
         if (result = Algorithms.levenshtein(file1.last(), file2.last())) == 0
           @rsync_tab << file_to_send[i]
           @rsync_tab << file_to_send[j]
-          @results << result
+          @lev_results << result
         end
         j += 1
       end
       i += 1
     end
-    file_to_send.delete(file_to_send[0])
-    tab
   end
 
 
@@ -48,7 +53,7 @@ class UseLevenshtein
   end
   
 
-  # start the process for analyse (first function to call)
+  # start the process that will analyses files (first function to call)
   def start
     if @file_hash.empty? == true
       return nil
@@ -57,12 +62,16 @@ class UseLevenshtein
   end
 
   # Return the rsync_tab witch is the tab that contain multiple pair of files who matched
+  # Array[0] matched with Array[1]. Array[2] matched with Array[3] etc..
   # Usaly send to the Rsync to compare the content of those files
   def get_result_matched
     @rsync_tab
   end
 
+
+  # Return an Array of all the result who matched from the levenshtein
+  # This Array "correspond" at the rsync_tab. lev_results[0] = leveshtein of rsync_tab[0] && rsync_tab[1]
   def get_levenshtein_result
-    @results
+    @lev_results
   end
 end
