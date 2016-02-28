@@ -12,10 +12,11 @@ class UseLevenshtein
     @lev_results = []
   end
 
-  
 
   # The threads of send_levenshtein
-  def loop_and_send(i, j, file_to_send, rsync_tab, result_lev, size, range)
+  def loop_and_send(i, j, file_to_send, size, range)
+    rsync_tab = []
+    result_lev = []
     while i <  size - 1
       j = i + 1
       while j < size
@@ -30,7 +31,11 @@ class UseLevenshtein
       end
       i += range
     end
+    thread = Thread.current
+    thread[:rsync] = rsync_tab
+    thread[:result] = result_lev
   end
+
   
   # Send file 2 by 2 at the levenshtein.
   # Fill rsync_tab, Array that will contain files that will matched
@@ -48,18 +53,13 @@ class UseLevenshtein
     #debut du thread
     while index < nb_thread
       threads << Thread.new(index, nb_thread) do |i, range|
-        rsync_tab = []
-        result_lev = []
-        loop_and_send(i, 0, file_to_send, rsync_tab, result_lev, size, range)
-        thread = Thread.current
-        thread[:rsync] = rsync_tab
-        thread[:result] = result_lev
+        loop_and_send(i, 0, file_to_send, size, range)
       end
+      #fin du thread
       index += 1
     end
-    threads.each { |t| t.join }
-    #fin du thread
 
+    threads.each { |t| t.join }
     threads.each do |thread|
       thread[:rsync].each { |data| @rsync_tab << data }
       thread[:result].each { |data| @lev_results << data }
