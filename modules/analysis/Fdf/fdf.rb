@@ -24,22 +24,35 @@ def put_result_in_database(mongo, data)
 end
 
 
-def sort_files_with_rules()
+def sort_files_with_rules(rules, list, size)
+  fichier = SortFile.new()
+  i = 0
+  list.each do |file|
+    extension = fichier.get_extension(file)
+    case rules
+    when nil
+      fichier.sort_no_rulls(file)
+    when "-s"
+      fichier.sort_by_size(file, size[i])
+    when "-e"
+      fichier.sort_by_extension(file, extension)
+    when "-e-s", "-es", "-se"
+      fichier.sort_by_extension_and_size(file, extension, size[i])
+    end
+    i += 1
+  end
+  fichier.get_hash()
 end
 
 # Main function of the fdf, call the sort class and the levenshtein/resync methode
 #
 # @param [Array] list of all the file who will be analyse
 # @param [Array]/[nil] Array of all the size for each file or nil. nil is the value by default
-def fdf(list, mongo, rules = nil, octe = nil)
+def fdf(list, mongo, rules = nil, size = nil)
   file_hash = {}
-  fichier = SortFile.new(list, octe)
-  sort_files_with_rules(fichier, rules)
-  #fichier.start()
+  file_hash = sort_files_with_rules(rules, list, size)
   
-
-  file_hash = fichier.get_hash()
-
+  puts file_hash
   #  lev = UseLevenshtein.new(file_hash)
   #  fdup_tab = call_levenshtein(lev)
   #  lev_result = lev.get_levenshtein_result()
@@ -63,7 +76,7 @@ def sort_tab(documents)
   documents.each do |data|
     data.each do |file|
       list << file["path"] + "/" + file["name"]
-      size << file["siza"]
+      size << file["size"]
     end
   end
   files << list << size
@@ -97,10 +110,21 @@ end
 # @parma [Object] DbHdlr, mongo object
 def init_fdf(mongo, rules)
   files = get_doc_to_analyse(mongo, nil)
-  fdf(files[0], mongo)
+  fdf(files[0], mongo, rules, files[1])
 end
 
 
-rules = [] #Pour les tests
+# For test with rules : 
+# nil no sort.
+# -e sort by extension.
+# -s sort by size.
+# -se|-es|-e -s| sort by extention and size. 
+rules = nil
+if ARGV.size >= 1
+  rules = ""
+  ARGV.each do |r|
+    rules = rules + r
+  end
+end
 mongo = DbHdlr.new()
 init_fdf(mongo, rules)
