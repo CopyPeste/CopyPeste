@@ -34,7 +34,7 @@ def set_extension_json(document)
 end
 
 
-# Creat th document for the Extension collection
+# Creat the document for the Extension collection
 #
 # @param [Object] DbHdlr object (mongo object)
 # @param [Hash] a hash on one file wich corresponde to one type of extesion
@@ -63,11 +63,15 @@ def sort_insert_db(file_hash, mongo, scan)
   file_hash.each do |key, value|
     json_tab = []
     ext_id = BSON::ObjectId.from_time(Time.now, unique: true)
-    value.each do |file|
-      json_document = scan.set_info_file(ext_id, file)
-      json_document = JSON.parse(json_document)
-      json_document["ext"] = BSON::ObjectId.from_string(json_document['ext']['$oid'])
-      json_tab << json_document
+    value.each do |file|      
+      result = scan.set_info_file(ext_id, file)
+      if result != nil
+        json_document = result
+        json_document = JSON.parse(json_document)
+        puts  file
+        json_document["ext"] = BSON::ObjectId.from_string(json_document['ext']['$oid'])
+        json_tab << json_document
+      end
     end
     fill_db(mongo, "Fichier", json_tab, true)
     set_collection_extension(mongo, json_tab[0], key)
