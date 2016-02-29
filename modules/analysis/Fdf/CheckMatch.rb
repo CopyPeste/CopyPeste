@@ -1,19 +1,19 @@
 
 
-  # Return a tab of hash that contain all the result 
-  # Array[0] => {"levsht_dist"=>0, "rsync_result"=>true, "files"=>["/path/file", "/path/file"], "_id"=>BSON::ObjectId('864sc4648')}
+# Return a tab of hash that contain all the result 
+# Array[0] => {"levsht_dist"=>0, "rsync_result"=>true, "files"=>["/path/file", "/path/file"], "_id"=>BSON::ObjectId('864sc4648')}
 def get_result_data
   @tab_send_to_mongo
 end
 
 
-  # Save pair of file compared by Rsync/levenshtein, and the result of the Rsync and levenshtein in a Hash.
-  # This Hash is saved in an Array
-  #
-  # @param [Integer] result of leveshtein for the two files send to the Rsync
-  # @param [Bool] value of the two files compared by Rsync
-  # @param [String] File 1 who was compared with File 2
-  # @param [String] File 2 who was compared with File 1
+# Save pair of file compared by Rsync/levenshtein, and the result of the Rsync and levenshtein in a Hash.
+# This Hash is saved in an Array
+#
+# @param [Integer] result of leveshtein for the two files send to the Rsync
+# @param [Bool] value of the two files compared by Rsync
+# @param [String] File 1 who was compared with File 2
+# @param [String] File 2 who was compared with File 1
 def save_result_data(lev_result, rsync_result, file1, file2)
   tab = []
   tab << file1
@@ -26,7 +26,7 @@ def save_result_data(lev_result, rsync_result, file1, file2)
 end
 
 
-  # Send files to the Rsync algorithm
+# Send files to the fdup algorithm
 def check_files_similarity(fdup_tab, lev_result)
   i = 0
   size = fdup_tab.size()

@@ -24,21 +24,28 @@ def put_result_in_database(mongo, data)
 end
 
 
+def sort_files_with_rules()
+end
+
 # Main function of the fdf, call the sort class and the levenshtein/resync methode
 #
 # @param [Array] list of all the file who will be analyse
 # @param [Array]/[nil] Array of all the size for each file or nil. nil is the value by default
-def fdf(list, mongo, octe = nil)
+def fdf(list, mongo, rules = nil, octe = nil)
   file_hash = {}
   fichier = SortFile.new(list, octe)
-  fichier.start()
+  sort_files_with_rules(fichier, rules)
+  #fichier.start()
+  
+
   file_hash = fichier.get_hash()
-  lev = UseLevenshtein.new(file_hash)
-  fdup_tab = call_levenshtein(lev)
-  lev_result = lev.get_levenshtein_result()
 
-  final_data = check_files_similarity(fdup_tab, lev_result)
-
+  #  lev = UseLevenshtein.new(file_hash)
+  #  fdup_tab = call_levenshtein(lev)
+  #  lev_result = lev.get_levenshtein_result()
+  
+  #  final_data = check_files_similarity(fdup_tab, lev_result)
+  
   #put_result_in_database(mongo, final_data)
   #puts "\n\n ===========Duplicates==========\n\n"
   #mongo.debug("Duplicate")
@@ -50,13 +57,16 @@ end
 # @param [Array][Array][Hash] take an Array of Array of hash. [files by extension][one file][hash of the file]
 # Return a Array of files with the complete file path :  Array[0] = /home/test/expemple.c
 def sort_tab(documents)
+  files = []
   list = []
+  size = []
   documents.each do |data|
     data.each do |file|
       list << file["path"] + "/" + file["name"]
+      size << file["siza"]
     end
   end
-  list
+  files << list << size
 end
 
 
@@ -81,13 +91,16 @@ end
 
 
 # Function use to initialize and get the list of file witch will be analyses.
+# If you want to analyses only files witch has same sizes, fdf(files[0], mongo, rules, files[1])
+# files[0] contain all files and file[1] containe all size of files
 #
 # @parma [Object] DbHdlr, mongo object
-def init_fdf(mongo)
-  list = get_doc_to_analyse(mongo, nil)
-  fdf(list, mongo)
+def init_fdf(mongo, rules)
+  files = get_doc_to_analyse(mongo, nil)
+  fdf(files[0], mongo)
 end
 
 
+rules = [] #Pour les tests
 mongo = DbHdlr.new()
-init_fdf(mongo)
+init_fdf(mongo, rules)

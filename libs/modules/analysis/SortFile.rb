@@ -91,4 +91,19 @@ class SortFile
   def get_hash
     return @file_hash
   end
+
+
+
+  def sort_by_size
+  end
+
+  def sort_by_extension
+  end
+
+  def sort_byextension_size
+  end
+
+  def sort_no_rulls
+  end
+
 end
