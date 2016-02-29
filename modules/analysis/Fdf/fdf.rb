@@ -4,7 +4,7 @@
 
 require 'json'
 require './UseLevenshtein'
-require './UseRsync'
+require './CheckMatch'
 require '../../../libs/modules/analysis/algorithms'
 require '../../../libs/modules/analysis/SortFile'
 require '../../../libs/database/DbHdlr'
@@ -16,18 +16,6 @@ require '../../../libs/database/DbHdlr'
 def call_levenshtein(lev)
   lev.start()
   lev.get_result_matched()
-end
-
-
-# Start Rsync and get the result of the analyses
-#
-# @param [Array] Array containing files witch matched
-# @param [Array] Array containing the result of the levenshtein for each files who matched
-# Return an Array of Hash. one Hash is a result of two file analyses
-def call_rsync(rsync_tab, lev_result)
-  rsync = UseRsync.new(rsync_tab, lev_result)
-  rsync.start()
-  rsync.get_result_data()
 end
 
 
@@ -46,12 +34,14 @@ def fdf(list, mongo, octe = nil)
   fichier.start()
   file_hash = fichier.get_hash()
   lev = UseLevenshtein.new(file_hash)
-  rsync_tab = call_levenshtein(lev)
+  fdup_tab = call_levenshtein(lev)
   lev_result = lev.get_levenshtein_result()
-  final_data = call_rsync(rsync_tab, lev_result)
-  put_result_in_database(mongo, final_data)
-  puts "\n\n ===========Duplicates==========\n\n"
-  mongo.debug("Duplicate")
+
+  final_data = check_files_similarity(fdup_tab, lev_result)
+
+  #put_result_in_database(mongo, final_data)
+  #puts "\n\n ===========Duplicates==========\n\n"
+  #mongo.debug("Duplicate")
 end
 
 
