@@ -63,7 +63,7 @@ class UseLevenshtein
   # Return the rsync_tab witch is the tab that contain multiple pair of files who matched
   # Array[0] matched with Array[1]. Array[2] matched with Array[3] etc..
   # Usaly send to the Rsync to compare the content of those files
-  def get_result_matched
+  def get_file_matched
     @rsync_tab
   end
 

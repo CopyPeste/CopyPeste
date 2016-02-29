@@ -63,7 +63,7 @@ class DbHdlr
 		return res.n
 	end
 
-	def rm_data(filter, collect, del_type = false)
+	def rm_data(filter, collection, del_type = false)
 		begin
 			if del_type == false
 				res = @db_inst[collection].delete_one(filter)

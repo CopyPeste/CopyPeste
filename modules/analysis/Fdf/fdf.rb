@@ -15,7 +15,7 @@ require '../../../libs/database/DbHdlr'
 # Return a Array containning files that matched
 def call_levenshtein(lev)
   lev.start()
-  lev.get_result_matched()
+  lev.get_file_matched()
 end
 
 
@@ -51,17 +51,37 @@ end
 def fdf(list, mongo, rules = nil, size = nil)
   file_hash = {}
   file_hash = sort_files_with_rules(rules, list, size)
-  
-  puts file_hash
-  #  lev = UseLevenshtein.new(file_hash)
-  #  fdup_tab = call_levenshtein(lev)
-  #  lev_result = lev.get_levenshtein_result()
-  
-  #  final_data = check_files_similarity(fdup_tab, lev_result)
-  
+  lev = UseLevenshtein.new(file_hash)
+  fdup_tab = call_levenshtein(lev)
+  lev_result = lev.get_levenshtein_result()
+  if fdup_tab == nil || lev_result == nil
+    puts "No files to analyses"
+    return nil
+  end
+  final_data = check_files_similarity(fdup_tab, lev_result)
+
   #put_result_in_database(mongo, final_data)
   #puts "\n\n ===========Duplicates==========\n\n"
   #mongo.debug("Duplicate")
+end
+
+
+def delete_file_in_db(path, name, mongo)
+  query = {}
+  query[:path] = path
+  query[:name] = name
+  mongo.rm_data(query, "Fichier")
+  return false
+end
+
+
+
+def check_file_existe(path, name, mongo)
+  if File.file?(path + "/" + name)
+    true
+  else
+    delete_file_in_db(path, name, mongo)
+  end
 end
 
 
@@ -69,14 +89,16 @@ end
 #
 # @param [Array][Array][Hash] take an Array of Array of hash. [files by extension][one file][hash of the file]
 # Return a Array of files with the complete file path :  Array[0] = /home/test/expemple.c
-def sort_tab(documents)
+def sort_tab(documents, mongo)
   files = []
   list = []
   size = []
   documents.each do |data|
     data.each do |file|
-      list << file["path"] + "/" + file["name"]
-      size << file["size"]
+      if check_file_existe(file["path"], file["name"], mongo) == true
+        list << file["path"] + "/" + file["name"]
+        size << file["size"]
+      end
     end
   end
   files << list << size
@@ -99,7 +121,7 @@ def get_doc_to_analyse(mongo, ext = nil)
     data["_id"] = BSON::ObjectId.from_string(data['_id']['$oid'])
     documents << mongo.get_document("Fichier", "ext", data["_id"])
   end
-  sort_tab(documents)
+  sort_tab(documents, mongo)
 end
 
 
@@ -109,8 +131,10 @@ end
 #
 # @parma [Object] DbHdlr, mongo object
 def init_fdf(mongo, rules)
+  mongo.debug("Fichier")
   files = get_doc_to_analyse(mongo, nil)
-  fdf(files[0], mongo, rules, files[1])
+  mongo.debug("Fichier")
+  #fdf(files[0], mongo, rules, files[1])
 end
 
 

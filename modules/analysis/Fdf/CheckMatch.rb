@@ -25,15 +25,20 @@ def save_result_data(lev_result, rsync_result, file1, file2)
   @tab_send_to_mongo << result_data
 end
 
-
-# Send files to the fdup algorithm
+# Send files to the fdup algorithms
 def check_files_similarity(fdup_tab, lev_result)
   i = 0
   size = fdup_tab.size()
+  puts fdup_tab
   #(i..size).each do |index|
   while i < size
-    puts "#{i} comparer avec  #{i + 1} pour le rsync avec result lev en #{i/2}\n"
-    puts "#{fdup_tab[i]} comparer avec  #{fdup_tab[i + 1]} pour le fdup avec result lev = #{lev_result[i/2]}\n"
+    check_file_existe(fdup_tab, i)
+    if File.size(fdup_tab[i]) == 0 || File.size(fdup_tab[i + 1]) == 0
+      puts "Similaire"
+    else
+      puts IO.read(fdup_tab[i])
+      puts IO.read(fdup_tab[i + 1])
+    end
     #result_rsync = Algorithms.compare_files_match(fdup_tab[i], fdup_tab[i+1], 512) == 0
     #save_result_data(lev_result[index/2], result_rsync, fdup_tab[i], fdup_tab[i+1])
     i += 2
