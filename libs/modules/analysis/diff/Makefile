@@ -17,6 +17,7 @@ NAME =		my_diff
 SRCS =		main.c \
 		diff.c \
 		filter.c \
+		hamming_distance.c \
 		./../levenshtein/levenshtein.c
 
 OBJS =		$(SRCS:.c=.o)
