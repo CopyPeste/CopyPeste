@@ -3,9 +3,9 @@
 #include "levenshtein.h"
 
 /*
-** return the size of the longest string
-** @param str1, first string to compare
-** @param str2, second string to compare
+** return the longest size between two integers
+** @param str1, first integer to compare
+** @param str2, second integer to compare
 ** @return the longest size
 */
 static inline size_t longest_between(size_t s1, size_t s2)
