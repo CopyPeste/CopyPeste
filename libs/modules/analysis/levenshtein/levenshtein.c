@@ -1,6 +1,4 @@
-#include <stdint.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include "levenshtein.h"
 
@@ -83,15 +81,4 @@ int			levenshtein(const char *str1, const char *str2)
     }
   }
   return matrix[i * size + j];
-}
-
-int main() {
-  printf("'' '' = %d\n", levenshtein("", ""));
-  printf("'' ' ' = %d\n", levenshtein("", " "));
-  printf("' ' '' = %d\n", levenshtein(" ", ""));
-  printf("a  b  = %d\n", levenshtein("a", "b"));
-  printf("azertyuiop azertyuiop = %d\n", levenshtein("azertyuiop", "azertyuiop"));
-  printf("aerferf  aferferf =  %d\n", levenshtein("aerferf", "aferferf"));
-  printf("aer864fe6r8f4e6r  erferffera = %d\n", levenshtein("aer864fe6r8f4e6r", "erferffera"));
-  printf("aferf  azefozeifoeriehifuher  = %d\n", levenshtein("aferf", "azefozeifoeriehifuher"));
 }
