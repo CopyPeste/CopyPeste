@@ -44,66 +44,37 @@ def sort_files_with_rules(rules, list, size)
   fichier.get_hash()
 end
 
-# Main function of the fdf, call the sort class and the levenshtein/resync methode
-#
-# @param [Array] list of all the file who will be analyse
-# @param [Array]/[nil] Array of all the size for each file or nil. nil is the value by default
-def fdf(list, mongo, rules = nil, size = nil)
-  file_hash = {}
-  file_hash = sort_files_with_rules(rules, list, size)
-  lev = UseLevenshtein.new(file_hash)
-  fdup_tab = call_levenshtein(lev)
-  lev_result = lev.get_levenshtein_result()
-  if fdup_tab == nil || lev_result == nil
-    puts "No files to analyses"
-    return nil
-  end
-  final_data = check_files_similarity(fdup_tab, lev_result)
-
-  #put_result_in_database(mongo, final_data)
-  #puts "\n\n ===========Duplicates==========\n\n"
-  #mongo.debug("Duplicate")
-end
-
 def delete_in_extension_collection(mongo, file_id, query_ext)
-  result = mongo.get_data("Extension", query_ext)
   tmp = 0
-  result.each do |data|
-    i = 0
-    data["files_id"].each do |id|
-      if id["$oid"] == file_id
-        tmp = i
-      end
-      (data["files_id"])[i] = JSON.parse(id.to_json)
-      (data["files_id"])[i] = BSON::ObjectId.from_string(id["$oid"])
-      i += 1
+  i = 0
+  result = mongo.get_data("Extension", query_ext)[0]
+  result["files_id"].each do |id|
+    if id["$oid"] == file_id
+      tmp = i
     end
+    (result["files_id"])[i] = JSON.parse(id.to_json)
+    (result["files_id"])[i] = BSON::ObjectId.from_string(id["$oid"])
+    i += 1
   end
-  result[0]["_id"] = JSON.parse(result[0]["_id"].to_json)
-  result[0]["_id"] = BSON::ObjectId.from_string(result[0]["_id"]["$oid"])
-  mongo.rm_data(result[0], "Extension")
-  (result[0]["files_id"]).delete_at(tmp)
-  if (result[0]["files_id"]).empty?() 
-    puts "Extesion #{result[0]["name"]} deleted no more files" 
-  else 
-    mongo.ins_data("Extension", result[0])
+  result["_id"] = JSON.parse(result["_id"].to_json)
+  result["_id"] = BSON::ObjectId.from_string(result["_id"]["$oid"])
+  mongo.rm_data(result, "Extension")
+  (result["files_id"]).delete_at(tmp)
+  if (result["files_id"]).empty?() 
+    puts "\nExtesion #{result["name"]} deleted no more files" 
+  else
+    mongo.ins_data("Extension", result)
   end
 end
 
 
 def delete_file_in_db(path, name, mongo)
-  query_file = {}
   query_ext = {}
-  query_file["path"] = path
-  query_file["name"] = name
-  file_id = ""  
-  result = mongo.get_data("Fichier", query_file)
-  result.each do |data|
-    data = JSON.parse(data.to_json)
-    query_ext["_id"] = BSON::ObjectId.from_string(data["ext"]["$oid"])
-    file_id = data["_id"]["$oid"]
-  end
-  mongo.rm_data(query_file, "Fichier")
+  result = mongo.get_data("Fichier", {:name => name, :path => path})[0]
+  result = JSON.parse(result.to_json)
+  query_ext["_id"] = BSON::ObjectId.from_string(result["ext"]["$oid"])
+  file_id = result["_id"]["$oid"]
+  mongo.rm_data({:name => name, :path => path}, "Fichier")
   delete_in_extension_collection(mongo, file_id, query_ext)
   mongo.debug("Fichier")
   mongo.debug("Extension")
@@ -160,6 +131,31 @@ def get_doc_to_analyse(mongo, ext = nil)
 end
 
 
+
+# Main function of the fdf, call the sort class and the levenshtein/resync methode
+#
+# @param [Array] list of all the file who will be analyse
+# @param [Array]/[nil] Array of all the size for each file or nil. nil is the value by default
+def fdf(list, mongo, rules = nil, size = nil)
+  file_hash = {}
+  file_hash = sort_files_with_rules(rules, list, size)
+  lev = UseLevenshtein.new(file_hash)
+  fdup_tab = call_levenshtein(lev)
+  lev_result = lev.get_levenshtein_result()
+  if fdup_tab == nil
+    puts "No files to analyses"
+    return nil
+  end
+  puts fdup_tab
+  puts lev_result
+  final_data = check_files_similarity(fdup_tab, lev_result)
+
+  #put_result_in_database(mongo, final_data)
+  #puts "\n\n ===========Duplicates==========\n\n"
+  #mongo.debug("Duplicate")
+end
+
+
 # Function use to initialize and get the list of file witch will be analyses.
 # If you want to analyses only files witch has same sizes, fdf(files[0], mongo, rules, files[1])
 # files[0] contain all files and file[1] containe all size of files
@@ -167,7 +163,7 @@ end
 # @parma [Object] DbHdlr, mongo object
 def init_fdf(mongo, rules)
   files = get_doc_to_analyse(mongo, nil)
-  #fdf(files[0], mongo, rules, files[1])
+  fdf(files[0], mongo, rules, files[1])
 end
 
 

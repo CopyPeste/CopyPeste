@@ -28,7 +28,7 @@ class UseLevenshtein
       ((i+1)..size - 1).each do |j|
         file1 = file_to_send[i].split('/')
         file2 = file_to_send[j].split('/')
-        if (result = Algorithms.levenshtein(file1.last(), file2.last())) == 0
+        if (result = Algorithms.levenshtein(file1.last(), file2.last())) <= 1
           @rsync_tab << file_to_send[i]
           @rsync_tab << file_to_send[j]
           @lev_results << result
