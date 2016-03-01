@@ -42,7 +42,7 @@ static char *get_string_file(char *path)
 
   fclose(ptr_file);
 
-  return strdup(buf);
+  return buf;
 }
 
 int	main(int ac, char **av)
