@@ -12,7 +12,6 @@ class ScanSystem
   def initialize(start_point)
     @start_point = start_point
     @dir = Dir.new(@start_point)
-    @file_hash = {}
     @tab_file = []
     @index = 0
   end
@@ -48,46 +47,12 @@ class ScanSystem
   def get_tab_file
     @tab_file
   end
-  
-  
-  # Send the file to SortFile object to be sort by there extension
-  #
-  # @parma [Array] array of the file scaned
-  # @param [nil]/[Integer] here nil. 
-  # Integer is use if you want to sort file by there extension et size in octe 
-  def send_to_sort
-    sort = SortFile.new(@tab_file, nil)
-    sort.start
-    @file_hash = sort.get_hash
-  end
 
 
   # init the start point for the scan
   def init
     path = @start_point
     start(path)
-  end
-
-
-  # Return an hash of all the file sort by extension. and optionnaly extension plus size
-  def get_sort_file
-    @file_hash
-  end
-  
-  
-  # Take of the name file of the path (/home/test/toto.c => /home/test)
-  #
-  # @param [String] the all file path 
-  def set_path(file)
-    tab = file.split('/')
-    tab.delete(tab.last)
-    path = ""
-    tab.each do |part_path|
-      if part_path != ""
-        path = path + "/" + part_path 
-      end
-    end
-    path
   end
   
 
@@ -96,15 +61,15 @@ class ScanSystem
   # @param [ObjectId] the ObjectId of the extension (same ObjectId for all same extension)
   # @param [String] the complete path of the file
   def set_info_file(ext_id, files)
-    if File.readable?(files) 
-      hash_info = {}  # && File.stat(files).readable_real?
-      name = File.split(files)
-      name = name.last
-      hash_info["name"] = name
-      hash_info["path"] = set_path(files)
-      hash_info["size"] = File.size(files)
-      hash_info["ext"] = ext_id
+    if File.file?(files) == true && File.readable?(files) 
+      hash_info = {}
+      hash_info[:name] = (File.split(files)).last
+      hash_info[:path] = (File.split(files)).first
+      hash_info[:size] = File.size(files)
+      hash_info[:ext] = ext_id
       hash_info.to_json
+    else
+      return nil
     end
-  end  
+  end
 end

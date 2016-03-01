@@ -9,7 +9,7 @@ class DbHdlr
 	# @param [String] the host where the db is stored (whether an ip address or a resolved server)
 	# @param [String] port to access the db service
 	# @param [String] the selected database
-	def initialize(host="127.0.0.1", port="27017", db="CopyPeste10")
+	def initialize(host="127.0.0.1", port="27017", db="CopyPeste230")
 		begin
 			@db_inst = Mongo::Client.new(["#{host}:#{port}"], :database => db)
 		rescue
@@ -46,7 +46,7 @@ class DbHdlr
 	# @param [Bool] a toggle to know whether it's a single or many records to update at a time 
 	# (false = one/true = many) 
 	# @return [Int] the number of successful inserts
-	def ud_data(filter, collect, data, updt_type = false)
+	def ud_data(filter, collection, data, updt_type = false)
 		begin
 			if updt_type == false
 				res = @db_inst[collection].update_one(filter, data)

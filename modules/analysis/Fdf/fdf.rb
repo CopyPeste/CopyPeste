@@ -65,15 +65,50 @@ def fdf(list, mongo, rules = nil, size = nil)
   #mongo.debug("Duplicate")
 end
 
-
-def delete_file_in_db(path, name, mongo)
-  query = {}
-  query[:path] = path
-  query[:name] = name
-  mongo.rm_data(query, "Fichier")
-  return false
+def delete_in_extension_collection(mongo, file_id, query_ext)
+  result = mongo.get_data("Extension", query_ext)
+  tmp = 0
+  result.each do |data|
+    i = 0
+    data["files_id"].each do |id|
+      if id["$oid"] == file_id
+        tmp = i
+      end
+      (data["files_id"])[i] = JSON.parse(id.to_json)
+      (data["files_id"])[i] = BSON::ObjectId.from_string(id["$oid"])
+      i += 1
+    end
+  end
+  result[0]["_id"] = JSON.parse(result[0]["_id"].to_json)
+  result[0]["_id"] = BSON::ObjectId.from_string(result[0]["_id"]["$oid"])
+  mongo.rm_data(result[0], "Extension")
+  (result[0]["files_id"]).delete_at(tmp)
+  if (result[0]["files_id"]).empty?() 
+    puts "Extesion #{result[0]["name"]} deleted no more files" 
+  else 
+    mongo.ins_data("Extension", result[0])
+  end
 end
 
+
+def delete_file_in_db(path, name, mongo)
+  query_file = {}
+  query_ext = {}
+  query_file["path"] = path
+  query_file["name"] = name
+  file_id = ""  
+  result = mongo.get_data("Fichier", query_file)
+  result.each do |data|
+    data = JSON.parse(data.to_json)
+    query_ext["_id"] = BSON::ObjectId.from_string(data["ext"]["$oid"])
+    file_id = data["_id"]["$oid"]
+  end
+  mongo.rm_data(query_file, "Fichier")
+  delete_in_extension_collection(mongo, file_id, query_ext)
+  mongo.debug("Fichier")
+  mongo.debug("Extension")
+  return false
+end
 
 
 def check_file_existe(path, name, mongo)
@@ -118,7 +153,7 @@ def get_doc_to_analyse(mongo, ext = nil)
   result = mongo.get_data("Extension", query, nil)
   result.each do |data|
     data = JSON.parse(data.to_json)
-    data["_id"] = BSON::ObjectId.from_string(data['_id']['$oid'])
+    data["_id"] = BSON::ObjectId.from_string(data["_id"]["$oid"])
     documents << mongo.get_document("Fichier", "ext", data["_id"])
   end
   sort_tab(documents, mongo)
@@ -131,9 +166,7 @@ end
 #
 # @parma [Object] DbHdlr, mongo object
 def init_fdf(mongo, rules)
-  mongo.debug("Fichier")
   files = get_doc_to_analyse(mongo, nil)
-  mongo.debug("Fichier")
   #fdf(files[0], mongo, rules, files[1])
 end
 

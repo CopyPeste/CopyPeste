@@ -63,15 +63,15 @@ end
 # @parma [Object] an ScanSystem object
 def sort_insert_db(file_hash, mongo, scan)
   file_hash.each do |key, value|
+    
     json_tab = []
     ext_id = BSON::ObjectId.from_time(Time.now, unique: true)
-    value.each do |file|      
-      result = scan.set_info_file(ext_id, file)
-      if result != nil
+    
+    value.each do |file|
+      if (result = scan.set_info_file(ext_id, file)) != nil
         json_document = result
         json_document = JSON.parse(json_document)
-        puts  file
-        json_document["ext"] = BSON::ObjectId.from_string(json_document['ext']['$oid'])
+        json_document["ext"] = BSON::ObjectId.from_string(json_document["ext"]["$oid"])
         json_tab << json_document
       end
     end
@@ -85,15 +85,29 @@ def sort_insert_db(file_hash, mongo, scan)
 end
 
 
+# Send the file to SortFile object to be sort by there extension
+#
+# @parma [Array] array of the file to insert
+def send_to_sort(tab_file)
+  sort = SortFile.new()
+  puts tab_file
+  tab_file.each do |file|
+    extension = sort.get_extension(file)
+    sort.sort_by_extension(file, extension)
+  end
+  file_hash = {}
+  file_hash = sort.get_hash
+end
+
+
 # Start the scan of the system
 #
 # @param [Object] Object ScanSystem
 # @param [Object] Object DbHdlr (mongo object)
 def scan_sys(scan, mongo)
   scan.init()
-  scan.send_to_sort()
-  file_hash = scan.get_sort_file()
-  puts file_hash
+  tab_file = scan.get_tab_file()
+  file_hash = send_to_sort(tab_file)
   sort_insert_db(file_hash, mongo, scan)
 end
 
