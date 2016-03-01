@@ -9,16 +9,14 @@ RM =		rm -f
 CFLAGS +=	-Wextra -Wall -Werror
 CFLAGS +=	-pedantic -std=gnu99
 CFLAGS +=	-fmax-errors=2
-CFLAGS +=	-I./../levenshtein/
-
+CFLAGS +=	-I../levenshtein/
 
 NAME =		my_diff
 
 SRCS =		main.c \
 		diff.c \
 		filter.c \
-		hamming_distance.c \
-		./../levenshtein/levenshtein.c
+		compare.c \
 
 OBJS =		$(SRCS:.c=.o)
 

@@ -1,73 +1,71 @@
-/*--------------------------------------------------------------------*/
-/*		     Epitech EIP 2017 groupe Copypeste		      */
-/*								      */
-/*			    Algo diff				      */
-/*								      */
-/* @by :	Guillaume Krier					      */
-/* @created :	02/02/2015					      */
-/* @update :	25/02/2015					      */
-/*--------------------------------------------------------------------*/
+
+/* INCLUDES */
 
 #include "diff.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
-#define SIZE_FILE 4000
+static char *get_string_file(char *path)
+{
+  FILE *ptr_file;
+  char *buf;
+  int size;
 
+  ptr_file = fopen(path, "r");
+  if (!ptr_file)
+    {
+      printf("Fail fopen");
+      return NULL;
+    }
+  fseek(ptr_file, 0L, SEEK_END);
+  size = ftell(ptr_file);
+  fseek(ptr_file, 0L, SEEK_SET);
+
+  buf = malloc(sizeof(char) * size);
+  if (!buf)
+    return NULL;
+
+  if ((int)fread(buf, 1, size, ptr_file) == -1)
+    printf("fread Fail");
+  buf[size] = 0;
+
+  if (!ptr_file)
+    return NULL;
+  fclose(ptr_file);
+
+  return buf;
+}
 
 int	main(int ac, char **av)
 {
-  char *str_one;
-  char *str_two;
-  int	ret;
-
   (void)ac;
-  /* char test1[] = "my beautiful\ntest work !"; */
-  /* char test2[] = "my beautiful\ntest1 work !"; */
-  /* char test2[] = "my second\n\n\ntest work to !"; */
-
-
-  FILE *ptr_file1, *ptr_file2;
+  (void)av;
+  int	ret = EXIT_FAILURE;
+  double per_ret;
   char *buf1, *buf2;
-  int size1, size2;
 
-  ptr_file1 = fopen(av[1],"r");
-  ptr_file2 = fopen(av[2],"r");
-  if (!ptr_file1 || !ptr_file2)
+  if (ac == 3)
     {
-      printf("Fail fopen");
-      return 1;
+      if (!(buf1 = get_string_file(av[1]))
+      	  || !(buf2 = get_string_file(av[2])))
+      	return ret;
+
+      clock_t begin, end;
+      float time_spent;
+
+      begin = clock();
+      per_ret = diff(buf1, buf2);
+      end = clock();
+      time_spent = (float)(end - begin) / CLOCKS_PER_SEC;
+      printf("Diff result: %0.2f%% Time %0.2f\n", per_ret, time_spent);
+
+      free(buf1);
+      free(buf2);
     }
-  fseek(ptr_file1, 0L, SEEK_END);
-  size1 = ftell(ptr_file1);
-  fseek(ptr_file1, 0L, SEEK_SET);
-  fseek(ptr_file2, 0L, SEEK_END);
-  size2 = ftell(ptr_file2);
-  fseek(ptr_file2, 0L, SEEK_SET);
-
-  buf1 = malloc(sizeof(char) * size1);
-  buf2 = malloc(sizeof(char) * size2);
-
-  if (!buf1 || !buf2)
-    return 1;
-
-  if ((int)fread(buf1, 1, size1, ptr_file1) == -1)
-    printf("fread Fail");
-  if ((int)fread(buf2, 1, size2, ptr_file2) == -1)
-    printf("fread Fail");
-
-  buf1[size1] = 0;
-  buf2[size2] = 0;
-
-  fclose(ptr_file1);
-  fclose(ptr_file2);
-
-  str_one = strdup(buf1);
-  str_two = strdup(buf2);
-  
-  ret = diff(str_one, str_two);
-  printf("Result Dif: %d\n", ret);
+  else
+    printf("I need arguments ./my_rsync /path/file/1 /path/file/2\n");
   return ret;
 }

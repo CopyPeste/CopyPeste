@@ -1,12 +1,5 @@
-/*--------------------------------------------------------------------*/
-/*		     Epitech EIP 2017 groupe Copypeste		      */
-/*								      */
-/*			    Algo Hamming			      */
-/*								      */
-/* @by :	Guillaume Krier					      */
-/* @created :	28/02/2015					      */
-/* @update :	28/02/2015					      */
-/*--------------------------------------------------------------------*/
+
+/* PROTOTYPES */
 
 /*
 ** It calculates the Hamming distance
