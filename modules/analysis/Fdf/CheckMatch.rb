@@ -1,11 +1,14 @@
 
-# Save pair of file compared by Rsync/levenshtein, and the result of the Rsync and levenshtein in a Hash.
+
+# Save pair of file compared by fdupes/levenshtein, and there result
 # This Hash is saved in an Array
 #
-# @param [Integer] result of leveshtein for the two files send to the Rsync
-# @param [Bool] value of the two files compared by Rsync
-# @param [String] File 1 who was compared with File 2
-# @param [String] File 2 who was compared with File 1
+# @param [Array] Array where will stock all the result of the analyses
+# @param [Array] result of leveshtein
+# @param [Array] result of fdupes
+# @param [String] File 1 that was compared with File 2
+# @param [String] File 2 that was compared with File 1
+# @Return [Array] Return an Array that contain all results of analyses
 def save_result_data(tab_send_to_mongo, lev_result, result_fdupes, file1, file2)
   tab = []
   tab << file1 << file2
@@ -16,7 +19,32 @@ def save_result_data(tab_send_to_mongo, lev_result, result_fdupes, file1, file2)
   tab_send_to_mongo << result_data
 end
 
+
+# Open the two files and send there containt to fdupes algorithm
+#
+# @param [Array] Array of files
+# @param [Integer] position of the loop
+# @return [Bool] return true if the file don't match. Return false if they do.  
+def open_and_send(fdup_tab, index)
+  file1 = IO.read(fdup_tab[index])
+  file2 = IO.read(fdup_tab[index + 1])
+  puts "\n\nfdupes su #{fdup_tab[index]} et #{fdup_tab[index + 1]} "
+  #Algorithms.fdupes_match(file1, file1.length, file2, file2.length) == 0 ? false : true
+  if Algorithms.fdupes_match(file1, file1.length, file2, file2.length) == 0
+    puts "faux"
+    false 
+  else
+    puts "true \n\n"
+    true
+  end
+end
+
+
 # Send files to the fdup algorithms
+#
+# @param [Array] Array of files to analyses
+# @param [Array] Array of results of the levenshtein : lev_result[0] = levenshtein(fdup_tab[0], fdup_tab[1])
+# @Return [Array] return an Array of hash that contain the result of the FDF modules
 def check_files_similarity(fdup_tab, lev_result)
   i = 0
   tab_send_to_mongo = []
@@ -24,17 +52,15 @@ def check_files_similarity(fdup_tab, lev_result)
   puts"\nSize : #{size} => #{fdup_tab}"
   ((i)..size - 1).each do |index|
     if index % 2 == 0
-      puts "file at index #{index} compare with index #{index + 1} with lev index #{index/2}"
-      if File.size(fdup_tab[index]) != File.size(fdup_tab[index + 1])
-        #puts IO.read(fdup_tab[i])
-        #puts IO.read(fdup_tab[i + 1])
-        #result_fdupes = Algorithms.compare_files_match(fdup_tab[i], fdup_tab[i+1], 512) == 0
+      if File.size(fdup_tab[index]) == File.size(fdup_tab[index + 1])
+        condition = (File.size(fdup_tab[index]) > 0 && File.size(fdup_tab[index + 1]) > 0) 
+        condition ? result_fdupes = open_and_send(fdup_tab, index) : result_fdupes = true
       else
         result_fdupes = true
       end
-      tab_send_to_mongo = save_result_data(tab_send_to_mongo, lev_result[index/2], result_fdupes, fdup_tab[index], fdup_tab[index + 1])
+      tab_send_to_mongo = save_result_data(tab_send_to_mongo, lev_result[index/2],
+                                           result_fdupes, fdup_tab[index], fdup_tab[index + 1])
     end
   end
-  puts "end"
-  puts tab_send_to_mongo
+  tab_send_to_mongo
 end

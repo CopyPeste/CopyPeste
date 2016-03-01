@@ -49,7 +49,7 @@ class ScanSystem
   end
 
 
-  # init the start point for the scan
+  # initialize the start point for the scan
   def init
     path = @start_point
     start(path)
@@ -60,6 +60,7 @@ class ScanSystem
   #
   # @param [ObjectId] the ObjectId of the extension (same ObjectId for all same extension)
   # @param [String] the complete path of the file
+  # @Return [nil] return nil if the file don't exist or if the file is not readable
   def set_info_file(ext_id, files)
     if File.file?(files) == true && File.readable?(files) 
       hash_info = {}

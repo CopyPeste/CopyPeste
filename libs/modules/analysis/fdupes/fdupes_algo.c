@@ -1,84 +1,49 @@
-
-
-#include <sys/stat.h>
-#include <md5/md5.h>
-
-
-#define CHUNK_SIZE 8192
-
-#define INPUT_SIZE 256
-
-#define PARTIAL_MD5_SIZE 4096
-
-#define MD5_DIGEST_LENGTH 16
-
-
-
-typedef struct _file {
-  char *d_name;
-  off_t size;
-  md5_byte_t *crcpartial;
-  md5_byte_t *crcsignature;
-  dev_t device;
-  ino_t inode;
-  time_t mtime;
-  int hasdupes; /* true only if file is first on duplicate chain */
-  struct _file *duplicates;
-  struct _file *next;
-} file_t;
-
-
-void errormsg(char *message, ...)
-{
-  va_list ap;
-
-  va_start(ap, message);
-
-  fprintf(stderr, "\r%40s\r%s: ", "", program_name);
-  vfprintf(stderr, message, ap);
-}
-
-
-/* Do a bit-for-bit comparison in case two different files produce the 
-   same signature. Unlikely, but better safe than sorry. */
 /*
-int		confirmmatch(FILE *file1, FILE *file2)
-{
-  unsigned char c1[CHUNK_SIZE];
-  unsigned char c2[CHUNK_SIZE];
-  size_t r1;
-  size_t r2;
-  
-  fseek(file1, 0, SEEK_SET);
-  fseek(file2, 0, SEEK_SET);
-
-  do {
-    r1 = fread(c1, sizeof(unsigned char), sizeof(c1), file1);
-    r2 = fread(c2, sizeof(unsigned char), sizeof(c2), file2);
-
-    if (r1 != r2) return 0; /* file lengths are different 
-    if (memcmp (c1, c2, r1)) return 0; /* file contents are different
-  } while (r2);
-  
-  return 1;
-}
+ * This algorithm is taken from the real fdupes programme 
+ * and has been modify for the CopyPeste project.
+ *
+ * Githube : https://github.com/adrianlopezroche/fdupes.git
 */
 
 
+#include "fdupes_algo.h"
+
+
 /*
-md5_byte_t	*getcrcsignature(char *filename)
+ * This function compaire the content of the two file
+ * 
+ * @param [char *] content of the first file
+ * @param [char *] content of the second file
+ * @param [int] size of the content for the first file
+ * @param [int] size of the content for the second file
+ * @Retrun [int] return 0 if file content matched else return -1
+ */
+int		confirmmatch(char *file1, char *file2, int size1, int size2)
 {
-  return getcrcsignatureuntil(filename, 0);
+  //  unsigned char c1[CHUNK_SIZE];
+  //  unsigned char c2[CHUNK_SIZE];
+  //  size_t	r1;
+  //  size_t	r2;
+
+  printf("ça passe par là\n");
+  if (size1 != size2)
+    return -1;
+  if (memcmp (file1, file2, size1)) return -1;
+  
+  return 0;
 }
 
-md5_byte_t	*getcrcpartialsignature(char *filename)
-{
-  return getcrcsignatureuntil(filename, PARTIAL_MD5_SIZE);
-}
 
+/*
+ * This function compair the two md5 signature of the two file to analyse
+ *
+ * @param [const md5_byte_t *] md5 signature of the first file
+ * @param [const md5_byte_t *] md5 signature of the second file
+ * @Return [int] return 0 if md5 signature matched else reture -1/1
+ */
 int		md5cmp(const md5_byte_t *a, const md5_byte_t *b)
 {
-  int x;
+  int		x;
 
   for (x = 0; x < MD5_DIGEST_LENGTH; ++x)
   {
@@ -91,222 +56,143 @@ int		md5cmp(const md5_byte_t *a, const md5_byte_t *b)
   return 0;
 }
 
+
+/*
+ * This function copy the md5 signature from a static to a non-static variable
+ *
+ * @param [md5_byte_t *] md5 pointer that will get the md5 signature
+ * @param [const md5_byte_t *] locacl variable that contain the signature
+ */
 void		md5copy(md5_byte_t *to, const md5_byte_t *from)
 {
-  int x;
+  int		x;
 
   for (x = 0; x < MD5_DIGEST_LENGTH; ++x)
     to[x] = from[x];
 }
 
 
-int		is_hardlink(filetree_t *checktree, file_t *file)
+/*
+ * This function return the partial or full signature off a file
+ * 
+ * @param [char *] content of a file
+ * @param [off_t] PARTIAL_MD5_SIZE for partial signature or 0 for full signature
+ * @param [off_t] size of the content file
+ * @Return [md5_byte_t] return the full or partial signature of the file]
+ */
+md5_byte_t	*getcrcsignatureuntil(char *file, off_t max_read, off_t fsize)
 {
-  file_t *dupe;
-  ino_t inode;
-  dev_t device;
+  off_t		toread;
+  md5_state_t	state;
+  static md5_byte_t digest[MD5_DIGEST_LENGTH];  
+  static md5_byte_t chunk[CHUNK_SIZE];
+  static char	*tmp;
 
-  inode = getinode(file->d_name);
-  device = getdevice(file->d_name);
-
-  if ((inode == checktree->file->inode) && 
-      (device == checktree->file->device))
-        return 1;
-
-  if (checktree->file->hasdupes)
-  {
-    dupe = checktree->file->duplicates;
-
-    do {
-      if ((inode == dupe->inode) &&
-          (device == dupe->device))
-            return 1;
-
-      dupe = dupe->duplicates;
-    } while (dupe != NULL);
+  md5_init(&state);
+  tmp = file;
+  if (max_read != 0 && fsize > max_read)
+    fsize = max_read;
+  while (fsize > 0) {
+    toread = (fsize >= CHUNK_SIZE) ? CHUNK_SIZE : fsize;
+    memcpy(chunk, file, toread);
+    file = &(file[toread]);
+    md5_append(&state, chunk, toread);
+    fsize -= toread;
   }
-
-  return 0;
-}
-*/
-
-off_t file_size(char *filename)
-{
-  struct stat s;
-
-  if (stat(filename, &s) != 0) return -1;
-
-  return s.st_size;
+  file = &(tmp[0]);
+  md5_finish(&state, digest);
+  return digest;
 }
 
-dev_t get_device(char *filename)
+
+/*
+ * This function get the all signature of a file
+ * 
+ * @param [char *] content of the file
+ * @param [off_t] size of the content file
+ * @Return [md5_byte_t] return the full signature of the file
+ */
+md5_byte_t	*getcrcsignature(char *file, off_t fsize)
 {
-  struct stat s;
-
-  if (stat(filename, &s) != 0) return 0;
-
-  return s.st_dev;
+  return getcrcsignatureuntil(file, 0, fsize);
 }
 
-ino_t get_inode(char *filename)
-{
-  struct stat s;
-   
-  if (stat(filename, &s) != 0) return 0;
 
-  return s.st_ino;   
+/*
+ * This function get the partial signature of a file PARTIAL_MD5_SIZE = 4096
+ * 
+ * @param [char *] content of the file
+ * @param [off_t] size of the content file
+ * @Return [md5_byte_t] return the partial signature of the file
+ */
+md5_byte_t	*getcrcpartialsignature(char *file, off_t fsize)
+{
+  return getcrcsignatureuntil(file, PARTIAL_MD5_SIZE, fsize);
 }
 
-time_t get_mtime(char *filename)
+
+/*
+ * This function is the main of the fdupes algorithm.
+ * It take the content and the size of two file to analyses
+ * 
+ * @param [char *] Content of a file
+ * @param [int] size of this file content
+ * @param [char *] content of a file
+ * @param [int] size of this file content
+ * @Return [int] return 0 if file matched else return -1/1
+ */
+int		fdupes_match(char *file1, int size1, char *file2, int size2)
 {
-  struct stat s;
+  int		cmpresult;
+  md5_byte_t	*tmp;
+  md5_byte_t	*crcsignature1;
+  md5_byte_t	*crcsignature2;
 
-  if (stat(filename, &s) != 0) return 0;
-
-  return s.st_mtime;
-}
-
-void get_file_stats(file_t *file)
-{
-  file->size = file_size(file->d_name);
-  file->inode = get_inode(file->d_name);
-  file->device = get_device(file->d_name);
-  file->mtime = get_mtime(file->d_name);
-}
-
-void		init_struct(file_t *new_file)
-{
-  new_file->device = 0;
-  new_file->inode = 0;
-  new_file->crcsignature = NULL;
-  new_file->crcpartial = NULL;
-  new_file->duplicates = NULL;
-  new_file->hasdupes = 0;
-  get_file_stats(new_file);
-}
-
-bool		checkmatch(char *file1, char *file2)
-{
-  int cmpresult;
-  md5_byte_t *crcsignature;
-  off_t fsize;
-  file_t file_1;
-  file_t file_2;
+  /* file1[size1] = '\0'; */
+  /* file2[size2] = '\0'; */
+  tmp = getcrcpartialsignature(file1, (off_t)size1);
+  crcsignature1 = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
+  if (crcsignature1 == NULL) {
+    printf("out of memory\n");
+    exit(1);
+  }
+  md5copy(crcsignature1, tmp);
   
-  file_1 = (file_t) malloc(sizeof(file_t));
-  file_2 = (file_t) malloc(sizeof(file_t));
-  if (file_1 == NULL || file_2 == NULL)
-    errormsg ("Error cannot allocate memory\n");
+  tmp = getcrcpartialsignature(file2, (off_t)size2);
+  crcsignature2 = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
+  if (crcsignature1 == NULL) {
+    printf("out of memory\n");
+    exit(1);
+  }
+  md5copy(crcsignature2, tmp);
   
-  file_1.d_name = (char*)malloc(strlen(file1)+2);
-  file_2.d_name = (char*)malloc(strlen(file2)+2);
-  
-  strcat(file_1.d_name, file1);
-  strcat(file_2.d_name, file2);
+  cmpresult = md5cmp(crcsignature1, crcsignature2);
+  free(crcsignature1);
+  free(crcsignature2);
 
-  init_struct(&file_1);
-  init_struct(&file_2);
-  
-    //if is_hardlink(checktree, file)
-    //return false;
-  /*
-  fsize = filesize(file->d_name);
-  
-  if (fsize < checktree->file->size) //size file2 < file1
-    cmpresult = -1;
-  else 
-    if (fsize > checktree->file->size) 
-      cmpresult = 1;
-    else
-      if (ISFLAG(flags, F_PERMISSIONS) &&
-	  !same_permissions(file->d_name, checktree->file->d_name))
-        cmpresult = -1;
-      else {
-	if (checktree->file->crcpartial == NULL) {
-	  crcsignature = getcrcpartialsignature(checktree->file->d_name);
-
-	  if (crcsignature == NULL) {
-	    errormsg ("cannot read file %s\n", checktree->file->d_name);
-	    return NULL;
-	  }
-
-	  checktree->file->crcpartial = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
-
-	  if (checktree->file->crcpartial == NULL) {
-	    errormsg("out of memory\n");
-	    exit(1);
-	  }
-
-	  md5copy(checktree->file->crcpartial, crcsignature);
-	}
-
-	if (file->crcpartial == NULL) {
-
-	  crcsignature = getcrcpartialsignature(file->d_name);
-
-	  if (crcsignature == NULL) {
-	    errormsg ("cannot read file %s\n", file->d_name);
-	    return NULL;
-	  }
-
-	  file->crcpartial = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
-
-	  if (file->crcpartial == NULL) {
-	    errormsg("out of memory\n");
-	    exit(1);
-	  }
-
-	  md5copy(file->crcpartial, crcsignature);
-	}
-
-	cmpresult = md5cmp(file->crcpartial, checktree->file->crcpartial);
-
-	if (cmpresult == 0) {
-	  if (checktree->file->crcsignature == NULL) {
-	    crcsignature = getcrcsignature(checktree->file->d_name);
-	    if (crcsignature == NULL) return NULL;
-
-	    checktree->file->crcsignature = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
-	    if (checktree->file->crcsignature == NULL) {
-	      errormsg("out of memory\n");
-	      exit(1);
-	    }
-	    md5copy(checktree->file->crcsignature, crcsignature);
-	  }
-
-	  if (file->crcsignature == NULL) {
-	    crcsignature = getcrcsignature(file->d_name);
-	    if (crcsignature == NULL) return NULL;
-
-	    file->crcsignature = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
-	    if (file->crcsignature == NULL) {
-	      errormsg("out of memory\n");
-	      exit(1);
-	    }
-	    md5copy(file->crcsignature, crcsignature);
-	  }
-
-	  cmpresult = md5cmp(file->crcsignature, checktree->file->crcsignature);
-	}
-      }
-
-  if (cmpresult < 0) {
-    if (checktree->left != NULL) {
-      return checkmatch(root, checktree->left, file);
-    } else {
-      registerfile(&(checktree->left), file);
-      return NULL;
-    }
-  } else if (cmpresult > 0) {
-    if (checktree->right != NULL) {
-      return checkmatch(root, checktree->right, file);
-    } else {
-      registerfile(&(checktree->right), file);
-      return NULL;
-    }
-  } else 
+  if (cmpresult == 0)
     {
-      getfilestats(file);
-      return &checktree->file;
-      }*/
+      tmp = getcrcsignature(file1, (off_t)size1);
+      crcsignature1 = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
+      if (crcsignature1 == NULL) {
+	printf("out of memory\n");
+	exit(1);
+      }
+      md5copy(crcsignature1, tmp);
+      
+      tmp = getcrcsignature(file2, (off_t)size2);
+      crcsignature2 = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
+      if (crcsignature1 == NULL) {
+	printf("out of memory\n");
+	exit(1);
+      }
+      md5copy(crcsignature2, tmp);
+      
+      cmpresult = md5cmp(crcsignature1, crcsignature2);
+      free(crcsignature1);
+      free(crcsignature2);
+    }
+  if (cmpresult == 0)
+    return confirmmatch(file1, file2, size1, size2);
+  return cmpresult;
 }

@@ -9,18 +9,20 @@ require 'json'
 #
 # @param [Object] DbHdlr object
 # @param [String] name of the collection to use
-# @param [Array]/[Json] a json tab (tab[0] => json_document, tab[1] => json_document).
-# Or a simple json file
-# @param [Bool] true = multiple insertion in databse (if you have a json tab).
-# false = simple insertion (if you have a simple json file)
+# @param [JSON] a json Array (tab[0] => json_document, tab[1] => json_document). 
+#               Or a simple json file
+# @param [Bool] true = multiple insertion in databse (if you have a json tab). 
+#               false = simple insertion (if you have a simple json file)
 def fill_db(mongo, collection, json_tab, multifile)
   mongo.ins_data(collection, json_tab, multifile)
 end
 
 
 # Creat a json document from a string (use when you get a document from the database)
+# Function used to create a document for the Extension collection
 #
 # @param [String] document from the database in string form
+# @Return [JSON] that correspond to one document in the Extension collection
 def set_extension_json(document)
   tab = []
   json_document = JSON.parse(document.to_json)
@@ -55,10 +57,8 @@ end
 
 
 # Insert all document scaned in the mongo database,
-# by creating a json document from an hash that contain file inforamtion.
-# One hash egals to one file witch became one documment.
 #
-# @parma [Hash] an hash containing file to sort and send to mongodb.
+# @parma [Hash] an hash that contain file sorted by extension
 # @parma [Object] an DbHdlr object (mongo object)
 # @parma [Object] an ScanSystem object
 def sort_insert_db(file_hash, mongo, scan)
@@ -88,6 +88,7 @@ end
 # Send the file to SortFile object to be sort by there extension
 #
 # @parma [Array] array of the file to insert
+# @Return [Hash] return an hash that contain files sort by extension
 def send_to_sort(tab_file)
   sort = SortFile.new()
   puts tab_file

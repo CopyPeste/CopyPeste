@@ -12,18 +12,25 @@ require '../../../libs/database/DbHdlr'
 # Start levenshtein and get the result of the analyses
 #
 # @param [Hash] hash of file who will be analyse
-# Return a Array containning files that matched
+# @Return [Array] return an Array containning files that matched
 def call_levenshtein(lev)
   lev.start()
   lev.get_file_matched()
 end
 
 
+# Put the results of the FDF module in database (collection : Duplicate) 
 def put_result_in_database(mongo, data)
   mongo.ins_data("Duplicate", data, true)
 end
 
 
+# Look at the different rules and chose the right way to sort the files
+#
+# @param [String] rule to sort the files
+# @param [Array] Array that contain all files to sort
+# @param [Array] Array that contain all the size of the files
+# @Return [Hash] return an hash of all the files sorted
 def sort_files_with_rules(rules, list, size)
   fichier = SortFile.new()
   i = 0
@@ -36,7 +43,7 @@ def sort_files_with_rules(rules, list, size)
       fichier.sort_by_size(file, size[i])
     when "-e"
       fichier.sort_by_extension(file, extension)
-    when "-e-s", "-es", "-se"
+    when "-e-s", "-es", "-se", "-s-e"
       fichier.sort_by_extension_and_size(file, extension, size[i])
     end
     i += 1
@@ -44,6 +51,13 @@ def sort_files_with_rules(rules, list, size)
   fichier.get_hash()
 end
 
+
+# Delete the id of the file in the Extension collection.
+# Delete the extension document if there is no more file in it
+#
+# @param [Object] DbHldr object (mongo object)
+# @param [String] The mongo id of the file to delete
+# @param [Hash] The query to get the document in the Extension collection
 def delete_in_extension_collection(mongo, file_id, query_ext)
   tmp = 0
   i = 0
@@ -68,6 +82,12 @@ def delete_in_extension_collection(mongo, file_id, query_ext)
 end
 
 
+# Delete the file in the database and prepare to delete the file in the Extension collection
+#
+# @param [String] path of the file
+# @param [String] name of the file
+# @param [Object] DbHldr object (mongo object)
+# @Return [Bool] return false
 def delete_file_in_db(path, name, mongo)
   query_ext = {}
   result = mongo.get_data("Fichier", {:name => name, :path => path})[0]
@@ -82,7 +102,13 @@ def delete_file_in_db(path, name, mongo)
 end
 
 
-def check_file_existe(path, name, mongo)
+# Check if a file exist. if not the file will be deleted
+#
+# @param [String] path of the file
+# @param [String] name of the file
+# @param [Object] DbHldr object (mongo object)
+# @Return [Bool] return true if file exist, else return false
+def check_file_exist(path, name, mongo)
   if File.file?(path + "/" + name)
     true
   else
@@ -94,14 +120,14 @@ end
 # Extraxt the path and name for each files and concat them. 
 #
 # @param [Array][Array][Hash] take an Array of Array of hash. [files by extension][one file][hash of the file]
-# Return a Array of files with the complete file path :  Array[0] = /home/test/expemple.c
+# @Return [Array] return a Array of files with the complete file path :  Array[0] = /home/test/expemple.c
 def sort_tab(documents, mongo)
   files = []
   list = []
   size = []
   documents.each do |data|
     data.each do |file|
-      if check_file_existe(file["path"], file["name"], mongo) == true
+      if check_file_exist(file["path"], file["name"], mongo) == true
         list << file["path"] + "/" + file["name"]
         size << file["size"]
       end
@@ -115,7 +141,7 @@ end
 #
 # @param [Object] DbHdlr, mongo object
 # @param [String] Extension of file to analyses. Nil by default (take all th file from the database).
-# Return a Array of files with the complete file path :  Array[0] = /home/test/expemple.c
+# @Return [Array] return a Array of files with the complete file path :  Array[0] = /home/test/expemple.c
 def get_doc_to_analyse(mongo, ext = nil)
   query = {}
   documents = []
@@ -131,11 +157,12 @@ def get_doc_to_analyse(mongo, ext = nil)
 end
 
 
-
 # Main function of the fdf, call the sort class and the levenshtein/resync methode
 #
 # @param [Array] list of all the file who will be analyse
-# @param [Array]/[nil] Array of all the size for each file or nil. nil is the value by default
+# @param [String] Rules to sort files 
+# @param [Array] Array of all the size for each file or nil. nil is the value by default
+# @Return [nil] return nil if there is no file to analyses
 def fdf(list, mongo, rules = nil, size = nil)
   file_hash = {}
   file_hash = sort_files_with_rules(rules, list, size)
@@ -146,13 +173,11 @@ def fdf(list, mongo, rules = nil, size = nil)
     puts "No files to analyses"
     return nil
   end
-  puts fdup_tab
-  puts lev_result
   final_data = check_files_similarity(fdup_tab, lev_result)
-
-  #put_result_in_database(mongo, final_data)
-  #puts "\n\n ===========Duplicates==========\n\n"
-  #mongo.debug("Duplicate")
+  
+  put_result_in_database(mongo, final_data)
+  puts "\n\n ===========Duplicates==========\n\n"
+  mongo.debug("Duplicate")
 end
 
 
@@ -160,7 +185,8 @@ end
 # If you want to analyses only files witch has same sizes, fdf(files[0], mongo, rules, files[1])
 # files[0] contain all files and file[1] containe all size of files
 #
-# @parma [Object] DbHdlr, mongo object
+# @param [Object] DbHdlr, mongo object
+# @param [String] option (-s, -e, -se, -es, -e-s, -s-e)
 def init_fdf(mongo, rules)
   files = get_doc_to_analyse(mongo, nil)
   fdf(files[0], mongo, rules, files[1])
