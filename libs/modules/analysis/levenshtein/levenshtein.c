@@ -41,7 +41,6 @@ static matrix_t	*initialize_values(matrix_t *matrix, size_t size)
 int			levenshtein(const char *str1, const char *str2)
 {
   matrix_t		*matrix = NULL;
-  //static size_t		matrix_size = 0;
   uint16_t		i, j;
   size_t		s1 = strlen(str1);
   size_t		s2 = strlen(str2);
@@ -51,18 +50,12 @@ int			levenshtein(const char *str1, const char *str2)
   // if a string is empty, we only have insertion to obtain the distance
   if (s1 == 0) return s2;
   if (s2 == 0) return s1;
-  // initialize the matrix each time it needs to grow
-  //if (matrix_size < size)
-  //{
-  //  if (matrix == NULL)
-      matrix = malloc(sizeof matrix * size * size);
-      //  else
-      //    matrix = realloc(matrix, sizeof matrix * size * size);
-    if (matrix == NULL)
-      return -1;
-    initialize_values(matrix, size);
-    //  matrix_size = size;
-    //}
+
+  // initialize the matrix
+  matrix = malloc(sizeof matrix * size * size);
+  if (matrix == NULL)
+    return -1;
+  initialize_values(matrix, size);
   // apply the algorithm on str1 and str2
   for (i = 0; str1[i]; i++)
   {
