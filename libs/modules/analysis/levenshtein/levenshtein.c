@@ -1,14 +1,12 @@
-#include <stdint.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 #include "levenshtein.h"
 
 /*
-** return the size of the longest string
-** @param str1, first string to compare
-** @param str2, second string to compare
-** @return the longest size
+** return the longest size between two integers
+** @param: str1, first integer to compare
+** @param: str2, second integer to compare
+** @return: the longest size
 */
 static inline size_t longest_between(size_t s1, size_t s2)
 {
@@ -17,9 +15,9 @@ static inline size_t longest_between(size_t s1, size_t s2)
 
 /*
 ** Initialize the matrix values
-** @param matrix, the matrix to initialize
-** @param size, matrix size (the matrix has as many rows as columns)
-** @return the initialized matrix
+** @param: matrix, the matrix to initialize
+** @param: size, matrix size (the matrix has as many rows as columns)
+** @return: the initialized matrix
 */
 static matrix_t	*initialize_values(matrix_t *matrix, size_t size)
 {
@@ -36,14 +34,13 @@ static matrix_t	*initialize_values(matrix_t *matrix, size_t size)
 
 /*
 ** Levenshtein algorithm - find the distance between two strings
-** @param str1, first string to compare
-** @param str2, second string to compare
-** @return the distance between the two strings, or -1 if malloc fail
+** @param: str1, first string to compare
+** @param: str2, second string to compare
+** @return: the distance between the two strings, or -1 if malloc fail
 */
 int			levenshtein(const char *str1, const char *str2)
 {
-  static matrix_t	*matrix = NULL;
-  static size_t		matrix_size = 0;
+  matrix_t		*matrix = NULL;
   uint16_t		i, j;
   size_t		s1 = strlen(str1);
   size_t		s2 = strlen(str2);
@@ -53,18 +50,12 @@ int			levenshtein(const char *str1, const char *str2)
   // if a string is empty, we only have insertion to obtain the distance
   if (s1 == 0) return s2;
   if (s2 == 0) return s1;
-  // initialize the matrix each time it needs to grow
-  if (matrix_size < size)
-  {
-    if (matrix == NULL)
-      matrix = malloc(sizeof matrix * size * size);
-    else
-      matrix = realloc(matrix, sizeof matrix * size * size);
-    if (matrix == NULL)
-      return -1;
-    initialize_values(matrix, size);
-    matrix_size = size;
-  }
+
+  // initialize the matrix
+  matrix = malloc(sizeof matrix * size * size);
+  if (matrix == NULL)
+    return -1;
+  initialize_values(matrix, size);
   // apply the algorithm on str1 and str2
   for (i = 0; str1[i]; i++)
   {
@@ -82,16 +73,7 @@ int			levenshtein(const char *str1, const char *str2)
 	m_ip1[j + 1] = m_i[j] + 1;
     }
   }
-  return matrix[i * size + j];
-}
-
-int main() {
-  printf("'' '' = %d\n", levenshtein("", ""));
-  printf("'' ' ' = %d\n", levenshtein("", " "));
-  printf("' ' '' = %d\n", levenshtein(" ", ""));
-  printf("a  b  = %d\n", levenshtein("a", "b"));
-  printf("azertyuiop azertyuiop = %d\n", levenshtein("azertyuiop", "azertyuiop"));
-  printf("aerferf  aferferf =  %d\n", levenshtein("aerferf", "aferferf"));
-  printf("aer864fe6r8f4e6r  erferffera = %d\n", levenshtein("aer864fe6r8f4e6r", "erferffera"));
-  printf("aferf  azefozeifoeriehifuher  = %d\n", levenshtein("aferf", "azefozeifoeriehifuher"));
+  uint16_t v = matrix[i * size + j];
+  free(matrix);
+  return v;
 }
