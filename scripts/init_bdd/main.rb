@@ -42,17 +42,18 @@ end
 # @param [Hash] a hash on one file wich corresponde to one type of extesion
 # @param [String] the extension ("c", "cpp", etc)
 def set_collection_extension(mongo, file, key)
-  file_tab = mongo.get_document("Fichier", "ext", file["ext"])
+  file_tab = mongo.get_data("Fichier", {:ext => file["ext"]})
   document = {}
   tab_id = []
+  json_tab = []
   file_tab.each do |data|
     tab_id << data["_id"]
   end
   document["_id"] = file_tab[0]["ext"]
   document["name"] = key
   document["files_id"] = tab_id
-  json_document = set_extension_json(document)
-  fill_db(mongo, "Extension", json_document, false)
+  json_tab << set_extension_json(document)
+  fill_db(mongo, "Extension", json_tab, true)
 end
 
 
@@ -63,10 +64,8 @@ end
 # @parma [Object] an ScanSystem object
 def sort_insert_db(file_hash, mongo, scan)
   file_hash.each do |key, value|
-    
     json_tab = []
     ext_id = BSON::ObjectId.from_time(Time.now, unique: true)
-    
     value.each do |file|
       if (result = scan.set_info_file(ext_id, file)) != nil
         json_document = result
@@ -101,11 +100,18 @@ def send_to_sort(tab_file)
 end
 
 
+def clear_database(mongo)
+  mongo.rm_data(nil, "Fichier")
+  mongo.rm_data(nil, "Extension")
+  mongo.rm_data(nil, "Duplicate")
+end
+
 # Start the scan of the system
 #
 # @param [Object] Object ScanSystem
 # @param [Object] Object DbHdlr (mongo object)
 def scan_sys(scan, mongo)
+  clear_database(mongo)
   scan.init()
   tab_file = scan.get_tab_file()
   file_hash = send_to_sort(tab_file)

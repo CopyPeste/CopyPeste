@@ -21,7 +21,13 @@ end
 
 # Put the results of the FDF module in database (collection : Duplicate) 
 def put_result_in_database(mongo, data)
-  mongo.ins_data("Duplicate", data, true)
+  data.each do |document|
+    if (result = mongo.get_data("Duplicate", {:files => document["files"]})[0]) == nil
+      mongo.ins_data("Duplicate", document)
+    else 
+      mongo.ud_data({:files => document["files"]}, "Duplicate", document)
+    end
+  end
 end
 
 

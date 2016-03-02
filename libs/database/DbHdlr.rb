@@ -9,7 +9,7 @@ class DbHdlr
 	# @param [String] the host where the db is stored (whether an ip address or a resolved server)
 	# @param [String] port to access the db service
 	# @param [String] the selected database
-	def initialize(host="127.0.0.1", port="27017", db="CopyPeste320")
+	def initialize(host="127.0.0.1", port="27017", db="CopyPeste470")
 		begin
 			@db_inst = Mongo::Client.new(["#{host}:#{port}"], :database => db)
 		rescue
@@ -65,7 +65,9 @@ class DbHdlr
 
 	def rm_data(filter, collection, del_type = false)
 		begin
-			if del_type == false
+                        if filter == nil
+                                res = @db_inst[collection].find().delete_many
+			elsif del_type == false
 				res = @db_inst[collection].delete_one(filter)
 			elsif del_type == true
 				res = @db_inst[collection].delete_many(filter)
