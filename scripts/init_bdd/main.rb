@@ -100,6 +100,9 @@ def send_to_sort(tab_file)
 end
 
 
+# Clear the databases, remove all files and result
+#
+# @param [Objetc] DbHldr object (mongo object)
 def clear_database(mongo)
   mongo.rm_data(nil, "Fichier")
   mongo.rm_data(nil, "Extension")

@@ -157,7 +157,7 @@ def get_doc_to_analyse(mongo, ext = nil)
   result.each do |data|
     data = JSON.parse(data.to_json)
     data["_id"] = BSON::ObjectId.from_string(data["_id"]["$oid"])
-    documents << mongo.get_document("Fichier", "ext", data["_id"])
+    documents << mongo.get_data("Fichier", {:ext => data["_id"]})
   end
   sort_tab(documents, mongo)
 end
