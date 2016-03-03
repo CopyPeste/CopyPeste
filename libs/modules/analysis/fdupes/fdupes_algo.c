@@ -20,16 +20,9 @@
  */
 int		confirmmatch(char *file1, char *file2, int size1, int size2)
 {
-  //  unsigned char c1[CHUNK_SIZE];
-  //  unsigned char c2[CHUNK_SIZE];
-  //  size_t	r1;
-  //  size_t	r2;
-
-  printf("ça passe par là\n");
   if (size1 != size2)
     return -1;
-  if (memcmp (file1, file2, size1)) return -1;
-  
+  if (memcmp (file1, file2, size1)) return -1;  
   return 0;
 }
 
@@ -52,7 +45,6 @@ int		md5cmp(const md5_byte_t *a, const md5_byte_t *b)
     else if (a[x] > b[x])
       return 1;
   }
-
   return 0;
 }
 
@@ -97,7 +89,7 @@ md5_byte_t	*getcrcsignatureuntil(char *file, off_t max_read, off_t fsize)
     memcpy(chunk, file, toread);
     file = &(file[toread]);
     md5_append(&state, chunk, toread);
-    fsize -= toread;
+    fsize = fsize - toread;
   }
   file = &(tmp[0]);
   md5_finish(&state, digest);
@@ -148,12 +140,10 @@ int		fdupes_match(char *file1, int size1, char *file2, int size2)
   md5_byte_t	*crcsignature1;
   md5_byte_t	*crcsignature2;
 
-  /* file1[size1] = '\0'; */
-  /* file2[size2] = '\0'; */
   tmp = getcrcpartialsignature(file1, (off_t)size1);
   crcsignature1 = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
   if (crcsignature1 == NULL) {
-    printf("out of memory\n");
+    fprintf(stderr, "out of memory\n");
     exit(1);
   }
   md5copy(crcsignature1, tmp);
@@ -161,7 +151,7 @@ int		fdupes_match(char *file1, int size1, char *file2, int size2)
   tmp = getcrcpartialsignature(file2, (off_t)size2);
   crcsignature2 = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
   if (crcsignature1 == NULL) {
-    printf("out of memory\n");
+    fprintf(stderr, "out of memory\n");
     exit(1);
   }
   md5copy(crcsignature2, tmp);
@@ -175,7 +165,7 @@ int		fdupes_match(char *file1, int size1, char *file2, int size2)
       tmp = getcrcsignature(file1, (off_t)size1);
       crcsignature1 = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
       if (crcsignature1 == NULL) {
-	printf("out of memory\n");
+	fprintf(stderr, "out of memory\n");
 	exit(1);
       }
       md5copy(crcsignature1, tmp);
@@ -183,7 +173,7 @@ int		fdupes_match(char *file1, int size1, char *file2, int size2)
       tmp = getcrcsignature(file2, (off_t)size2);
       crcsignature2 = (md5_byte_t*) malloc(MD5_DIGEST_LENGTH * sizeof(md5_byte_t));
       if (crcsignature1 == NULL) {
-	printf("out of memory\n");
+	fprintf(stderr, "out of memory\n");
 	exit(1);
       }
       md5copy(crcsignature2, tmp);
