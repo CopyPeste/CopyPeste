@@ -28,15 +28,7 @@ end
 def open_and_send(fdup_tab, index)
   file1 = IO.read(fdup_tab[index])
   file2 = IO.read(fdup_tab[index + 1])
-  puts "\n\nfdupes su #{fdup_tab[index]} et #{fdup_tab[index + 1]} "
-  #Algorithms.fdupes_match(file1, file1.length, file2, file2.length) == 0 ? false : true
-  if Algorithms.fdupes_match(file1, file1.length, file2, file2.length) == 0
-    puts "faux"
-    false 
-  else
-    puts "true \n\n"
-    true
-  end
+  Algorithms.fdupes_match(file1, file1.length, file2, file2.length) == 0 ? false : true
 end
 
 
