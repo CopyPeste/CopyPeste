@@ -3,11 +3,11 @@
 # FDF V1.1
 
 require 'json'
-require './UseLevenshtein'
-require './CheckMatch'
-require '../../../libs/modules/analysis/algorithms'
-require '../../../libs/modules/analysis/SortFile'
-require '../../../libs/database/DbHdlr'
+require_relative './use_levenshtein'
+require_relative './check_match'
+require_relative '../../../libs/modules/analysis/algorithms'
+require_relative '../../../libs/modules/analysis/SortFile'
+require_relative '../../../libs/database/DbHdlr'
 
 # Start levenshtein and get the result of the analyses
 #

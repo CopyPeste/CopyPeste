@@ -32,7 +32,7 @@ def open_and_send(fdup_tab, index)
 end
 
 
-# Send files to the fdup algorithms
+# Send files to the fdupes algorithms
 #
 # @param [Array] Array of files to analyses
 # @param [Array] Array of results of the levenshtein : lev_result[0] = levenshtein(fdup_tab[0], fdup_tab[1])
