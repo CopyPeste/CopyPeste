@@ -6,7 +6,7 @@ require 'json'
 require_relative './use_levenshtein'
 require_relative './check_match'
 require_relative '../../../libs/modules/analysis/algorithms'
-require_relative '../../../libs/modules/analysis/SortFile'
+require_relative '../../../libs/modules/analysis/sort_file'
 require_relative '../../../libs/database/DbHdlr'
 
 # Start levenshtein and get the result of the analyses

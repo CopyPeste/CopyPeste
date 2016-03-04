@@ -1,6 +1,6 @@
-require './ScanSystem'
-require '../../libs/modules/analysis/SortFile'
-require '../../libs/database/DbHdlr'
+require_relative './scan_system'
+require_relative '../../libs/modules/analysis/sort_file'
+require_relative '../../libs/database/DbHdlr'
 require 'mongo'
 require 'json'
 

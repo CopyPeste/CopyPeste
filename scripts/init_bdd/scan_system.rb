@@ -1,7 +1,5 @@
 # class use to scan all the file containe in a directory
 
-require 'digest/md5'
-
 class ScanSystem
   attr_accessor :start_point
 
