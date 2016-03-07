@@ -10,8 +10,8 @@
 # @param [String] File 2 that was compared with File 1
 # @Return [Array] Return an Array that contain all results of analyses
 def save_result_data(tab_send_to_mongo, lev_result, result_fdupes, file1, file2)
-  tab = []
-  tab << file1 << file2
+  tab = [file1, file2]
+  #tab << file1 << file2
   result_data = {}
   result_data["levsht_dist"] = lev_result
   result_data["result_fdupes"] = result_fdupes
@@ -28,7 +28,11 @@ end
 def open_and_send(fdup_tab, index)
   file1 = IO.read(fdup_tab[index])
   file2 = IO.read(fdup_tab[index + 1])
-  Algorithms.fdupes_match(file1, file1.length, file2, file2.length) == 0 ? false : true
+  if file1 != nil && file2 != nil
+    Algorithms.fdupes_match(file1, file1.length, file2, file2.length) == 0 ? false : true
+  else
+    return false
+  end
 end
 
 

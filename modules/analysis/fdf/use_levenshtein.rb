@@ -21,6 +21,7 @@ class UseLevenshtein
   #
   # @param [Array] Array of file that will be send to the levenshtein. 
   def send_levenshtein(file_to_send)
+    tmp = 0
     i = 0 
     index = 0
     size = file_to_send.size()
@@ -33,7 +34,9 @@ class UseLevenshtein
           @fdupes_tab << file_to_send[j]
           @lev_results << result
         end
+        puts "#{i} / #{size-2}  : Fichier => #{file1.last()} avec : #{file2.last()}\n"
       end
+      tmp += 1
     end
   end
 
