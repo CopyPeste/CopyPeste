@@ -5,13 +5,13 @@ require 'mongo'
 require 'json'
 
 
-# Add document in the database
+# Add document into the database
 #
 # @param [Object] DbHdlr object
 # @param [String] name of the collection to use
-# @param [JSON] a json Array (tab[0] => json_document, tab[1] => json_document). 
+# @param [JSON] a json Array (tab[0] => json_document, tab[1] => json_document).
 #               Or a simple json file
-# @param [Bool] true = multiple insertion in databse (if you have a json tab). 
+# @param [Bool] true = multiple insertion in databse (if you have a json tab).
 #               false = simple insertion (if you have a simple json file)
 def fill_db(mongo, collection, json_tab, multifile)
   mongo.ins_data(collection, json_tab, multifile)
@@ -36,10 +36,10 @@ def set_extension_json(document)
 end
 
 
-# Creat the document for the Extension collection
+# Create the document for the Extension collection
 #
 # @param [Object] DbHdlr object (mongo object)
-# @param [Hash] a hash on one file wich corresponde to one type of extesion
+# @param [Hash] a hash about a file that corresponds to one type of extension
 # @param [String] the extension ("c", "cpp", etc)
 def set_collection_extension(mongo, file, key)
   file_tab = mongo.get_data("Fichier", {:ext => file["ext"]})
@@ -57,11 +57,11 @@ def set_collection_extension(mongo, file, key)
 end
 
 
-# Insert all document scaned in the mongo database,
+# Insert all documents scaned into the database,
 #
-# @parma [Hash] an hash that contain file sorted by extension
-# @parma [Object] an DbHdlr object (mongo object)
-# @parma [Object] an ScanSystem object
+# @parma [Hash] a hash containing files sorted by extension
+# @parma [Object] a DbHdlr object (mongo object)
+# @parma [Object] a ScanSystem object
 def sort_insert_db(file_hash, mongo, scan)
   file_hash.each do |key, value|
     json_tab = []
@@ -84,10 +84,10 @@ def sort_insert_db(file_hash, mongo, scan)
 end
 
 
-# Send the file to SortFile object to be sort by there extension
+# Send files to SortFile object to be sorted by their extension
 #
-# @parma [Array] array of the file to insert
-# @Return [Hash] return an hash that contain files sort by extension
+# @parma [Array] File array to insert
+# @Return [Hash] return a hash that contain files sort by extension
 def send_to_sort(tab_file)
   sort = SortFile.new()
   puts tab_file
@@ -100,7 +100,7 @@ def send_to_sort(tab_file)
 end
 
 
-# Clear the databases, remove all files and result
+# Clear the database, remove all files and result
 #
 # @param [Objetc] DbHldr object (mongo object)
 def clear_database(mongo)
