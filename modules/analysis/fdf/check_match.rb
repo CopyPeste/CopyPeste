@@ -43,7 +43,7 @@ def check_files_similarity(fdup_tab, lev_result)
     if index % 2 == 0
       if File.size(fdup_tab[index]) == File.size(fdup_tab[index + 1])
         condition = (File.size(fdup_tab[index]) > 0 && File.size(fdup_tab[index + 1]) > 0)
-        condition ? result_fdupes = open_and_send(fdup_tab, index) : result_fdupes = true
+        result_fdupes = condition ? open_and_send(fdup_tab, index) : true
       else
         result_fdupes = true
       end
