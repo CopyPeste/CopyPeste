@@ -4,7 +4,7 @@ class SortFile
   attr_accessor :octe
 
 
-  # creat a instance of SortFile
+  # creat an instance of SortFile
   def initialize()
     @file_hash = {}
   end
@@ -25,7 +25,7 @@ class SortFile
   #
   # @param [String] Complete path of the file
   # @param [String] Extension of the files
-  # @param [Integer] size of the file
+  # @param [Integer] File size
   def sort_by_extension_and_size(file, extension, size)
     if @file_hash[:"#{extension}"] == nil
       new_hash = {}
@@ -69,11 +69,11 @@ class SortFile
       @file_hash[:"#{size}"] << file
     else
       @file_hash[:"#{size}"] << file
-    end    
+    end
   end
 
 
-  # Fill the hash. Files are not sort
+  # Fill the hash. Files are not sorted
   #
   # @param [String] Complete path of the file
   def sort_no_rulls(file)
@@ -87,7 +87,7 @@ class SortFile
 
 
   # @Return [Hash] return the hash containing all the files sorted
-  def get_hash    
-    return @file_hash
+  def get_hash
+    @file_hash
   end
 end
