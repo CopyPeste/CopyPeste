@@ -32,7 +32,7 @@ static char *get_string_file(char *path)
   size = ftell(ptr_file);
   fseek(ptr_file, 0L, SEEK_SET);
 
-  buf = malloc(sizeof(char) * size);
+  buf = malloc(sizeof(*buf) * size);
   if (!buf)
     return NULL;
 

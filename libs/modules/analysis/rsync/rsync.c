@@ -1,12 +1,3 @@
-/*--------------------------------------------------------------------*/
-/*		     Epitech EIP 2017 groupe Copypeste		      */
-/*								      */
-/*			    Algo Rsync				      */
-/*								      */
-/* @by :	Guillaume Krier					      */
-/* @created :	19/09/2015					      */
-/* @update :	29/02/2015					      */
-/*--------------------------------------------------------------------*/
 
 /* INCLUDES */
 #include "rsync.h"
@@ -19,13 +10,13 @@
 #define MAX_MD5_LEN MD5_DIGEST_LENGTH
 
 /*
-** This function returns the result between 
-** two string file with hash MD5 blocks
+** This function returns the result between
+** two file with hash MD5 blocks.
 **
-** @param: str_file1 - The string of the first file.
-** @param: str_file2 - The string of the first file.
-** @param: size_rd - The reading size in string.
-** @return: Integer - Its return the result of Checksum compared.
+** @param: str_file1 - the string of the first file
+** @param: str_file2 - the string of the first file
+** @param: size_rd - the reading size in string
+** @return: Integer - return the result of compared
 */
 static int	compare_blocks(char *str_file1, char *str_file2, size_t size_rd)
 {
@@ -55,12 +46,12 @@ static int	compare_blocks(char *str_file1, char *str_file2, size_t size_rd)
 }
 
 /*
-** This function is used to compare two files and find
-** whether the sum of its characters are equal.
+** This function compares two files and finds
+** if the sum of their characters are equal.
 **
-** @param: path1 - The string of the first file.
-** @param: path2 - The string of the second file.
-** @return: Integer - Its return the result of Diff compared.
+** @param: path1 - the string of the first file
+** @param: path2 - the string of the second file
+** @return: Integer - return the result of Diff compared
 */
 int	rsync(char *str_file1, char *str_file2, size_t size_rd)
 {
@@ -76,11 +67,11 @@ int	rsync(char *str_file1, char *str_file2, size_t size_rd)
 
 /*
 ** This function returns the result between
-** two string file with its bytes
+** two file by their bytes.
 **
-** @param: str_file1 - The string of the first file.
-** @param: str_file2 - The string of the first file.
-** @return: Integer - Its return the result of char compared.
+** @param: str_file1 - the string of the first file
+** @param: str_file2 - the string of the first file
+** @return: Integer - return the result of char compared
 */
 static int comfirm_checksum(char *str_file1, char *str_file2)
 {
@@ -101,12 +92,12 @@ static int comfirm_checksum(char *str_file1, char *str_file2)
 
 /*
 ** This function returns the result between
-** two string file with hash MD5 blocks
+** two file with a hash MD5 blocks.
 **
-** @param: str_file1 - The string of the first file.
-** @param: str_file2 - The string of the first file.
-** @param: size_rd - The reading size in string.
-** @return: Integer - Its return the result of Checksum compared.
+** @param: str_file1 - the string of the first file
+** @param: str_file2 - the string of the first file
+** @param: size_rd - the reading size in string
+** @return: Integer - return the result of Checksum compared
 */
 static int	compare_checksums(char *str_file1, char *str_file2, size_t size_rd)
 {
@@ -136,12 +127,12 @@ static int	compare_checksums(char *str_file1, char *str_file2, size_t size_rd)
 }
 
 /*
-** This function is used to compare two files and find
-** whether the checksum of its characters are equal.
+** This function compares two files and finds
+** if the checksum of their characters are equal.
 **
-** @param: path1 - The string of the first file.
-** @param: path2 - The string of the second file.
-** @return: Integer - Its return the result of Diff compared.
+** @param: path1 - the string of the first file
+** @param: path2 - the string of the second file
+** @return: Integer - return the result of Diff compared
 */
 int	rsync_checksum(char *str_file1, char *str_file2, size_t size_rd)
 {
