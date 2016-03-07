@@ -13,3 +13,10 @@ $> bundle install
 $> cd init_bdd
 $> ruby main.rb /usr/ports
 ```
+
+### How to find duplicated files:
+
+```sh
+$> cd modules/analysis/fdf
+$> ruby fdf -es
+```

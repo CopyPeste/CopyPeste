@@ -5,4 +5,5 @@ module Algorithms
   ffi_lib '../../../libs/modules/analysis/libs/algorithms.so'
   attach_function :levenshtein, [:string, :string], :int
   attach_function :compare_files_match, [:string, :string, :int], :int
+  attach_function :fdupes_match, [:string, :int, :string, :int], :int
 end
