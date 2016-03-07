@@ -93,8 +93,8 @@ int	compare_words_strings(const char *string1, const char *string2)
       free(words_string1[i]);
     }
 
-  while (*words_string2)
-    free(*words_string2++);
+  for (int h = 0; words_string2[h]; ++h)
+    free(words_string2[h]);
   free(words_string1);
   free(words_string2);
 
