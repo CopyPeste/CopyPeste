@@ -1,12 +1,3 @@
-/*--------------------------------------------------------------------*/
-/*		     Epitech EIP 2017 groupe Copypeste		      */
-/*								      */
-/*			    Tool Filter				      */
-/*								      */
-/* @by :	Guillaume Krier					      */
-/* @created :	02/02/2015					      */
-/* @update :	28/02/2015					      */
-/*--------------------------------------------------------------------*/
 
 /* INCLUDES */
 #include "filter.h"
@@ -53,7 +44,7 @@ char	*filter_str(char *str, char *beg, char *end)
 ** @param: char *str - string
 ** @return: Char* - return Char* param
 */
-char	*filter_space(char *str)
+char	*filter_all_space(char *str)
 {
   char *tmp1 = str;
   char *tmp2 = str;
@@ -63,6 +54,33 @@ char	*filter_space(char *str)
       *tmp1 = *tmp2++;
       if (*tmp1 != ' ' && *tmp1 != '\t')
 	++tmp1;
+    }
+  *tmp1 = 0;
+  return str;
+}
+
+/*
+** This function remove the multiple spaces
+** in the string
+**
+** @param: char *str - string
+** @return: Char* - return Char* param
+*/
+char	*filter_space(char *str)
+{
+  char *tmp1 = str;
+  char *tmp2 = str;
+
+  while (*tmp2)
+    {
+      if ((*tmp2 == ' ' || *tmp2 == '\t')
+	  && ((*(tmp2 + 1) == ' '  || *tmp2 == '\t')
+	      || *(tmp2 + 1) == '\0'
+	      || *(tmp2 - 1) == '\0'))
+	while (*tmp2 == ' ' || *tmp2 == '\t')
+	  tmp2++;
+      else
+	*tmp1++ = *tmp2++;
     }
   *tmp1 = 0;
   return str;
@@ -82,9 +100,15 @@ char	*filter_newline(char *str)
 
   while (*tmp2)
     {
-      *tmp1 = *tmp2++;
-      if (*tmp1 != '\n' || *(tmp1 + 1) != '\n')
-	++tmp1;
+      if (*tmp2 == '\n'
+	  && (*(tmp2 + 1) == '\n'
+	      || *(tmp2 + 1) == '\0'
+	      || *(tmp2 - 1) == '\0'))
+	{
+	  tmp2++;
+	}
+      else
+	*tmp1++ = *tmp2++;
     }
   *tmp1 = 0;
   return str;

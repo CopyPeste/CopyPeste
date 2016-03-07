@@ -1,12 +1,4 @@
-/*--------------------------------------------------------------------*/
-/*		     Epitech EIP 2017 groupe Copypeste		      */
-/*								      */
-/*			    Tool Filter				      */
-/*								      */
-/* @by :	Guillaume Krier					      */
-/* @created :	02/02/2015					      */
-/* @update :	28/02/2015					      */
-/*--------------------------------------------------------------------*/
+
 #pragma once
 
 /* PROTOTYPES */
@@ -24,6 +16,15 @@ char	*filter_str(char *str, char *beg, char *end);
 
 /*
 ** This function remove all spaces
+** in the string
+**
+** @param: char *str - string
+** @return: Char* - return Char* param
+*/
+char	*filter_all_space(char *str);
+
+/*
+** This function remove the multiple spaces
 ** in the string
 **
 ** @param: char *str - string
