@@ -1,13 +1,10 @@
-
 #ifndef	LEVENSHTEIN_H_
 # define LEVENSHTEIN_H_
 
-# define MAXWORD	256
-# define TRUE		1
-# define FALSE		0
+# include <stdint.h>
 
-int    levenshtein(char *string1, char *string2);
+typedef uint16_t matrix_t;
 
-typedef	char	bool_t;
+int	levenshtein(const char *str1, const char *str2);
 
 #endif /* LEVENSHTEIN_H_ */

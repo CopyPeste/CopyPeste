@@ -10,8 +10,7 @@ MKDIR	=	mkdir -p
 ##
 LIB_NAME =	./libs/algorithms.so
 SRCS	 =	./levenshtein/levenshtein.c \
-		./rsync/compare/compare_files_match.c \
-		./rsync/message_digest/cp_md5.c \
+		./rsync/rsync.c \
 		./fdupes/fdupes_algo.c \
 		./fdupes/md5/md5.c \
 

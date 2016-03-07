@@ -9,20 +9,21 @@ RM =		rm -f
 CFLAGS +=	-Wextra -Wall -Werror
 CFLAGS +=	-pedantic -std=gnu99
 CFLAGS +=	-fmax-errors=2
+CFLAGS +=	-I../levenshtein/
 
-MY_FLAGS =	-lcrypto # MD5
-
-NAME =		my_rsync
+NAME =		my_diff
 
 SRCS =		main.c \
-		./rsync.c \
+		diff.c \
+		filter.c \
+		compare.c \
 
 OBJS =		$(SRCS:.c=.o)
 
 all:		$(NAME)
 
 $(NAME):	$(OBJS)
-		$(CC) $(OBJS) -o $(NAME) $(MY_FLAGS)
+		$(CC) $(OBJS) -o $(NAME)
 
 clean:
 		$(RM) $(OBJS)
