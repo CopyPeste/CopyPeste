@@ -6,11 +6,12 @@
 #include <string.h>
 
 /*
-** This function gets size of file string line.
+** This function gets the size of line in a file.
+** (must be a string).
 **
-** @param: str - string of lines.
-** @param: beg - begin of the line.
-** @return: Integer - return the line size.
+** @param: str - the string of lines
+** @param: beg - beginning of the line
+** @return: Integer - return the line size
 */
 static int get_size_line(const char *str, int beg)
 {
@@ -21,14 +22,14 @@ static int get_size_line(const char *str, int beg)
 }
 
 /*
-** This function allows to get the difference value between two files
+** This function gets the difference between two files,
 ** line by line.
-** Return the percentage of difference to obtain the same file
-** by word by word algorithm.
+** Return the percentage of difference to obtain the same file,
+** with word by word algorithm.
 **
-** @param: str_file1 - The string of the first file.
-** @param: str_file2 - The string of the second file.
-** @return: Integer - return comparaison value in percentage.
+** @param: str_file1 - the string of the first file
+** @param: str_file2 - the string of the second file
+** @return: Integer - return comparaison value in percentage
 */
 static double compare_files_lev_percent(char *str1, char *str2)
 {
@@ -64,14 +65,14 @@ static double compare_files_lev_percent(char *str1, char *str2)
 }
 
 /*
-** This function allows to get the difference value between two files
+** This function gets the difference between two files,
 ** line by line.
-** Remove usless space and newline.
+** Remove useless characters.
 ** Return the percentage of difference to obtain the same file.
 **
-** @param: str_file1 - The string of the first file.
-** @param: str_file2 - The string of the second file.
-** @return: Integer - Its return the result of compare in percentage.
+** @param: str_file1 - the string of the first file
+** @param: str_file2 - the string of the second file
+** @return: Integer - return the result of compare in percentage
 */
 
 double diff(char *str_file1, char *str_file2)

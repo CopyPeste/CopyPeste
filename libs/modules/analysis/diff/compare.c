@@ -4,10 +4,10 @@
 #include <stdio.h>
 
 /*
-** This function gets size of word in string.
+** This function gets the number of words in a string.
 **
-** @param: string - string of lines
-** @return: Integer - return the word size
+** @param: string - the string of lines
+** @return: Integer - return the number of words in a line
 */
 static int	count_words(const char *string)
 {
@@ -20,10 +20,10 @@ static int	count_words(const char *string)
 }
 
 /*
-** This function gets word in string, begin at Beg.
+** This function gets words in a string, begin at Beg.
 **
-** @param: string - string of lines
-** @param: beg - begin to read
+** @param: string - the string of lines
+** @param: beg - beginning to read
 ** @return: Char* - return the next word
 */
 static char	*get_next_word(const char *string, int *beg)
@@ -46,10 +46,10 @@ static char	*get_next_word(const char *string, int *beg)
 }
 
 /*
-** This function gets array of words in string.
+** This function gets an array of words in string.
 **
-** @param: string - string of lines
-** @return: Char** - return array of words
+** @param: string - the string of lines
+** @return: Char** - return an array of words
 */
 static char	**get_array_words(const char *string)
 {
@@ -64,13 +64,13 @@ static char	**get_array_words(const char *string)
 }
 
 /*
-** This function allows to get the difference value between two files
+** This function get the difference value between two files,
 ** word by word.
-** Return the percentage of difference of strings
+** Return the percentage of difference two strings,
 ** word by word algorithm.
 **
-** @param: str_file1 - The string of the first file.
-** @param: str_file2 - The string of the second file.
+** @param: str_file1 - the string of the first file
+** @param: str_file2 - the string of the second file
 ** @return: Integer - return comparaison value in percentage
 */
 int	compare_words_strings(const char *string1, const char *string2)
