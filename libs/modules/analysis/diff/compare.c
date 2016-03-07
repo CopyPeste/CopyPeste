@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 /*
-** This function gets the number of words in a string.
+** Gets the number of words in a string.
 **
 ** @param: string - the string of lines
 ** @return: Integer - return the number of words in a line
@@ -20,7 +20,7 @@ static int	count_words(const char *string)
 }
 
 /*
-** This function gets words in a string, begin at Beg.
+** Gets words in a string, begin at Beg.
 **
 ** @param: string - the string of lines
 ** @param: beg - beginning to read
@@ -46,7 +46,7 @@ static char	*get_next_word(const char *string, int *beg)
 }
 
 /*
-** This function gets an array of words in string.
+** Gets an array of words in string.
 **
 ** @param: string - the string of lines
 ** @return: Char** - return an array of words
@@ -64,14 +64,14 @@ static char	**get_array_words(const char *string)
 }
 
 /*
-** This function get the difference value between two files,
+** Gets the percentage diference between two files,
 ** word by word.
-** Return the percentage of difference two strings,
+** Return the percentage difference between two strings,
 ** word by word algorithm.
 **
-** @param: str_file1 - the string of the first file
-** @param: str_file2 - the string of the second file
-** @return: Integer - return comparaison value in percentage
+** @param: str_file1 - string containing the first file
+** @param: str_file2 - string containing the second file
+** @return: Integer - return comparison value in percentage
 */
 int	compare_words_strings(const char *string1, const char *string2)
 {

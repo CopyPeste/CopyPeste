@@ -7,8 +7,7 @@
 #include <string.h>
 
 /*
-** This function remove characters
-** between Begin and End included
+** Removes characters between Begin and End included
 **
 ** @param: char *str - string
 ** @param: char *beg - first element
@@ -60,8 +59,7 @@ char	*filter_all_space(char *str)
 }
 
 /*
-** This function remove the multiple spaces
-** in the string
+** Removes all spaces in the string
 **
 ** @param: char *str - string
 ** @return: Char* - return Char* param
@@ -87,8 +85,7 @@ char	*filter_space(char *str)
 }
 
 /*
-** This function remove the multiple newlines
-** in the string
+** Removes all newlines in the string
 **
 ** @param: char *str - string
 ** @return: Char* - return Char* param
