@@ -39,21 +39,21 @@ static double compare_files_lev_percent(char *str1, char *str2)
   double prcent = 0;
   int nb_line = 0;
 
-  if (!str_file1 || !str_file2)
+  if (!str1 || !str2)
     return -1;
-  len1 = strlen(str_file1);
-  len2 = strlen(str_file2);
+  len1 = strlen(str1);
+  len2 = strlen(str2);
 
   while (len1 > i && len2 > j)
     {
-      size1 = get_size_line(str_file1, i);
-      size2 = get_size_line(str_file2, j);
+      size1 = get_size_line(str1, i);
+      size2 = get_size_line(str2, j);
 
-      str_file1[i + size1] = 0;
-      str_file2[j + size2] = 0;
+      str1[i + size1] = 0;
+      str2[j + size2] = 0;
 
-      prcent += compare_words_strings(str_file1 + i, str_file2 + j);
-      
+      prcent += compare_words_strings(str1 + i, str2 + j);
+
       i += size1 + 1;
       j += size2 + 1;
       ++nb_line;
