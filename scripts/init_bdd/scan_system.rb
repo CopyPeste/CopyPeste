@@ -32,12 +32,28 @@ class ScanSystem
   end
 
 
+  # Check if a file is a binary.
+  #
+  # @param [String] full path file
+  # @Return [Bool] return whether the file is a binary
+  def binary?(filename)
+    begin
+      fm = FileMagic.new(FileMagic::MAGIC_MIME)
+      !(fm.file(filename)=~ /^text\//)
+    ensure
+      fm.close
+    end
+  end
+
+
   # put files scaned in the list to be sort later
   #
   # @parma [String] file full path (/home/test/toto.c)
   def put_in_list(file)
-    @tab_file[@index] = file
-    @index += 1
+    if binary?(file) == false    
+      @tab_file[@index] = file
+      @index += 1
+    end
   end
 
 
@@ -53,13 +69,13 @@ class ScanSystem
     start(path)
   end
 
-
   # Create a hash that will contains informations about one file
   #
   # @param [ObjectId] the ObjectId of the extension (same ObjectId for all same extension)
   # @param [String] the complete path of the file
   # @Return [nil] return nil if the file don't exist or if the file is not readable
   def set_info_file(ext_id, files)
+
     if File.file?(files) == true && File.readable?(files)
       hash_info = {}
       hash_info[:name] = (File.split(files)).last

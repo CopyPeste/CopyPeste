@@ -3,6 +3,7 @@ require_relative '../../libs/modules/analysis/sort_file'
 require_relative '../../libs/database/DbHdlr'
 require 'mongo'
 require 'json'
+require 'filemagic'
 
 
 # Add document into the database
@@ -74,8 +75,10 @@ def sort_insert_db(file_hash, mongo, scan)
         json_tab << json_document
       end
     end
-    fill_db(mongo, "Fichier", json_tab, true)
-    set_collection_extension(mongo, json_tab[0], key)
+    if json_tab.empty? == false
+      fill_db(mongo, "Fichier", json_tab, true)
+      set_collection_extension(mongo, json_tab[0], key)
+    end
   end
   puts "\n\n"
   mongo.debug("Fichier")

@@ -25,11 +25,7 @@ end
 def open_and_send(fdup_tab, index)
   file1 = IO.read(fdup_tab[index])
   file2 = IO.read(fdup_tab[index + 1])
-  if file1 != nil && file2 != nil
-    Algorithms.fdupes_match(file1, file1.length, file2, file2.length) == 0 ? false : true
-  else
-    return false
-  end
+  Algorithms.fdupes_match(file1, file1.length, file2, file2.length) == 0 ? false : true
 end
 
 
