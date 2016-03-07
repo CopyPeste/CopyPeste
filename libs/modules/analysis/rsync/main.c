@@ -31,17 +31,14 @@ static char *get_string_file(char *path)
   fseek(ptr_file, 0L, SEEK_END);
   size = ftell(ptr_file);
   fseek(ptr_file, 0L, SEEK_SET);
-
-  buf = malloc(sizeof(char) * size);
+  buf = malloc(sizeof(*buf) * size + 1);
   if (!buf)
     return NULL;
 
   if ((int)fread(buf, 1, size, ptr_file) == -1)
     printf("fread Fail");
   buf[size] = 0;
-
   fclose(ptr_file);
-
   return buf;
 }
 
@@ -79,4 +76,3 @@ int	main(int ac, char **av)
     printf("I need arguments ./my_rsync /path/file/1 /path/file/2\n");
   return ret;
 }
-
