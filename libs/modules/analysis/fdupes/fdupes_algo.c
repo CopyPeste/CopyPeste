@@ -20,10 +20,12 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
+ * Github : https://github.com/adrianlopezroche/fdupes.git
+ * =======================================================
+ *
  * This algorithm is taken from the real fdupes programme
  * and has been modified for the CopyPeste project.
  *
- * Github : https://github.com/adrianlopezroche/fdupes.git
 */
 
 
