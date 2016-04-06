@@ -20,3 +20,5 @@ $> ruby main.rb /usr/ports
 $> cd modules/analysis/fdf
 $> ruby fdf -es
 ```
+
+For more information, please check [our wiki](https://github.com/CopyPeste/CopyPeste/wiki) (in french for the moment). 
