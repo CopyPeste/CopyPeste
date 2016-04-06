@@ -21,4 +21,4 @@ $> cd modules/analysis/fdf
 $> ruby fdf -es
 ```
 
-For more information, please check [our wiki](https://github.com/CopyPeste/CopyPeste/wiki) (in french for the moment). 
+For more information, please check our [wiki](https://github.com/CopyPeste/CopyPeste/wiki) (in french for the moment). 
