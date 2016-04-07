@@ -1,7 +1,7 @@
 
 class Collection
   attr_accessor :collection_name
-
+  
   def initalize(collection_name)
     @collection_name = collection_name
   end
