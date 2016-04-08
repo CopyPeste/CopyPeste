@@ -1,6 +1,8 @@
 
 #pragma once
 
+#define MAX_GAP 10
+
 /* PROTOTYPES */
 
 /*
