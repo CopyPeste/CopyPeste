@@ -5,8 +5,11 @@ require_relative '../../../libs/modules/analysis/sort_project'
 
 class Sps
   attr_accessor :options
-  
 
+  
+  # Initialize th Sps class
+  #
+  # @param [Array] Options for the Search project similarities (sps) module
   def initialize(options)
     @options = options
     #@fichier = Collection.new("Fichier")
@@ -17,25 +20,30 @@ class Sps
   end
   
 
+  # Function called to start the Sps module
   def start
-    get_file_from_db
-  end
-  
-
-  private 
-  
-
-  def get_file_from_db
     @hash_files = {:files => ["/projet3/path1...etc", "/projet2/path2...etc",
                               "/projet1/path3...etc","/projet3/path4...etc",
                               "/projet2/path6...etc","/projet1/path5...etc",
                               "/projet1/path7...etc", ]}
-    #@hash_files = @fichier.get_doc
+    get_file_from_db
     sort_file
     send_project_to_compare
   end
   
+  private 
+  
 
+  # This function get the files for project to analyses 
+  def get_file_from_db
+    #@hash_files = @fichier.get_doc(nil)
+  end
+  
+
+  # This functions set the pourcent average of two projects
+  #
+  # @param [Array] Array containing all files similarities from two project
+  # in pourcent 
   def average(results)
     tmp = 0
     results.each do |nb|
@@ -44,6 +52,12 @@ class Sps
     @average_res = tmp/results.size()
   end
 
+
+  # This function compare each files of two projects and check there similarities
+  # in pourcent
+  #
+  # @param [Array] containe all the files from one project
+  # @param [Array] containe all the files from an other project
   def compare_project(p_1, p_2)
     size_p_1 = p_1.size()
     size_p_2 = p_2.size()
@@ -61,6 +75,7 @@ class Sps
   end
 
   
+  # This function send the projects to compare two by two
   def send_project_to_compare
     size = @hash_key.size()
     (0..size - 2).each do |i|
@@ -78,6 +93,10 @@ class Sps
   end
 
   
+  # This function save the result of two compared project in the databases
+  #
+  # @param [String] the name of the project
+  # @param [String] the name of an other project
   def save_in_db(p_1, p_2)
     if @duplicate.is_in_db?({:project => [p_1, p_2]})
       @duplicate.update_doc({:project => [p_1, p_2], :average => @average_res})
@@ -88,6 +107,8 @@ class Sps
   end
 
   
+  # This function sort the file by projects in a hash ex :
+  # hash = {:project1 => ["file1", "file2", etc], :project2 => ["file", "other_file"], etc}
   def sort_file
     tab_files = []
     @sort_project.sort_by_project(@hash_files)
