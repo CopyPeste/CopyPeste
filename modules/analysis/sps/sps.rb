@@ -36,17 +36,28 @@ class Sps
   end
   
 
+  def average(results)
+    tmp = 0
+    results.each do |nb|
+      tmp = tmp + nb
+    end
+    @average_res = tmp/results.size()
+  end
+
   def compare_project(p_1, p_2)
     size_p_1 = p_1.size()
     size_p_2 = p_2.size()
+    results = []
     (0..size_p_1 - 1).each do |i|
       #file1 = IO.read(p_1[i])
       (0..size_p_2 - 1).each do |j|
         #file2 = IO.read(p_2[j])
         puts "file 1 : #{p_1[i]} compare with file 2 : #{p_2[j]}"
-        #Algorithms.diff(file1, file2)
+        #results << Algorithms.diff(file1, file2)
       end
     end
+    results = [62, 15, 78, 14, 16, 18, 2, 6, 90, 50, 60, 5, 0, 78, 98, 100, 100, 4, 86]
+    average(results)
   end
 
   
@@ -59,21 +70,20 @@ class Sps
           @hash_files["#{@hash_key[i]}"], 
           @hash_files["#{@hash_key[j]}"]
         )
+        #save_in_db(@hash_key[i]}, @hash_key[j])
+        puts "average = #{@average_res}"
       end
     end
-    
-    #save_in_db(result)
+
   end
 
   
-  def save_in_db(result)
-    # in_db = @duplicate.get_doc
-    # result.each do |result|
-    #   if in_db.contain(result) == false
-    #     @duplicate.add_doc(result)
-    #   else
-    #     @duplicate.update_doc(result)
-    #   end
+  def save_in_db(p_1, p_2)
+    if @duplicate.is_in_db?({:project => [p_1, p_2]})
+      @duplicate.update_doc({:project => [p_1, p_2], :average => @average_res})
+    else
+      @duplicate.add_doc({:project => [p_1, p_2], :average => @average_res})
+    end
     
   end
 

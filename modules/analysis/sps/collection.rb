@@ -6,15 +6,18 @@ class Collection
     @collection_name = collection_name
   end
 
-  def get_doc
+  def get_doc(query)
   end
 
-  def add_doc
+  def add_doc(query)
   end
 
-  def update_doc
+  def update_doc(query)
   end
 
-  def delete_doc
+  def delete_doc(query)
+  end
+
+  def is_in_db?(query)
   end
 end
