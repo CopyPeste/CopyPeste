@@ -86,7 +86,7 @@ class Sps
           @hash_files["#{@hash_key[j]}"]
         )
         #save_in_db(@hash_key[i]}, @hash_key[j])
-        puts "average = #{@average_res}"
+        puts "average = #{@average_res}%"
       end
     end
 
