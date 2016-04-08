@@ -3,13 +3,13 @@ class SortProject
 
   def initialize
     @hash_files = {}
+    @hash_key = []
   end
   
   def sort_by_project(hash_src)
     hash_src.each_value do |value|
       value.each do |file|
         id = clean_path(file)
-        puts id
         if @hash_files["#{id}"]
           @hash_files["#{id}"] << file
         else
