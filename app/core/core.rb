@@ -1,5 +1,7 @@
+require 'colorize'
 require_relative '../../libs/app/dynamic_loading/module_loader.rb'
 require_relative '../commands/command.rb'
+require_relative './tmp_logo'
 
 class Core
 
@@ -15,6 +17,7 @@ class Core
   def start
    # load_module("./modules/analysis/", "fdf.rb")
 
+   puts LOGO.blue
    puts "Core is running !"
    while @graphic_mod.running?
     cmd_hash = @graphic_mod.loop

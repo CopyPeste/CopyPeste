@@ -23,7 +23,7 @@ consoleGraphicalModule  do
     end
 
     def loop
-      print "$> "
+      print "cp > "
       cmd = gets
       cmd = cmd.delete!("\n")
       puts "Graphic says that your command is #{cmd}."
