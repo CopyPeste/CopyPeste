@@ -53,43 +53,12 @@ class Sps
   end
 
 
-  # This function compare each files of two projects and check there similarities
-  # in pourcent
-  #
-  # @param [Array] containe all the files from one project
-  # @param [Array] containe all the files from an other project
-  def compare_project(p_1, p_2)
-    size_p_1 = p_1.size()
-    size_p_2 = p_2.size()
-    results = []
-    (0..size_p_1 - 1).each do |i|
-      #file1 = IO.read(p_1[i])
-      (0..size_p_2 - 1).each do |j|
-        #file2 = IO.read(p_2[j])
-        puts "file 1 : #{p_1[i]} compare with file 2 : #{p_2[j]}"
-        #results << Algorithms.diff(file1, file2)
-      end
-    end
-    results = [62, 15, 78, 14, 16, 18, 2, 6, 90, 50, 60, 5, 0, 78, 98, 100, 100, 4, 86]
+  def compare_project
     average(results)
   end
 
   
-  # This function send the projects to compare two by two
   def send_project_to_compare
-    size = @hash_key.size()
-    (0..size - 2).each do |i|
-      (i+1..size - 1).each do |j|
-        puts "\n#{@hash_key[i]} compare with #{@hash_key[j]}"
-        compare_project(
-          @hash_files["#{@hash_key[i]}"], 
-          @hash_files["#{@hash_key[j]}"]
-        )
-        #save_in_db(@hash_key[i]}, @hash_key[j])
-        puts "average = #{@average_res}%"
-      end
-    end
-
   end
 
   
