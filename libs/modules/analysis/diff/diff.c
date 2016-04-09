@@ -15,9 +15,10 @@
 ** This function return one if line into have a similarity in file
 ** else return zero
 **
-** @param: line - the string of lines
-** @param: struct_file - struct of file
-** @return: Integer - return percentage of similarity
+** @param: line - the structure of lines
+** @param: struct_file - structure of file
+** @param: at - line at begin research
+** @return: Integer - return if they are a similarity
 */
 static int find_line_in_file(s_line *line, s_file *struct_file, int at)
 {
@@ -39,8 +40,8 @@ static int find_line_in_file(s_line *line, s_file *struct_file, int at)
 ** This function gets the percentage of similarity between 2 files
 ** line per line
 **
-** @param: struct_file - struct of file one
-** @param: struct_file - struct of file two
+** @param: struct_file - structure of file one
+** @param: struct_file - structure of file two
 ** @return: Integer - return percentage of similarity
 */
 int compare_lines_in_file(s_file *struct_file1, s_file *struct_file2)
@@ -69,8 +70,8 @@ int compare_lines_in_file(s_file *struct_file1, s_file *struct_file2)
 ** Return the percentage of difference to obtain the same file,
 ** with word by word algorithm.
 **
-** @param: str_file1 - the string of the first file
-** @param: str_file2 - the string of the second file
+** @param: struct_file1 - the structure of file one
+** @param: struct_file2 - the structure of file two
 ** @return: Integer - return comparaison value in percentage
 */
 int compare_files_percent(s_file *struct_file1, s_file *struct_file2)

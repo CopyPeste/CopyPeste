@@ -41,10 +41,10 @@ static int	count_words(const char *string)
 }
 
 /*
-** Set an array of line in file.
+** Set a stucture of words by structure of line.
 **
-** @param: file - the file
-** @return: Char** - return an array of lines
+** @param: struct_file - the structure of line
+** @return: int - return zero if that worked
 */
 int	set_array_words(s_line *struct_line)
 {
@@ -76,10 +76,10 @@ int	set_array_words(s_line *struct_line)
 }
 
 /*
-** Set an array of line in file.
+** Set a stucture of line by structure of file.
 **
-** @param: file - the file
-** @return: Char** - return an array of lines
+** @param: struct_file - the stucture of file
+** @return: int - return zero if that worked
 */
  int	set_array_lines(s_file *struct_file)
 {
