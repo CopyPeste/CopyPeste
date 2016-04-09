@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "file_handler.h"
+
 /* PROTOTYPES */
 
 /*
@@ -13,4 +15,4 @@
 ** @param: str_file2 - string representing the second file
 ** @return: Integer - return comparison value in percentage
 */
-int	compare_words_strings(const char *string1, const char *string2);
+int	compare_words_strings(const s_line *string1, const s_line *string2);
