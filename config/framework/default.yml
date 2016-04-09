@@ -1,0 +1,6 @@
+modules:
+    graphics:
+        dir: "./modules/graphics/"
+        default: "default.rb"
+    analysis:
+        dir: ""
