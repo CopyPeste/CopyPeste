@@ -7,37 +7,46 @@ consoleGraphicalModule  do
 
   usage { 'Just run it!' }
 
-  init { ConsoleMode.new() }
+  init {
+    ConsoleMode.new()
+  }
+
 
   impl {
-    require '../modules/graphics/console_mode/console_ui.rb'
-    require '../modules/graphics/console_mode/received_msgs_mng.rb'
-    require '../modules/graphics/console_mode/core_requests_handler.rb'
+  #  puts Dir.pwd
+  #  require_relative './console_mode/console_ui'
+  # require 'console_mode/console_ui'
 
-    class ConsoleMode
-      def initialize
-       @ui = ConsoleUi.new
-       @rcv_msgs_mng = ReceivedMessagesManager.new
-       @core_requests_handler = CoreRequestsHandler.new
-       @ui.display_prompt
-     end
+  class ConsoleMode
+    def initialize
+      @alive = true
+    end
 
-     def _loop(selector)
-       json_request = @rcv_msgs_mng.jsonize_last_msg
-       @core_requests_handler.execute json_request unless json_request.nil?
-       @ui.display_prompt if @rcv_msgs_mng.is_msg_treated?
-     end
+    def loop
+      print "$> "
+      cmd = gets
+      cmd = cmd.delete!("\n")
+      puts "Graphic says that your command is #{cmd}."
 
-     def _callback_for_read(source_stream)
-       message = source_stream.dequeue.chomp()
-       puts "|_ Received '#{message}' from server."
-       @rcv_msgs_mng.add_new_msg message
-     end
+      cmd_hash = {:cmd => Unknown}
+      if cmd == "exit"
+        @alive = false
+        cmd_hash[:cmd] = Exit
+      elsif cmd == "help"
+        cmd_hash[:cmd] = Help
+      end
+      cmd_hash
+    end
 
-     def _callback_for_write(source_stream)
-       puts "Just wrote a message"
-     end
-   end
- }
+    def running?
+      @alive
+    end
+
+    def show(str)
+      puts str
+    end
+
+  end
+}
 
 end
