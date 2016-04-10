@@ -9,10 +9,12 @@ MKDIR	=	mkdir -p
 ## compilation paths
 ##
 LIB_NAME =	./libs/algorithms.so
+
 SRCS	 =	./levenshtein/levenshtein.c \
 		./rsync/rsync.c \
 		./fdupes/fdupes_algo.c \
 		./fdupes/md5/md5.c \
+		./hamming_distance/hamming_distance.c
 
 LIB_DIRECTORY =	./libs
 

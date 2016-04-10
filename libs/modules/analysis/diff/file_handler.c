@@ -12,40 +12,41 @@
 ** Gets the number of line in a file.
 **
 ** @param: file - the file
-** @return: Integer - return the number of words in a line
+** @return: Integer - returns the number of words in a line
 */
-static unsigned int	count_lines(const char *file)
+static
+unsigned int	count_lines(const char *file)
 {
-  unsigned int	cpt = 0;
+  unsigned int	cpt = 1;
 
   while (*file++)
-    if (*file == '\n')
-      ++cpt;
-  return cpt + 1;
+    cpt += (*file == '\n');
+   return cpt;
 }
 
 /*
 ** Gets the number of words in a string.
 **
 ** @param: string - the string of lines
-** @return: Integer - return the number of words in a line
+** @return: Integer - returns the number of words in a line
 */
-static int	count_words(const char *string)
+static
+int	count_words(const char *string)
 {
-  int	cpt = 0;
+  int	cpt = 1;
 
   while (*string++)
-    if (*string == ' ' || *string == '\t')
-      ++cpt;
-  return cpt + 1;
+    cpt += (*string == ' ' || *string == '\t');
+  return cpt;
 }
 
 /*
-** Set a stucture of words by structure of line.
+** Puts a words stucture into a file structure.
 **
-** @param: struct_file - the structure of line
-** @return: int - return zero if that worked
+** @param: struct_file - the line structure
+** @return: int - returns zero in case of success, -1 if failure
 */
+static
 int	set_array_words(s_line *struct_line)
 {
   /* char *tmp_line; */
@@ -76,12 +77,13 @@ int	set_array_words(s_line *struct_line)
 }
 
 /*
-** Set a stucture of line by structure of file.
+** Puts a line stucture into a file structure
 **
-** @param: struct_file - the stucture of file
-** @return: int - return zero if that worked
+** @param: struct_file - the file stucture
+** @return: int - returns zero in case of success, -1 if failure
 */
- int	set_array_lines(s_file *struct_file)
+static
+int	set_array_lines(s_file *struct_file)
 {
   /* char *tmp_file; */
   char *str1;
@@ -113,10 +115,11 @@ int	set_array_words(s_line *struct_line)
 }
 
 /*
-** Initialize a new structure, this contains file informations.
+** Initializes a new structure, containing file informations.
 **
-** @param: str_file - the string of file
-** @return: s_file * - return the new structure of file
+** @param: str_file - string representing a file
+** @return: s_file * - returns the new file structure
+** or -1 in case of failure
 */
 s_file	*init_file_handler(char *str_file)
 {
@@ -140,9 +143,9 @@ s_file	*init_file_handler(char *str_file)
 }
 
 /*
-** Destroy the structure of file.
+** Destroy a file structure
 **
-** @param: struct_file - the structure of file
+** @param: struct_file - file structure
 ** @return: void
 */
 void	destroy_file_handler(s_file *struct_file)

@@ -25,19 +25,19 @@ typedef struct	t_word
   char		*word;
 } s_word;
 
-
 /*
-** Initialize a new structure, this contains file informations.
+** Initializes a new structure, containing file informations.
 **
-** @param: str_file - the string of file
-** @return: s_file * - return the new structure of file
+** @param: str_file - string representing a file
+** @return: s_file * - returns the new file structure
+** or -1 in case of failure
 */
 s_file	*init_file_handler(char *str_file);
 
 /*
-** Destroy the structure of file.
+** Destroy a file structure
 **
-** @param: struct_file - the structure of file
+** @param: struct_file - file structure
 ** @return: void
 */
 void	destroy_file_handler(s_file *struct_file);

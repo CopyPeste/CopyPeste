@@ -6,16 +6,18 @@
 #include <stdio.h>
 
 /*
-** Gets the percentage diference between two structure words,
+** Gets the percentage of difference between two structures words,
 ** compares word by word.
 ** Return the number of same word between words of structure,
 ** word by word algorithm.
 **
 ** @param: words1 - structure of words one
 ** @param: words2 - structure of words two
-** @return: Integer - return comparison value
+** @return: Integer - returnx the comparison value
+** or -1 in case of null words
 */
- int	compare_arrays(s_word **words1, s_word **words2)
+static
+int	compare_arrays(s_word **words1, s_word **words2)
 {
   int	result = 0;
   int	i, j;
@@ -39,14 +41,15 @@
 }
 
 /*
-** Gets the percentage difference between two structure of line,
+** Gets the percentage of difference between two structures of line,
 ** compares word by word.
-** Return the percentage difference between two strings,
+** Return the percentage of difference between two strings,
 ** word by word algorithm.
 **
 ** @param: line1 - structure of line one
 ** @param: line2 - structure of line two
-** @return: Integer - return comparison value in percentage
+** @return: Integer - returns the comparison value in percentage
+** or -1 in case of null strings
 */
 int	compare_words_strings(const s_line *line1, const s_line *line2)
 {
