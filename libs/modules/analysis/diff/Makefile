@@ -17,6 +17,7 @@ SRCS =		main.c \
 		diff.c \
 		filter.c \
 		compare.c \
+		file_handler.c \
 
 OBJS =		$(SRCS:.c=.o)
 

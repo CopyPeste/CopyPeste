@@ -28,7 +28,7 @@ void	initialize(matrix_t matrix[MATRIX_SIZE][MATRIX_SIZE])
 int			levenshtein(const char *str1, const char *str2)
 {
   static matrix_t	matrix[MATRIX_SIZE][MATRIX_SIZE] = {{NOT_INITIALIZED}};
-  int			i, j;
+  size_t		i, j;
   size_t		s1 = strlen(str1);
   size_t		s2 = strlen(str2);
 
