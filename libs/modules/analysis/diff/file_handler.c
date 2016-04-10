@@ -48,7 +48,7 @@ static int	count_words(const char *string)
 */
 int	set_array_words(s_line *struct_line)
 {
-  char *tmp_line;
+  /* char *tmp_line; */
   char *str1;
   int j;
   const char *delim = " \t\n";
@@ -57,9 +57,9 @@ int	set_array_words(s_line *struct_line)
   if (!(struct_line->words = malloc(sizeof(s_word *) * (struct_line->nb_words + 1))))
     return -1;
 
-  tmp_line = strdup(struct_line->line);
+  struct_line->tmp_line = strdup(struct_line->line);
 
-  for (j = 0, str1 = tmp_line; ; j++, str1 = NULL)
+  for (j = 0, str1 = struct_line->tmp_line; ; j++, str1 = NULL)
     {
       if (!(struct_line->words[j] = malloc(sizeof(s_word) + 1)))
 	return -1;
@@ -83,7 +83,7 @@ int	set_array_words(s_line *struct_line)
 */
  int	set_array_lines(s_file *struct_file)
 {
-  char *tmp_file;
+  /* char *tmp_file; */
   char *str1;
   int j;
   const char *delim = "\n";
@@ -92,9 +92,9 @@ int	set_array_words(s_line *struct_line)
   if (!(struct_file->lines = malloc(sizeof(s_line *) * (struct_file->nb_lines + 1))))
     return -1;
 
-  tmp_file = strdup(struct_file->file);
+  struct_file->tmp_file = strdup(struct_file->file);
 
-  for (j = 0, str1 = tmp_file; ; j++, str1 = NULL)
+  for (j = 0, str1 = struct_file->tmp_file; ; j++, str1 = NULL)
     {
       if (!(struct_file->lines[j] = malloc(sizeof(s_line) + 1)))
 	return -1;
@@ -162,7 +162,9 @@ void	destroy_file_handler(s_file *struct_file)
 		free(struct_file->lines[i]->words);
 	      }
 	    free(struct_file->lines[i]);
+	    free(struct_file->lines[i]->tmp_line);
 	  }
+      free(struct_file->tmp_file);
       free(struct_file->file);
       free(struct_file->lines);
       free(struct_file);

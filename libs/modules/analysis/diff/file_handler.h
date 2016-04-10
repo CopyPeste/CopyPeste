@@ -6,6 +6,7 @@ typedef struct	t_file
   unsigned int	size;
   unsigned int	nb_lines;
   char		*file;
+  char		*tmp_file;
   struct t_line	**lines;
 } s_file;
 
@@ -14,6 +15,7 @@ typedef struct	t_line
   unsigned int	size;
   unsigned int	nb_words;
   char		*line;
+  char		*tmp_line;
   struct t_word	**words;
 } s_line;
 
