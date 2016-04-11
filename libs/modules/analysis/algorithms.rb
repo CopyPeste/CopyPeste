@@ -6,4 +6,5 @@ module Algorithms
   attach_function :levenshtein, [:string, :string], :int
   attach_function :fdupes_match, [:string, :int, :string, :int], :int
   attach_function :levenshtein_distance, [:string, :string], :int
+  attach_function :diff, [:string, :string], :int
 end

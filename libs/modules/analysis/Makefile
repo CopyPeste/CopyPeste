@@ -14,7 +14,11 @@ SRCS	 =	./levenshtein/levenshtein.c \
 		./rsync/rsync.c \
 		./fdupes/fdupes_algo.c \
 		./fdupes/md5/md5.c \
-		./hamming_distance/hamming_distance.c
+		./hamming_distance/hamming_distance.c \
+		./diff/diff.c \
+		./diff/filter.c \
+		./diff/compare.c \
+		./diff/file_handler.c \
 
 LIB_DIRECTORY =	./libs
 
