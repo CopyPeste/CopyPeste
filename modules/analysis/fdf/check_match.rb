@@ -51,6 +51,9 @@ end
 # @param [Array] Array of results of the levenshtein : lev_result[0] = levenshtein(fdup_tab[0], fdup_tab[1])
 # @Return [Array] return an Array of hash that contain the result of the FDF modules
 def check_files_similarity(fdup_tab, lev_result)
+
+  options = "diff" # Will be removed when options will be implemented and when fdf will be an object
+
   i = 0
   tab_send_to_mongo = []
   size = fdup_tab.size()
@@ -62,6 +65,9 @@ def check_files_similarity(fdup_tab, lev_result)
         result = condition ? open_and_send(fdup_tab, index) : true
       else
         result = true
+        if options == "diff"
+          result = open_and_send(fdup_tab, index)
+        end
       end
       tab_send_to_mongo = save_result_data(tab_send_to_mongo, lev_result[index/2],
                                            result, fdup_tab[index], fdup_tab[index + 1])
