@@ -13,6 +13,9 @@ SRCS	 =	./levenshtein/levenshtein.c \
 		./rsync/rsync.c \
 		./fdupes/fdupes_algo.c \
 		./fdupes/md5/md5.c \
+		./diff/diff.c \
+		./diff/filter.c \
+		./diff/compare.c \
 
 LIB_DIRECTORY =	./libs
 
