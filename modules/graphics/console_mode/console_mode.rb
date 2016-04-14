@@ -13,40 +13,40 @@ consoleGraphicalModule  do
 
 
   impl {
-  #  puts Dir.pwd
-  #  require_relative './console_mode/console_ui'
-  # require 'console_mode/console_ui'
+    CopyPeste.require_graphic_mod 'console_mode/parser'
 
-  class ConsoleMode
-    def initialize
-      @alive = true
-    end
-
-    def loop
-      print "cp > "
-      cmd = gets
-      cmd = cmd.delete!("\n")
-      puts "Graphic says that your command is #{cmd}."
-
-      cmd_hash = {:cmd => Unknown}
-      if cmd == "exit"
-        @alive = false
-        cmd_hash[:cmd] = Exit
-      elsif cmd == "help"
-        cmd_hash[:cmd] = Help
+    class ConsoleMode
+      def initialize
+        @alive = true
+        @prompt = "cp > "
       end
-      cmd_hash
-    end
 
-    def running?
-      @alive
-    end
+      def loop
+        print @prompt
+        cmd = gets
+        cmd_hash = Parser.parse cmd
+        @alive = false if cmd_hash[:cmd] == "exit"
+        cmd_hash
+      end
 
-    def show(str)
-      puts str
-    end
+      def running?
+        @alive
+      end
 
-  end
-}
+      def show(hash)
+        if hash[:code] == 1
+          puts "[debug] Command: #{hash[:data][:cmd]} - Ouput: #{hash[:data][:output]}".green
+          if hash[:data][:cmd] == "use_analysis_module"
+            @prompt = "cp (#{hash[:data][:output].red}) > "
+          end
+        elsif hash[:code] == 2
+          puts "[debug] Msg to display: #{hash[:data][:msg]}".green
+        elsif hash[:code] == 3
+          puts "[debug] Error: #{hash[:data][:output]}".green
+        end
+      end
+
+    end
+  }
 
 end

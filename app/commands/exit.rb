@@ -1,7 +1,7 @@
 module Exit
   def run
-    puts "Command hash is #{@cmd_hash}"
-    @show.call "CopyPeste ended normally !"
+    puts "[debug] Command hash is #{@cmd_hash}".green
+    graphic_cmd_return(1, "CopyPeste ended normally !", [])
   end
 
   def init

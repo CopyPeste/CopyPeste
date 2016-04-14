@@ -3,4 +3,4 @@ modules:
         dir: "./modules/graphics/"
         default: "default.rb"
     analysis:
-        dir: ""
+        dir: "./modules/analysis/"

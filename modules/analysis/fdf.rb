@@ -15,17 +15,23 @@ fdfAnalysisModule do
   init { Fdf.new() }
 
   impl {
+    require 'ostruct'
     require 'json'
-    $LOAD_PATH << './modules/analysis/fdf/'
-    $LOAD_PATH << './libs/modules/analysis/'
-    $LOAD_PATH << './libs/database/'
-    require 'use_levenshtein'
-    require 'check_match'
-    require 'algorithms'
-    require 'sort_file'
-    require 'DbHdlr'
+    CopyPeste.require_analysis_mod 'fdf/use_levenshtein'
+    CopyPeste.require_analysis_mod 'fdf/check_match'
+    CopyPeste.require_analysis_lib 'algorithms'
+    CopyPeste.require_analysis_lib 'sort_file'
+    CopyPeste.require_database_lib 'DbHdlr'
 
     class Fdf
+      attr_accessor :options
+      attr_accessor :show
+
+      def initialize
+        @options = OpenStruct.new
+        @show = nil
+      end
+
       # Put FDF results in database (collection : Duplicate)
       def put_result_in_database(mongo, data)
         data.each do |document|
@@ -203,6 +209,10 @@ fdfAnalysisModule do
       end
 
       def get_opts
+        {
+          "e" => "sort by extension.",
+          "s" => "sort by size."
+        }
       end
 
 
@@ -211,7 +221,8 @@ fdfAnalysisModule do
       # -e sort by extension.
       # -s sort by size.
       # -se|-es|-e -s| sort by extention and size.
-      def run Options
+      def run
+        @show.call "[debug] opt: #{@options.test}".green
         rules = nil
         if ARGV.size >= 1
           rules = ""
@@ -220,6 +231,7 @@ fdfAnalysisModule do
           end
         end
         mongo = DbHdlr.new()
+        #rules = @options.test
         init_fdf(mongo, rules)
       end
     end

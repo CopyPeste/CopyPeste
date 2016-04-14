@@ -1,12 +1,12 @@
 module Help
   def run
-    @core_state = 2
-    puts "Command hash is #{@cmd_hash}"
-    @show.call "Command help is running !"
+    puts "[debug] Command hash is #{@cmd_hash}".green
+    graphic_cmd_return(1, "Command help is running !", [])
+    #@core_state.analysisModule.run
   end
 
   def init
-    @return = true
+    @update_core_state = true
   end
 
   def self.extended(mod)
