@@ -1,7 +1,6 @@
 module Unknown
   def run
-    puts "[debug] Command hash is #{@cmd_hash}".green
-    graphic_cmd_return(1, "Error: Command not found !", [])
+    @graph_com.cmd_return(@cmd, "Command not found !", true)
   end
 
   def init

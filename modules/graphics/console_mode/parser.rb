@@ -16,13 +16,19 @@ class Parser
       cmd_hash[:cmd] = "exit"
     elsif cmd == "lam"
       cmd_hash[:cmd] = "list_analysis_modules"
+    elsif cmd == "set_opts"
+      cmd_hash[:cmd] = "set_analysis_mod_options"
+    elsif cmd == "show_opts"
+      cmd_hash[:cmd] = "show_analysis_mod_options"
     elsif cmd == "use"
       cmd_hash[:cmd] = "use_analysis_module"
+    elsif cmd == "run"
+      cmd_hash[:cmd] = "run_analysis_module"
     else
       cmd_hash[:cmd] = cmd
     end
 
-    puts "[debug] Graphic says that your command is #{cmd_hash}.".green
+    puts "[info][Graphic] Says that your command is #{cmd_hash}.".green
 
     cmd_hash
 

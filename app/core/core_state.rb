@@ -5,8 +5,6 @@ class CoreState
   def initialize
     @analysisModule = nil
     @conf = nil
+    @analysisModOpts = {}
   end
-
-
-
 end

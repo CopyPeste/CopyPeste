@@ -1,6 +1,6 @@
 modules:
     graphics:
-        dir: "./modules/graphics/"
-        default: "default.rb"
+        dir: "/modules/graphics/"
+        default: "console_mode/console_mode.rb"
     analysis:
-        dir: "./modules/analysis/"
+        dir: "/modules/analysis/"

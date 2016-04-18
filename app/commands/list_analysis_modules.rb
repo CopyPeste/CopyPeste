@@ -1,13 +1,12 @@
 module ListAnalysisModules
   def run
-    puts "[debug] Command hash is #{@cmd_hash}".green
-    files = Dir[@core_state.conf['modules']['analysis']['dir'] + "/*/"]
+    files = list_files_from_dir(CpRequire.base_path \
+      + @core_state.conf['modules']['analysis']['dir'])
     available_analysis_mods = []
     files.each do |mod|
       available_analysis_mods.push(File.basename(mod))
     end
-    #puts available_analysis_mods
-    graphic_cmd_return(1, available_analysis_mods, [])
+    @graph_com.cmd_return(@cmd, available_analysis_mods, false)
   end
 
   def init

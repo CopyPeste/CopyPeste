@@ -13,16 +13,22 @@ consoleGraphicalModule  do
 
 
   impl {
-    CopyPeste.require_graphic_mod 'console_mode/parser'
+    require 'tty'
+    CpRequire.modules 'graphics/console_mode/parser'
+    CpRequire.modules 'graphics/console_mode/requests/analysis_requests'
+    CpRequire.modules 'graphics/console_mode/requests/core_requests'
 
     class ConsoleMode
+
+
       def initialize
         @alive = true
-        @prompt = "cp > "
+        @core_req = CoreRequests.new
+        @analysis_req = AnalysisRequests.new
       end
 
       def loop
-        print @prompt
+        print ConsoleDisplay.prompt
         cmd = gets
         cmd_hash = Parser.parse cmd
         @alive = false if cmd_hash[:cmd] == "exit"
@@ -33,16 +39,11 @@ consoleGraphicalModule  do
         @alive
       end
 
-      def show(hash)
-        if hash[:code] == 1
-          puts "[debug] Command: #{hash[:data][:cmd]} - Ouput: #{hash[:data][:output]}".green
-          if hash[:data][:cmd] == "use_analysis_module"
-            @prompt = "cp (#{hash[:data][:output].red}) > "
-          end
-        elsif hash[:code] == 2
-          puts "[debug] Msg to display: #{hash[:data][:msg]}".green
-        elsif hash[:code] == 3
-          puts "[debug] Error: #{hash[:data][:output]}".green
+      def exec(hash)
+        if hash[:code] < 20
+          @core_req.exec hash
+        elsif hash[:code] > 19 && hash[:code] < 30
+          @analysis_req.exec hash
         end
       end
 

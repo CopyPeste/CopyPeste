@@ -3,6 +3,10 @@ require_relative './exit.rb'
 require_relative './unknown.rb'
 require_relative './list_analysis_modules.rb'
 require_relative './use_analysis_module.rb'
+require_relative './run_analysis_module.rb'
+require_relative './set_analysis_mod_options.rb'
+require_relative './show_analysis_mod_options.rb'
+CpRequire.app 'core/utils'
 
 class Command
   attr_accessor :type
@@ -11,14 +15,19 @@ class Command
     "help" => Help,
     "exit" => Exit,
     "list_analysis_modules" => ListAnalysisModules,
-    "use_analysis_module" => UseAnalysisModule
+    "use_analysis_module" => UseAnalysisModule,
+    "run_analysis_module" => RunAnalysisModule,
+    "set_analysis_mod_options" => SetAnalysisModOptions,
+    "show_analysis_mod_options" => ShowAnalysisModOptions
   }
 
-  def initialize (cmd_hash, display_func, core_state)
+
+
+  def initialize (cmd_hash, graph_com, core_state)
     @type = []
     @cmd = cmd_hash[:cmd]
     @opts = cmd_hash[:opts]
-    @show = display_func
+    @graph_com = graph_com
     @core_state = core_state
     @update_core_state = false
 
@@ -28,42 +37,25 @@ class Command
       cmd = Unknown
     end
     self.extend(cmd)
+    @graph_com.info(GraphicCom.codes[:core], "Command is #{@cmd} with following opts #{@opts}")
   end
 
-  def graphic_cmd_return (code, output, errors)
-    format_hash = {
-      :code => code,
-      :data => {
-        :cmd => @cmd,
-        :output => output},
-        :errors => errors
-      }
-      @show.call format_hash
-    end
 
-    def run
-      @show.call "Error: please implement run command method."
-    end
-
-    def init
-      @show.call "Error: please implement init command method."
-    end
-
-    def update_core_state?
-      @update_core_state
-    end
-
-    def get_core_update
-      @core_state
-    end
-
-    private
-
-    def load_module (dir, file)
-      path = dir + file
-      loaded_mod = ModuleLoading::Loader.load path
-      loaded_mod.__cp_init__
-    end
-
-
+  def run
+    #@exec.call "Error: please implement run command method."
   end
+
+  def init
+    #@exec.call "Error: please implement init command method."
+  end
+
+  def update_core_state?
+    @update_core_state
+  end
+
+  def get_core_update
+    @core_state
+  end
+
+
+end

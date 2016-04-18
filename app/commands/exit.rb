@@ -1,7 +1,6 @@
 module Exit
   def run
-    puts "[debug] Command hash is #{@cmd_hash}".green
-    graphic_cmd_return(1, "CopyPeste ended normally !", [])
+    @graph_com.cmd_return(@cmd, "CopyPeste ended normally !", false)
   end
 
   def init

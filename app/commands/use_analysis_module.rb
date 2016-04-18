@@ -1,18 +1,18 @@
 module UseAnalysisModule
 
   def run
-    puts "[debug] Command hash is #{@cmd_hash}".green
-    files = Dir[@core_state.conf['modules']['analysis']['dir'] + "/*/"]
-    available_analysis_mods = []
-    files.each do |mod|
-      available_analysis_mods.push(File.basename(mod))
-    end
-    if (available_analysis_mods.include?(@opts[0]))
-      graphic_cmd_return(1, @opts[0], [])
-      @core_state.analysisModule = load_module("./modules/analysis/", "fdf.rb")
-      puts "[debug] analysis mod loaded #{@core_state.analysisModule}.".green
+    available_analysis_mods = list_files_from_dir(CpRequire.base_path \
+      + @core_state.conf['modules']['analysis']['dir'])
+    if @opts.length != 1
+      @graph_com.cmd_return(@cmd, "No analysis module loaded.", true)
+    elsif (available_analysis_mods.include?(@opts[0]))
+      @graph_com.cmd_return(@cmd, @opts[0], false)
+      @core_state.analysisModule = load_module( \
+        @core_state.conf['modules']['analysis']['dir'] + @opts[0] + "/" \
+        , @opts[0] + ".rb")
+      @graph_com.info(GraphicCom.codes[:core], "Analysis mod loaded #{@core_state.analysisModule}.")
     else
-      graphic_cmd_return(3, "unknown analyse module (#{@opts[0]}).", [])
+      @graph_com.cmd_return(@cmd, "unknown analyse module (#{@opts[0]}).", true)
     end
   end
 

@@ -1,8 +1,6 @@
 module Help
   def run
-    puts "[debug] Command hash is #{@cmd_hash}".green
-    graphic_cmd_return(1, "Command help is running !", [])
-    #@core_state.analysisModule.run
+    @graph_com.cmd_return(@cmd, "Command help is running !", false)
   end
 
   def init

@@ -1,9 +1,29 @@
 require 'yaml'
-require_relative './app/core/core'
 
+class CpRequire
 
+  def self.base_path
+    File.expand_path(File.dirname(__FILE__))
+  end
 
-#$LOAD_PATH << "./modules/graphics/"
+  def self.modules file_path
+    require File.expand_path(File.dirname(__FILE__) + "/modules/" + file_path)
+  end
+
+  def self.libs file_path
+    require File.expand_path(File.dirname(__FILE__) + "/libs/" + file_path)
+  end
+
+  def self.app file_path
+    require File.expand_path(File.dirname(__FILE__) + "/app/" + file_path)
+  end
+
+  def self.config file_path
+    require File.expand_path(File.dirname(__FILE__) + "/config/" + file_path)
+  end
+end
+
+CpRequire.app 'core/core.rb'
 
 class CopyPeste
 
@@ -31,32 +51,9 @@ class CopyPeste
     @core = Core.new @conf
   end
 
-  def load_config (dir = "./config/framework/", file = "default.yml")
+  def load_config (dir = "/config/framework/", file = "default.yml")
+    dir = CpRequire.base_path + dir
     YAML::load_file(File.join(dir, file)) if File.exists? (dir+file)
-  end
-
-  def self.require_graphic_mod file_path
-    require File.expand_path("./modules/graphics/" + file_path)
-  end
-
-  def self.require_analysis_mod file_path
-    require File.expand_path("./modules/analysis/" + file_path)
-  end
-
-  def self.require_graphic_lib file_path
-    require File.expand_path("./libs/modules/graphics/" + file_path)
-  end
-
-  def self.require_analysis_lib file_path
-    require File.expand_path("./libs/modules/analysis/" + file_path)
-  end
-
-  def self.require_database_lib file_path
-    require File.expand_path("./libs/database/" + file_path)
-  end
-
-  def self.require_app_lib file_path
-    require File.expand_path("./libs/app/" + file_path)
   end
 
 end

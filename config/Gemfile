@@ -3,4 +3,5 @@ source "https://rubygems.org"
 source "https://github.com/fazibear/colorize"
 
 gem 'colorize'
+gem 'tty'
 gem 'yaml'
