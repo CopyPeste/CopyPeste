@@ -64,7 +64,14 @@ int	main(int ac, char **av)
 
       begin = clock();
       s_result *result;
-      if ((result = fslice(buf1, buf2)) == 0)
+
+      result = malloc(sizeof(S_result));
+      result->line = -1;
+      result->prcent_rst = -1;
+
+      int ret = -1;
+
+      if ((ret = fslice(buf1, buf2, result)) == -1)
 	{
 	  printf("ERROR\n");
 	}

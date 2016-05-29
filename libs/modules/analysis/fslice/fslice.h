@@ -22,5 +22,5 @@ typedef struct	t_result
 ** or -1 in case of error
 */
 /* double fslice(char *str_block, char *str_file); */
-s_result *fslice(char *str_block, char *str_file);
+int fslice(char *str_block, char *str_file, s_result *result);
 

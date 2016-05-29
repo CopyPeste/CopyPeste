@@ -56,16 +56,14 @@ int find_line_in_block(const s_file *struct_block, const s_file *struct_file, in
 ** or -1 in case of null file
 */
 static
-s_result *compare_block_in_file(const s_file *struct_block, const s_file *struct_file)
+int compare_block_in_file(const s_file *struct_block, const s_file *struct_file, s_result *result)
 {
-  s_result *result;
   unsigned int i = 0;
-  int tmp_result = 0;
+  int	tmp_result = 0;
+  int	ret = -1;
 
   if (!struct_block || !struct_file)
-    return NULL;
-
-  result = malloc(sizeof(s_result) + 1);
+    return ret;
 
   while (struct_file->lines[i])
     {
@@ -74,6 +72,7 @@ s_result *compare_block_in_file(const s_file *struct_block, const s_file *struct
       	{
       	  result->prcent_rst = tmp_result;
 	  result->line = i;
+	  ret = 0;
       	}
       ++i;
     }
@@ -82,7 +81,7 @@ s_result *compare_block_in_file(const s_file *struct_block, const s_file *struct
   /*   result->prcent_rst = (result->prcent_rst * 100) */
   /*     / (struct_block->nb_lines > struct_file->nb_lines ? */
   /* 	 struct_block->nb_lines : struct_file->nb_lines); */
-  return result;
+  return ret;
 }
 
 /*
@@ -109,25 +108,22 @@ s_result *compare_block_in_file(const s_file *struct_block, const s_file *struct
 ** @return: Integer - returns the comparison result in percentage
 ** or -1 in case of error
 */
-s_result *fslice(char *str_block, char *str_file)
+int fslice(char *str_block, char *str_file, s_result *result)
 {
   s_file *struct_block, *struct_file;
-  s_result *result;
-  /* int	ret = -1; */
+  int	ret = -1;
 
   if (!(struct_block = init_file_handler(str_block))
       || !(struct_file = init_file_handler(str_file)))
-    return NULL;
-
+    return ret;
 
   if (struct_block->size <= struct_file->size)
     {
-      if ((result = compare_block_in_file(struct_block, struct_file)) == NULL)
-	return NULL;
-      printf("RST [%d%%] at [%d]\n", result->prcent_rst, result->line);
+      if ((ret = compare_block_in_file(struct_block, struct_file, result)) != 0)
+	return ret;
     }
 
   destroy_file_handler(struct_block);
   destroy_file_handler(struct_file);
-  return result;
+  return ret;
 }
