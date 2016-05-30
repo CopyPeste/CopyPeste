@@ -2,7 +2,6 @@
 
 # FDF V1.1
 
-
 fdfAnalysisModule do
   description {
     "This is an analysis module for CopyPeste."
@@ -237,5 +236,4 @@ fdfAnalysisModule do
       end
     end
   }
-
 end

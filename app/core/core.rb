@@ -1,6 +1,6 @@
 require 'colorize'
 #CpRequire.libs 'app/dynamic_loading/module_loader.rb'
-CpRequire.app 'commands/command.rb'
+CpRequire.app 'command.rb'
 CpRequire.app 'core/utils'
 CpRequire.app 'core/core_state.rb'
 CpRequire.app 'core/graphic_communication.rb'
