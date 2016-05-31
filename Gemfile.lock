@@ -1,0 +1,100 @@
+GIT
+  remote: git://github.com/fazibear/colorize.git
+  revision: 1513bb3119fa87cdc95d4d18c696754e40fe7ca5
+  specs:
+    colorize (0.7.7)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (4.2.6)
+      activesupport (= 4.2.6)
+      builder (~> 3.1)
+    activesupport (4.2.6)
+      i18n (~> 0.7)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.3, >= 0.3.4)
+      tzinfo (~> 1.1)
+    awesome_print (1.6.1)
+    bson (4.1.1)
+    builder (3.2.2)
+    class_loader (3.0.8)
+    equatable (0.5.0)
+    ffi (1.9.10)
+    i18n (0.7.0)
+    json (1.8.3)
+    minitest (5.9.0)
+    mongo (2.2.5)
+      bson (~> 4.0)
+    mongoid (5.1.3)
+      activemodel (~> 4.0)
+      mongo (~> 2.1)
+      origin (~> 2.2)
+      tzinfo (>= 0.3.37)
+    necromancer (0.3.0)
+    origin (2.2.0)
+    pastel (0.6.1)
+      equatable (~> 0.5.0)
+      tty-color (~> 0.3.0)
+    thread_safe (0.3.5)
+    tty (0.4.0)
+      equatable (~> 0.5.0)
+      pastel (~> 0.6.0)
+      tty-color (~> 0.3.0)
+      tty-cursor (~> 0.2.0)
+      tty-pager (~> 0.4.0)
+      tty-platform (~> 0.1.0)
+      tty-progressbar (~> 0.8.0)
+      tty-prompt (~> 0.4.0)
+      tty-screen (~> 0.5.0)
+      tty-spinner (~> 0.1.0)
+      tty-table (~> 0.5.0)
+      tty-which (~> 0.1.0)
+    tty-color (0.3.0)
+    tty-cursor (0.2.0)
+    tty-pager (0.4.0)
+      tty-screen (~> 0.5.0)
+      tty-which (~> 0.1.0)
+      verse (~> 0.4.0)
+    tty-platform (0.1.0)
+    tty-progressbar (0.8.1)
+      tty-screen (~> 0.5.0)
+    tty-prompt (0.4.0)
+      necromancer (~> 0.3.0)
+      pastel (~> 0.6.0)
+      tty-cursor (~> 0.2.0)
+      tty-platform (~> 0.1.0)
+      wisper (~> 1.6.1)
+    tty-screen (0.5.0)
+    tty-spinner (0.1.0)
+    tty-table (0.5.0)
+      equatable (~> 0.5.0)
+      necromancer (~> 0.3.0)
+      pastel (~> 0.6.0)
+      tty-screen (~> 0.5.0)
+      unicode_utils (~> 1.4.0)
+      verse (~> 0.4.0)
+    tty-which (0.1.0)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+    unicode_utils (1.4.0)
+    verse (0.4.0)
+      unicode_utils (~> 1.4.0)
+    wisper (1.6.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  awesome_print
+  class_loader
+  colorize!
+  ffi
+  json
+  mongo
+  mongoid
+  tty (~> 0.4.0)
+
+BUNDLED WITH
+   1.10.6

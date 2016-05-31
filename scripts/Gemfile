@@ -1,8 +1,0 @@
-# A sample Gemfile
-source "https://rubygems.org"
-
-gem 'mongo'
-gem 'json'
-gem 'ffi'
-gem 'awesome_print'
-gem 'ruby-filemagic'
