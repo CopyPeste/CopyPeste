@@ -1,0 +1,2 @@
+#!/bin/bash
+ruby ./lib/copy_peste.rb

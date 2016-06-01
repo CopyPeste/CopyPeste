@@ -13,6 +13,14 @@ gem 'colorize', github: 'fazibear/colorize'
 #   libs/modules/algorithms.rb
 gem 'ffi'
 
+# library for auto-loading and auto-creation of classes and modules
+# gem 'autocode'
+
+# Automatically finds, loads and reloads classes
+# Required in
+#   app/command.rb
+gem 'class_loader'
+
 # Toolbox for developing CLI clients.
 # Required in
 #   modules/graphics/console_mode/console_ui.rb
@@ -23,6 +31,11 @@ gem 'tty', '~> 0.4.0'
 #   libs/database/DdHdlr.rb
 #   scripts/init_bdd/main.rb
 gem 'mongo'
+
+# Object-Document-Mapper framework for MongoDB
+# Required in
+#   .
+gem 'mongoid'
 
 # This is a implementation of the JSON specification according to RFC 4627.
 # Required in
@@ -36,3 +49,13 @@ gem 'json'
 # Required in
 #   libs/database/DbHdlr.rb
 gem 'awesome_print'
+
+# Tests dependancies
+group :test do
+
+  # Tool for running automated tests written in plain language
+  # Required in
+  #
+  gem 'cucumber'
+
+end
