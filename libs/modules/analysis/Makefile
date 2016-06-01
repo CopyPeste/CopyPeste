@@ -19,6 +19,8 @@ SRCS	 =	./levenshtein/levenshtein.c \
 		./fslice/file_handler.c \
 		./fslice/filter.c \
 		./fslice/compare.c \
+		./diff/diff.c \
+		./diff/compare.c \
 
 LIB_DIRECTORY =	./libs
 
