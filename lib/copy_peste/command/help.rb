@@ -11,17 +11,10 @@ class Command
     private
 
     def available_commands
-      classes = self.class.constants.map { |c| to_underscored_name(c.to_s) }
+      classes = self.class.constants.map do |constant|
+        constant = constant.to_s.split('::').last
+        constant.underscore
+      end
     end
-
-    def to_underscored_name(class_name)
-      word = class_name.split('::').last
-      word.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
-      word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
-      word.tr!("-", "_")
-      word.downcase!
-      word
-  end
-
   end
 end
