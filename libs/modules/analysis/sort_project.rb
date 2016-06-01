@@ -10,8 +10,8 @@ class SortProject
   # tab_files[0] => {projects => [proj1, proj2], diffs => [25.0, 45.7...]}
   # tab_files[1] => {projects => [proj1, proj3], diffs => [78.0, 38.5...]}
   def sort_by_project(tab_src)
-    upd = false
     tab_src.each do |hash_res|
+      upd = false
       proj_tmp = get_proj(hash_res["files"])      
       @tab_files.each do |hsh|
         if  proj_tmp == hsh["projects"]
@@ -24,7 +24,6 @@ class SortProject
         @tab_files << add_hash(proj_tmp, hash_res)
       end
 
-      upd = false
     end
   end
 
