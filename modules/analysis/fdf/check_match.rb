@@ -7,11 +7,19 @@
 # @param [String] File 1 that was compared with File 2
 # @param [String] File 2 that was compared with File 1
 # @Return [Array] Return an Array that contain all results of analyses
-def save_result_data(tab_send_to_mongo, lev_result, result_fdupes, file1, file2)
+def save_result_data(tab_send_to_mongo, lev_result, result, file1, file2)
+
+  options = "diff" # Will be removed when options will be implemented and when fdf will be an object
+
   tab = [file1, file2]
   result_data = {}
   result_data["levsht_dist"] = lev_result
-  result_data["result_fdupes"] = result_fdupes
+  if options == "fdupes"
+    result_data["fdupes"] = result
+  elsif options == "diff"
+    result_data["diff"] = result
+  end
+
   result_data["files"] = tab
   tab_send_to_mongo << result_data
 end
@@ -23,9 +31,17 @@ end
 # @param [Integer] Loop position
 # @return [Bool] Return whether the file don't match.
 def open_and_send(fdup_tab, index)
+
+  options = "diff" # Will be removed when options will be implemented and when fdf will be an object
+
   file1 = IO.read(fdup_tab[index])
   file2 = IO.read(fdup_tab[index + 1])
-  Algorithms.fdupes_match(file1, file1.length, file2, file2.length) == 0 ? false : true
+  if options == "fdupes"
+    Algorithms.fdupes_match(file1, file1.length, file2, file2.length) == 0 ? false : true
+  elsif options == "diff"
+    Algorithms.diff(file1, file2)
+  end
+
 end
 
 
@@ -35,6 +51,9 @@ end
 # @param [Array] Array of results of the levenshtein : lev_result[0] = levenshtein(fdup_tab[0], fdup_tab[1])
 # @Return [Array] return an Array of hash that contain the result of the FDF modules
 def check_files_similarity(fdup_tab, lev_result)
+
+  options = "diff" # Will be removed when options will be implemented and when fdf will be an object
+
   i = 0
   tab_send_to_mongo = []
   size = fdup_tab.size()
@@ -43,12 +62,15 @@ def check_files_similarity(fdup_tab, lev_result)
     if index % 2 == 0
       if File.size(fdup_tab[index]) == File.size(fdup_tab[index + 1])
         condition = (File.size(fdup_tab[index]) > 0 && File.size(fdup_tab[index + 1]) > 0)
-        result_fdupes = condition ? open_and_send(fdup_tab, index) : true
+        result = condition ? open_and_send(fdup_tab, index) : true
       else
-        result_fdupes = true
+        result = true
+        if options == "diff"
+          result = open_and_send(fdup_tab, index)
+        end
       end
       tab_send_to_mongo = save_result_data(tab_send_to_mongo, lev_result[index/2],
-                                           result_fdupes, fdup_tab[index], fdup_tab[index + 1])
+                                           result, fdup_tab[index], fdup_tab[index + 1])
     end
   end
   tab_send_to_mongo

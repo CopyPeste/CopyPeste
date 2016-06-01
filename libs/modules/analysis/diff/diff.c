@@ -1,87 +1,130 @@
 
 /* INCLUDES */
-#include "filter.h"
-#include "compare.h"
 
 #include <string.h>
+#include <stdio.h>
+#include <time.h>
+
+#include "diff.h"
+#include "compare.h"
+#include "file_handler.h"
 
 /*
-** This function gets the size of line in a file.
-** (must be a string).
+** Returns one if line is similar to another line in file.
+** Else returns zero
 **
-** @param: str - the string of lines
-** @param: beg - beginning of the line
-** @return: Integer - return the line size
+** @param: line - structure of line
+** @param: struct_file - structure of file
+** @param: at - line at begin research
+** @return: Integer - return if line is similar to another line if file
+** or -1 in case of null line or file
 */
-static int get_size_line(const char *str, int beg)
+static
+int find_line_in_file(const s_line *line, const s_file *struct_file, int at)
 {
-  int end = beg;
-  while (str[end] != '\0' && str[end] != '\n')
-    end++;
-  return (end - beg);
+  unsigned int i = (at - MAX_GAP) < 0 ? 0 : (at - MAX_GAP);
+
+  if (!line || !struct_file)
+    return -1;
+
+  while (struct_file->lines[i] && i < (unsigned int)(at + MAX_GAP))
+    {
+      if (compare_words_strings(line, struct_file->lines[i]) == 100)
+      	return 1;
+      ++i;
+    }
+  return 0;
 }
 
 /*
-** This function gets the difference between two files,
+** Gets the percentage of similarity between 2 files
+** line per line
+**
+** @param: struct_file - first file structure
+** @param: struct_file - second file structure
+** @return: Integer - returns the percentage of similarity
+** or -1 in case of null file
+*/
+static
+int compare_lines_in_file(const s_file *struct_file1, const s_file *struct_file2)
+{
+  unsigned int i = 0;
+  int result = 0;
+
+  if (!struct_file1 || !struct_file2)
+    return -1;
+
+  while (struct_file1->lines[i])
+    {
+      result += find_line_in_file(struct_file1->lines[i], struct_file2, i);
+      ++i;
+    }
+  if ((struct_file1->nb_lines > 0 || struct_file1->nb_lines > 0) && result > 0)
+    result = (result * 100)
+      / (struct_file1->nb_lines > struct_file2->nb_lines ?
+	 struct_file1->nb_lines : struct_file2->nb_lines);
+  return result;
+}
+
+/*
+** Gets the percentage of difference between two files,
 ** line by line.
 ** Return the percentage of difference to obtain the same file,
-** with word by word algorithm.
+** with a word by word algorithm.
 **
-** @param: str_file1 - the string of the first file
-** @param: str_file2 - the string of the second file
-** @return: Integer - return comparaison value in percentage
+** @param: struct_file1 - first file structure
+** @param: struct_file2 - second the file structure
+** @return: Integer - returns the comparison value in percentage
+** or -1 in case of null file
 */
-static double compare_files_lev_percent(char *str1, char *str2)
+static __attribute__((unused))
+int compare_files_percent(const s_file *struct_file1, const s_file *struct_file2)
+
 {
-  unsigned int len1, len2;
-  unsigned int i = 0, j = 0;
-  unsigned int size1, size2;
-  double prcent = 0;
-  int nb_line = 0;
+  unsigned int i = 0;
+  int prcent = 0;
 
-  if (!str1 || !str2)
+  if (!struct_file1 || !struct_file1)
     return -1;
-  len1 = strlen(str1);
-  len2 = strlen(str2);
 
-  while (len1 > i && len2 > j)
+  while (struct_file1->lines[i] && struct_file2->lines[i])
     {
-      size1 = get_size_line(str1, i);
-      size2 = get_size_line(str2, j);
-
-      str1[i + size1] = 0;
-      str2[j + size2] = 0;
-
-      prcent += compare_words_strings(str1 + i, str2 + j);
-
-      i += size1 + 1;
-      j += size2 + 1;
-      ++nb_line;
+      prcent += compare_words_strings(struct_file1->lines[i], struct_file2->lines[i]);
+      ++i;
     }
 
-  if (nb_line > 0)
-    prcent /= nb_line;
+  if ((struct_file1->nb_lines > 0 || struct_file1->nb_lines) > 0 && prcent >= 0)
+    prcent /= struct_file1->nb_lines > struct_file2->nb_lines ?
+      struct_file1->nb_lines : struct_file2->nb_lines;
   return prcent;
 }
 
 /*
-** This function gets the difference between two files,
+** Gets the difference between two files,
 ** line by line.
-** Remove useless characters.
+** Remove useless characters in files.
 ** Return the percentage of difference to obtain the same file.
 **
-** @param: str_file1 - the string of the first file
-** @param: str_file2 - the string of the second file
-** @return: Integer - return the result of compare in percentage
+** @param: str_file1 - string containing the first file
+** @param: str_file2 - string containing the second file
+** @return: Integer - returns the comparison result in percentage
+** or -1 in case of error
 */
-
 double diff(char *str_file1, char *str_file2)
 {
-  str_file1 = filter_space(str_file1);
-  str_file2 = filter_space(str_file2);
+  s_file *struct_file1, *struct_file2;
+  int	ret = -1;
 
-  str_file1 = filter_newline(str_file1);
-  str_file2 = filter_newline(str_file2);
+  if (!(struct_file1 = init_file_handler(str_file1))
+      || !(struct_file2 = init_file_handler(str_file2)))
+    return ret;
 
-  return compare_files_lev_percent(str_file1, str_file2);
+  ret = (struct_file1->size >= struct_file2->size ?
+  	 compare_lines_in_file(struct_file2, struct_file1) :
+  	 compare_lines_in_file(struct_file1, struct_file2));
+  /* ret = compare_files_percent(struct_file1, struct_file2); */
+
+  destroy_file_handler(struct_file1);
+  destroy_file_handler(struct_file2);
+  return ret;
 }

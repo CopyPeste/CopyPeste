@@ -1,16 +1,19 @@
 
 #pragma once
 
+#include "file_handler.h"
+
 /* PROTOTYPES */
 
 /*
-** Gets the percentage difference between two files,
-** word by word.
-** Return the percentage difference between two strings,
+** Gets the percentage of difference between two structures of line,
+** compares word by word.
+** Return the percentage of difference between two strings,
 ** word by word algorithm.
 **
-** @param: str_file1 - string representing the first file
-** @param: str_file2 - string representing the second file
-** @return: Integer - return comparison value in percentage
+** @param: line1 - structure of line one
+** @param: line2 - structure of line two
+** @return: Integer - returns the comparison value in percentage
+** or -1 in case of null strings
 */
-int	compare_words_strings(const char *string1, const char *string2);
+int	compare_words_strings(const s_line *string1, const s_line *string2);

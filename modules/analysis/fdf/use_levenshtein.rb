@@ -33,8 +33,8 @@ class UseLevenshtein
           @fdupes_tab << file_to_send[j]
           @lev_results << result
         end
-        puts "#{i} / #{size-2}  : Fichier => #{file1.last()} avec : #{file2.last()}\n"
       end
+      puts "#{i} / #{size-2}\n"
     end
   end
 
