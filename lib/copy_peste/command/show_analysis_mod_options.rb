@@ -1,15 +1,17 @@
-class Command
-  module ShowAnalysisModOptions
-    def run
-      if @core_state.analysisModule.nil?
-        @graph_com.cmd_return(@cmd, "No analysis module load", true)
-        return
+module CopyPeste
+  class Command
+    module ShowAnalysisModOptions
+      def run
+        if @core_state.analysisModule.nil?
+          @graph_com.cmd_return(@cmd, "No analysis module load", true)
+          return
+        end
+
+        options = @core_state.analysisModule.options
+        @graph_com.cmd_return(@cmd, options, false)
       end
 
-      options = @core_state.analysisModule.options
-      @graph_com.cmd_return(@cmd, options, false)
+      def init; end
     end
-
-    def init; end
   end
 end
