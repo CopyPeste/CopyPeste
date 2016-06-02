@@ -3,9 +3,6 @@ require 'colorize'
 require CopyPeste::Require::Path.public + '/tmp_logo'
 
 module CopyPeste
-  Require::Core('utils', 'core_state', 'graphic_communication')
-  Require::Command
-
   class Core
     def initialize(conf)
       @core_state = CoreState.new

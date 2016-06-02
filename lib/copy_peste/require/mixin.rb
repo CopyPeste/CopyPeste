@@ -10,51 +10,53 @@ module CopyPeste
         # @note
         #   - Only the first call of a namespace will require the
         #   associated file.
-        #   - There's one caveat: (cf. @example) if /a/b doesn't exist,
-        #   /a/b.rb won't be required and the call will result into an error.
-        #   This has been made on purpose but it might change in the future.
+        #   - If there is not a file named as the folder, it is not working.
         # @example
         #   Directory structure:
         #     |- a
         #       |- b
+        #       | |- c
+        #       | | |-d
+        #       | | | `- e.rb
+        #       | | `- d.rb
         #       | |- c.rb
-        #       | `- d.rb
-        #       `- b.rb
+        #       `- g.rb
         #
         #   Code:
         #     module A
         #       include CopyPeste::Require::Mixin
         #     end
         #
-        #     CopyPeste::Require::A::B
+        #     A::B
         #     # will require the file /a/b.rb on the first call only
         #
-        #     CopyPeste::Require::A::B('c')
-        #     # will require the file /a/b/c.rb
-        #     # if the namespace B wasn't defined, it also requires /a/b.rb
-        #
-        #     CopyPeste::Require::A::B('c', 'd')
-        #     # will require the file /a/b/c.rb and /a/b/d.rb
-        #     # if the namespace B wasn't defined, it also requires /a/b.rb
+        #     A::B::C::D::E
+        #     # will require the files /a/b/c.rb, /a/b/c/d.rb, /a/b/c/d/e.rb
         #
         def const_missing(constant)
           constant_name = constant.to_s.underscore
-          dir_path = File.expand_path(namespace_path + '/' + constant_name)
+          constant_declaration_path = File.expand_path(
+            File.join namespace_path, constant_name
+          )
 
-          # if the directory exists, we can do something
-          if Dir.exists? dir_path
+          # If the file is available in the folder of the namespace,
+          # it means it belongs to it.
+          if File.exists? constant_declaration_path + '.rb'
+            require constant_declaration_path
+            if self.const_defined? constant
+              constant = self.const_get constant
+              constant.include Require::Mixin
+              constant
 
-            # We create the constant, before even checking/requiring if there's
-            # a file that could be the entry point of the namespace to avoid
-            # diamond dependancies.
-            constant = self.const_set constant, Module.new.include(Mixin)
+            else super
+            end
 
-            # Let's require the entry point of the namespace if it exist.
-            require dir_path if File.exists? dir_path + '.rb'
+          # If there isn't a file matching, the constant might belong to
+          # one namespace over it.
+          elsif outer = Module.nesting.find { |n| self.name.include? n.name }
+            outer.const_get constant
 
-            # And then return the new fresh constant
-            constant
-
+          # Otherwise, that's not our concern.
           else super
           end
         end
@@ -73,23 +75,6 @@ module CopyPeste
           local_path = '/' + local_namespace.underscore
 
           outer_path + local_path
-        end
-
-        # @see .const_missing example
-        #
-        def method_missing(meth, *args, &blk)
-
-          # if we have a constant matching the method name,
-          # we have a directory representing an existing namespace.
-          # Let's work with it so.
-          constant = self.const_get meth
-          args.map do |file|
-            require File.expand_path(constant.namespace_path + '/' + file)
-          end
-
-          # Otherwise, not our concern :)
-        rescue NameError
-          super
         end
       end # !ClassMethods
     end # !Mixin

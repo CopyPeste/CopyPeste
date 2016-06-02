@@ -2,13 +2,10 @@ require 'yaml'
 require 'class_loader'
 
 require_relative 'ext/string'
-# require_relative 'copy_peste/refine_string'
 require_relative 'copy_peste/require'
 
 module CopyPeste
   include Require::Mixin
-
-  # Require::Core
 
   module_function
 

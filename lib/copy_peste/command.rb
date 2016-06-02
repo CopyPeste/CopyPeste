@@ -1,15 +1,4 @@
 module CopyPeste
-  Require::Command(
-    'help',
-    'exit',
-    'unknown',
-    'list_analysis_modules',
-    'use_analysis_module',
-    'run_analysis_module',
-    'set_analysis_mod_options',
-    'show_analysis_mod_options',
-  )
-
   class Command
     def initialize(cmd_hash, graph_com, core_state)
       @cmd = cmd_hash[:cmd]
