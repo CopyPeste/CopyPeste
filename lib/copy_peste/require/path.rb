@@ -11,6 +11,10 @@ module CopyPeste
         root + '/lib'
       end
 
+      def copy_peste
+        base + '/copy_peste'
+      end
+
       def public
         root + '/public'
       end

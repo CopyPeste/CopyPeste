@@ -44,16 +44,16 @@ module CopyPeste
           # if the directory exists, we can do something
           if Dir.exists? dir_path
 
-            # the missing namespace might be defined in an unloaded file
-            # if there's one as "entry point" of the folder. 
-            # @see @note
-            if File.exists? dir_path + '.rb'
-              require dir_path
+            # We create the constant, before even checking/requiring if there's
+            # a file that could be the entry point of the namespace to avoid
+            # diamond dependancies.
+            constant = self.const_set constant, Module.new.include(Mixin)
 
-            # Otherwise, let's just create a constant.
-            else
-              self.const_set constant, Module.new.include(Mixin)
-            end
+            # Let's require the entry point of the namespace if it exist.
+            require dir_path if File.exists? dir_path + '.rb'
+
+            # And then return the new fresh constant
+            constant
 
           else super
           end
@@ -83,7 +83,6 @@ module CopyPeste
           # we have a directory representing an existing namespace.
           # Let's work with it so.
           constant = self.const_get meth
-          puts "constant: #{constant}"
           args.map do |file|
             require File.expand_path(constant.namespace_path + '/' + file)
           end
