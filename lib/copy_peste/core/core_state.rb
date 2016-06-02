@@ -1,10 +1,14 @@
-class CoreState
-  attr_accessor :analysisModule
-  attr_accessor :conf
+module CopyPeste
+  class Core
+    class CoreState
+      attr_accessor :analysisModule
+      attr_accessor :conf
 
-  def initialize
-    @analysisModule = nil
-    @conf = nil
-    @analysisModOpts = {}
+      def initialize
+        @analysisModule = nil
+        @conf = nil
+        @analysisModOpts = {}
+      end
+    end
   end
 end

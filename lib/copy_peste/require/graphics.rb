@@ -1,5 +1,3 @@
-require_relative 'mixin'
-
 module CopyPeste
   module Require
     module Graphics

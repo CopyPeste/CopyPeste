@@ -1,7 +1,10 @@
-CpRequire.modules 'graphics/console_mode/console_display'
+require File.join(
+  CopyPeste::Require::Path.graphics,
+  'console_mode',
+  'console_display'
+)
 
 class AnalysisRequests < ConsoleDisplay
-
   def initialize
   end
 

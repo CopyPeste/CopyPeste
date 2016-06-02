@@ -2,9 +2,7 @@ module CopyPeste
   class Command
     module ListAnalysisModules
       def run
-        files = list_files_from_dir(
-          CpRequire.base_path + @core_state.conf['modules']['analysis']['dir']
-        )
+        files = list_files_from_dir(Require::Path.analysis)
         available_analysis_mods = []
         files.each do |mod|
           available_analysis_mods.push(File.basename(mod))
@@ -14,6 +12,12 @@ module CopyPeste
       end
 
       def init; end
+
+      private
+
+      def list_files_from_dir(path)
+        Dir[path + "/*/"].map { |file| File.basename(file) }
+      end
     end
   end
 end

@@ -14,9 +14,8 @@ module CopyPeste
     config_path = File.expand_path config_path
 
     config = YAML::load_file(config_path) if File.exists? config_path
-    puts !!config
-    # core = Core.new config
-    # core.start
+    core = Core.new config
+    core.start
     self
   end
 

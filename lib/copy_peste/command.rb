@@ -9,7 +9,7 @@ module CopyPeste
 
       specialize_into @cmd
       @graph_com.info(
-        GraphicCom.codes[:core],
+        Core::GraphicCommunication.codes[:core],
         "Command is #{@cmd} with following opts #{@opts}"
       )
     end

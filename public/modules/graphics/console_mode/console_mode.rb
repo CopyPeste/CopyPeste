@@ -14,13 +14,24 @@ consoleGraphicalModule  do
 
   impl {
     require 'tty'
-    CpRequire.modules 'graphics/console_mode/parser'
-    CpRequire.modules 'graphics/console_mode/requests/analysis_requests'
-    CpRequire.modules 'graphics/console_mode/requests/core_requests'
+
+    %W{ parser console_display }.each do |file|
+      require File.join(
+        CopyPeste::Require::Path.graphics,
+        'console_mode',
+        file
+      )
+    end
+
+    %W{ analysis_requests core_requests }.each do |file|
+      require File.join(
+        CopyPeste::Require::Path.graphics,
+        'console_mode/requests',
+        file
+      )
+    end
 
     class ConsoleMode
-
-
       def initialize
         @alive = true
         @core_req = CoreRequests.new

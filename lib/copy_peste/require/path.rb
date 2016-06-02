@@ -15,6 +15,10 @@ module CopyPeste
         base + '/copy_peste'
       end
 
+      def algorithms
+        base + '/algorithms'
+      end
+
       def public
         root + '/public'
       end

@@ -7,4 +7,8 @@ class String
     word.downcase!
     word
   end
+
+  def include_different?(other)
+    self != other && include?(other)
+  end
 end

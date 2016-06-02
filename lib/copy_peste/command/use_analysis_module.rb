@@ -2,9 +2,7 @@ module CopyPeste
   class Command
     module UseAnalysisModule
       def run
-        available_analysis_mods = list_files_from_dir(
-          CpRequire.base_path + @core_state.conf['modules']['analysis']['dir']
-        )
+        available_analysis_mods = list_files_from_dir(Require::Path.analysis)
         if @opts.length != 1
           @graph_com.cmd_return(@cmd, "No analysis module loaded.", true)
 
@@ -15,7 +13,7 @@ module CopyPeste
             @opts[0] + ".rb"
           )
           @graph_com.info(
-            GraphicCom.codes[:core],
+            GraphicCommunication.codes[:core],
             "Analysis mod loaded #{@core_state.analysisModule}."
           )
 

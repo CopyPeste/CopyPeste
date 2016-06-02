@@ -53,11 +53,12 @@ module CopyPeste
 
           # If there isn't a file matching, the constant might belong to
           # one namespace over it.
-          elsif outer = Module.nesting.find { |n| self.name.include? n.name }
+          elsif outer = Module.nesting.find { |n| name.include_different? n.name }
             outer.const_get constant
 
           # Otherwise, that's not our concern.
-          else super
+          else
+            super
           end
         end
 

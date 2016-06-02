@@ -1,6 +1,5 @@
 require 'colorize'
-#CpRequire.libs 'app/dynamic_loading/module_loader.rb'
-require CopyPeste::Require::Path.public + '/tmp_logo'
+require File.join CopyPeste::Require::Path.public, 'tmp_logo'
 
 module CopyPeste
   class Core
@@ -8,19 +7,20 @@ module CopyPeste
       @core_state = CoreState.new
       @core_state.conf = conf
       @graphic_mod = load_module(
-        conf['modules']['graphics']['dir'],
-        conf['modules']['graphics']['default']
+        CopyPeste::Require::Path.graphics,
+        # conf['modules']['graphics']['default']
+        'console_mode/console_mode.rb'
       )
       exec_func = Proc.new do |msg|
         @graphic_mod.exec msg
       end
 
-      @graph_com = GraphicCom.new exec_func
+      @graph_com = GraphicCommunication.new exec_func
     end
 
     def start
       puts LOGO.blue
-      @graph_com.info(GraphicCom.codes[:core], "Core is running !")
+      @graph_com.info(GraphicCommunication.codes[:core], "Core is running !")
       while @graphic_mod.running?
         cmd_hash = @graphic_mod.loop
         execute_command cmd_hash
@@ -29,9 +29,14 @@ module CopyPeste
 
     private
 
+    def load_module (dir, file)
+      loaded_mod = ModuleLoading::Loader.load File.join dir, file
+      loaded_mod.__cp_init__
+    end
+
     def execute_command(cmd_hash)
       @graph_com.info(
-        GraphicCom.codes[:core],
+        GraphicCommunication.codes[:core],
         "Core execute the following command: #{cmd_hash}."
       )
       cmd = Command.new(cmd_hash, @graph_com, @core_state)
