@@ -9,8 +9,7 @@ module CopyPeste
         elsif (available_analysis_mods.include?(@opts[0]))
           @graph_com.cmd_return(@cmd, @opts[0], false)
           @core_state.analysisModule = load_module(
-            @core_state.conf['modules']['analysis']['dir'] + @opts[0] + "/",
-            @opts[0] + ".rb"
+            File.join(Require::Path.analysis, @opts[0], @opts[0] + '.rb')
           )
           @graph_com.info(
             GraphicCommunication.codes[:core],
@@ -27,6 +26,12 @@ module CopyPeste
       end
 
       def init; end
+
+      private
+
+      def list_files_from_dir(path)
+        Dir[path + "/*/"].map { |file| File.basename(file) }
+      end
     end
   end
 end
