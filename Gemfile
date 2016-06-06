@@ -13,14 +13,6 @@ gem 'colorize', github: 'fazibear/colorize'
 #   libs/modules/algorithms.rb
 gem 'ffi'
 
-# library for auto-loading and auto-creation of classes and modules
-# gem 'autocode'
-
-# Automatically finds, loads and reloads classes
-# Required in
-#   app/command.rb
-gem 'class_loader'
-
 # Toolbox for developing CLI clients.
 # Required in
 #   modules/graphics/console_mode/console_ui.rb

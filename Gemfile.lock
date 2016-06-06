@@ -19,7 +19,6 @@ GEM
     awesome_print (1.6.1)
     bson (4.1.1)
     builder (3.2.2)
-    class_loader (3.0.8)
     cucumber (2.3.2)
       builder (>= 2.1.2)
       cucumber-core (~> 1.4.0)
@@ -103,7 +102,6 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print
-  class_loader
   colorize!
   cucumber
   ffi

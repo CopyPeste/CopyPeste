@@ -1,5 +1,4 @@
 require 'yaml'
-require 'class_loader'
 
 require_relative 'ext/string'
 require_relative 'copy_peste/require'
