@@ -9,7 +9,7 @@ module CopyPeste
         end
 
         @core_state.analysisModule.show = Proc.new do |msg|
-          from = GraphicCom.codes[:analysis]
+          from = Core::GraphicCommunication.codes[:analysis]
           @graph_com.display(from, msg)
         end
 

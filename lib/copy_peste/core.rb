@@ -6,7 +6,7 @@ module CopyPeste
     def initialize(conf)
       @core_state = CoreState.new
       @core_state.conf = conf
-      @graphic_mod = load_module(
+      @graphic_mod = Utils.load_module(
         CopyPeste::Require::Path.graphics,
         # conf['modules']['graphics']['default']
         'console_mode/console_mode.rb'
@@ -28,11 +28,6 @@ module CopyPeste
     end
 
     private
-
-    def load_module (dir, file)
-      loaded_mod = ModuleLoading::Loader.load File.join dir, file
-      loaded_mod.__cp_init__
-    end
 
     def execute_command(cmd_hash)
       @graph_com.info(

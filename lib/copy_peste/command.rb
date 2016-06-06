@@ -35,6 +35,7 @@ module CopyPeste
     def specialize_into(command)
       class_name = command.split('_').map(&:capitalize).join
       specialization = self.class.const_get class_name
+      specialization = nil if specialization.instance_of? Class
     rescue NameError
     ensure
       self.extend specialization || Unknown

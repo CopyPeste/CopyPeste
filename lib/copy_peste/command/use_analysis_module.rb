@@ -7,14 +7,18 @@ module CopyPeste
           @graph_com.cmd_return(@cmd, "No analysis module loaded.", true)
 
         elsif (available_analysis_mods.include?(@opts[0]))
-          @graph_com.cmd_return(@cmd, @opts[0], false)
-          @core_state.analysisModule = load_module(
-            File.join(Require::Path.analysis, @opts[0], @opts[0] + '.rb')
-          )
-          @graph_com.info(
-            GraphicCommunication.codes[:core],
-            "Analysis mod loaded #{@core_state.analysisModule}."
-          )
+          begin
+            @core_state.analysisModule = Core::Utils.load_module(
+              Require::Path.analysis, File.join(@opts[0], @opts[0] + '.rb')
+            )
+            @graph_com.info(
+              Core::GraphicCommunication.codes[:core],
+              "Analysis mod loaded #{@core_state.analysisModule}."
+            )
+            @graph_com.cmd_return(@cmd, @opts[0], false)
+          rescue LoadError
+            @graph_com.cmd_return(@cmd, @opts[0], true)
+          end
 
         else
           @graph_com.cmd_return(
