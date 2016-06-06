@@ -14,7 +14,7 @@ MY_FLAGS =	-lcrypto # MD5
 
 NAME =		my_rsync
 
-SRCS =		main.c \
+SRCS =		test.c \
 		./rsync.c \
 
 OBJS =		$(SRCS:.c=.o)

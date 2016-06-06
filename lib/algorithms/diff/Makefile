@@ -1,7 +1,3 @@
-## Makefile
-## Epitech EIP 2017 groupe Copypeste
-## @by : Guillaume Krier
-
 CC =		gcc
 
 RM =		rm -f
@@ -13,7 +9,7 @@ CFLAGS +=	-I../levenshtein/
 
 NAME =		my_diff
 
-SRCS =		main.c \
+SRCS =		test.c \
 		diff.c \
 		filter.c \
 		compare.c \

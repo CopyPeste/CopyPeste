@@ -8,7 +8,7 @@ MKDIR	=	mkdir -p
 ##
 ## compilation paths
 ##
-LIB_NAME =	./libs/algorithms.so
+LIB_NAME =	algorithms.so
 
 SRCS	 =	./levenshtein/levenshtein.c \
 		./rsync/rsync.c \
@@ -21,8 +21,6 @@ SRCS	 =	./levenshtein/levenshtein.c \
 		./fslice/compare.c \
 		./diff/diff.c \
 		./diff/compare.c \
-
-LIB_DIRECTORY =	./libs
 
 ##
 ## complation flags
@@ -41,11 +39,10 @@ CFLAGS +=	-lcrypto # MD5
 all:		$(LIB_NAME)
 
 $(LIB_NAME):	$(OBJS)
-		$(MKDIR) $(LIB_DIRECTORY)
 		$(CC) -o $(LIB_NAME) -shared -fPIC $(SRCS) $(CFLAGS)
 
 clean:
-		$(RM) $(LIB_DIRECTORY)
+		$(RM) $(LIB_NAME)
 
 re:		clean all
 
