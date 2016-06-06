@@ -15,11 +15,13 @@ fdfAnalysisModule do
 
   impl {
     require 'json'
-    CpRequire.modules 'analysis/fdf/use_levenshtein'
-    CpRequire.modules 'analysis/fdf/check_match'
-    CpRequire.libs 'modules/analysis/algorithms'
-    CpRequire.libs 'modules/analysis/sort_file'
-    CpRequire.libs 'database/DbHdlr'
+
+    require File.join(CopyPeste::Require::Path.base, 'algorithms')
+    require File.join(CopyPeste::Require::Path.algorithms, 'sort_file')
+    require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
+    %W{ use_levenshtein check_match }.each do |file|
+      require File.join(CopyPeste::Require::Path.analysis, 'fdf', file)
+    end
 
     class Fdf
       attr_accessor :options
