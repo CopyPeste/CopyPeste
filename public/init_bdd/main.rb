@@ -1,6 +1,6 @@
 require_relative './scan_system'
-require_relative '../../libs/modules/analysis/sort_file'
-require_relative '../../libs/database/DbHdlr'
+require_relative '../../lib/algorithms/sort_file'
+require_relative '../../lib/copy_peste/DbHdlr'
 require 'mongo'
 require 'json'
 require 'filemagic'
@@ -126,5 +126,5 @@ end
 
 
 scan = ScanSystem.new(ARGV[0])
-mongo = DbHdlr.new()
+mongo = CopyPeste::DbHdlr.new()
 scan_sys(scan, mongo)

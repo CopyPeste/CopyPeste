@@ -42,6 +42,11 @@ gem 'json'
 #   libs/database/DbHdlr.rb
 gem 'awesome_print'
 
+# Wrapper of libmagic
+# Required int
+#   public/init_bdd/scan_system.rb
+gem 'ruby-filemagic', '~> 0.7.1'
+
 # Tests dependancies
 group :test do
 
