@@ -43,9 +43,14 @@ gem 'json'
 gem 'awesome_print'
 
 # Wrapper of libmagic
-# Required int
+# Required in
 #   public/init_bdd/scan_system.rb
 gem 'ruby-filemagic', '~> 0.7.1'
+
+# Color output...
+# Required in
+#   public/copy_peste.rb
+gem colorize
 
 # Tests dependancies
 group :test do
