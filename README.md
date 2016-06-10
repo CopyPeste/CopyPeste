@@ -5,20 +5,22 @@ In order to find interesting data, several analysis modules are in development. 
 
 Development currently in progress.
 
-### Initialiazation:
+### Installation:
 
 ```sh
-$> cd scripts/
-$> bundle install
-$> cd init_bdd
-$> ruby main.rb /usr/ports
+$> git clone https://github.com/CopyPeste/CopyPeste.git
+$> make install
+$> make gems
+$> make init
 ```
 
 ### How to find duplicated files:
 
 ```sh
-$> cd modules/analysis/fdf
-$> ruby fdf -es
+$> cd app
+$> ruby copy_peste.rb
+$> use fdf
+$> run
 ```
 
 For more information, please check our [wiki](https://github.com/CopyPeste/CopyPeste/wiki) (in french for the moment). 
