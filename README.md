@@ -9,16 +9,15 @@ Development currently in progress.
 
 ```sh
 $> git clone https://github.com/CopyPeste/CopyPeste.git
+$> cd CopyPeste
 $> make install
-$> make gems
-$> make init
 ```
 
 ### How to find duplicated files:
 
 ```sh
-$> cd app
-$> ruby copy_peste.rb
+$> cd CopyPeste
+$> ./app/copy_peste.rb
 $> use fdf
 $> run
 ```
