@@ -112,8 +112,5 @@ DEPENDENCIES
   ruby-filemagic (~> 0.7.1)
   tty (~> 0.4.0)
 
-RUBY VERSION
-   ruby 2.2.3p173
-
 BUNDLED WITH
    1.12.5
