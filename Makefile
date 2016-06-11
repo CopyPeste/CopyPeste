@@ -2,7 +2,7 @@ MODULE_PATH	= ./lib/algorithms
 
 GEMS =      bundle install
 
-INIT =      cd './public/init_bdd/' && ruby main.rb ~/
+INIT =      cd './public/init_bdd/' && ruby main.rb ~/test
 
 
 ##
@@ -35,4 +35,4 @@ clean:
 # reinstall full project
 reinstall:  clean install
 
-.PHONY:     install gem clean reinstall
+.PHONY:     install gem clean reinstall lib
