@@ -150,6 +150,7 @@ fdfAnalysisModule do
         end
         # if 100% similarity and files have the same size
         if @options["p"][:value] == 100 && (File.size(files_d[:files][0]) == File.size(files_d[:files][1]))
+          #fdupes_match return 0 if files are equals.
           Algorithms.fdupes_match(file1, file1.length, file2, file2.length)
         else
           #Algorithms.diff(file1, file2)
@@ -164,7 +165,7 @@ fdfAnalysisModule do
       def check_files_similarity(files_d)
         files_d.each do |file_d|
           result = open_and_send file_d
-          if result && ((@options["p"][:value] == 100 && result == 1) || result >= @options["p"][:value])
+          if result && ((@options["p"][:value] == 100 && result == 0) || result >= @options["p"][:value])
             save_result_data(file_d, result)
           end
         end
