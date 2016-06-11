@@ -19,15 +19,19 @@ class ScanSystem
   #
   # @parma [String] the path where you start to scan
   def start(path)
-    Dir.foreach(path) do |file|
-      if file != "." && file != ".."
-        if path[path.length - 1] != '/'
-          tmp = path + "/" + file
-        else
-          tmp = path + file
+    begin
+      Dir.foreach(path) do |file|
+        if file != "." && file != ".."
+          if path[path.length - 1] != '/'
+            tmp = path + "/" + file
+          else
+            tmp = path + file
+          end
+          File.directory?(tmp) ? start(tmp) : put_in_list(tmp)
         end
-        File.directory?(tmp) ? start(tmp) : put_in_list(tmp)
       end
+    rescue => e
+      puts e.message
     end
   end
 
@@ -50,7 +54,7 @@ class ScanSystem
   #
   # @parma [String] file full path (/home/test/toto.c)
   def put_in_list(file)
-    if binary?(file) == false    
+    if binary?(file) == false
       @tab_file[@index] = file
       @index += 1
     end

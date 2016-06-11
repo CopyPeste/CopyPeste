@@ -35,4 +35,4 @@ clean:
 # reinstall full project
 reinstall:  clean install
 
-.PHONY:     install gem clean reinstall
+.PHONY:     install gem clean reinstall lib

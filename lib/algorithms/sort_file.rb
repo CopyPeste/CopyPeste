@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 class SortFile
-  attr_accessor :octe
 
 
   # creat an instance of SortFile
