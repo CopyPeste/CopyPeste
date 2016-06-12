@@ -7,6 +7,7 @@
 
 #include "file_handler.h"
 #include "filter.h"
+#include "my_strtok.h"
 
 
 /*
@@ -66,7 +67,7 @@ int	set_array_words(s_line *struct_line)
     {
       if (!(struct_line->words[j] = malloc(sizeof(s_word) + 1)))
 	return -1;
-      struct_line->words[j]->word = strtok(str1, delim);
+      struct_line->words[j]->word = my_strtok(str1, delim);
       if (struct_line->words[j]->word == NULL)
 	{
 	  free(struct_line->words[j]);
@@ -90,6 +91,7 @@ int	set_array_lines(s_file *struct_file)
 {
   char *str1;
   int j;
+  int	count_line = 0;
   const char *delim = "\n";
 
   struct_file->nb_lines = count_lines(struct_file->file);
@@ -103,7 +105,9 @@ int	set_array_lines(s_file *struct_file)
       if (!(struct_file->lines[j] = malloc(sizeof(s_line) + 1)))
 	return -1;
 
-      struct_file->lines[j]->line = strtok(str1, delim);
+      /* Count number of delimitation */
+      count_line += count_delim(str1, delim),
+      struct_file->lines[j]->line = my_strtok(str1, delim);
       if (struct_file->lines[j]->line == NULL)
 	{
 	  free(struct_file->lines[j]);
@@ -111,6 +115,7 @@ int	set_array_lines(s_file *struct_file)
 	  break;
 	}
       struct_file->lines[j]->size = strlen(struct_file->lines[j]->line);
+      struct_file->lines[j]->at = (j + count_line) + 1;
     }
 
   for (j = 0; struct_file->lines[j]; ++j)

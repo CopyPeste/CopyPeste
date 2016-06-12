@@ -71,7 +71,7 @@ int compare_block_in_file(const s_file *struct_block, const s_file *struct_file,
       if (tmp_result > result->prcent_rst)
       	{
       	  result->prcent_rst = tmp_result;
-	  result->line = i;
+	  result->line = struct_file->lines[i]->at;
 	  ret = 0;
       	}
       ++i;
