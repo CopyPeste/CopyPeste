@@ -18,6 +18,7 @@ SRCS =		main.c \
 		file_handler.c \
 		filter.c \
 		compare.c \
+		my_strtok.c \
 
 OBJS =		$(SRCS:.c=.o)
 
