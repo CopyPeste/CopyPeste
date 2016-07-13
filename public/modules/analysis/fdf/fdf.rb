@@ -125,12 +125,12 @@ fdfAnalysisModule do
       # @param [Hash] files and distance between their titles
       # @param [Int] result of comparison algorim
       # @return
-      def save_result_data(file_d, result)
-        result_data = {
-          "levsht_dist" => file_d[:distance],
-          "similarity" => result,
-          "files" => file_d[:files]
-        }
+      def save_result_data(file_d, similarity)
+        result_data = [
+          file_d[:files][0], #first file
+          file_d[:files][1], #second file
+          similarity #their similarity score
+        ]
         @results[:rows] << result_data
       end
 
@@ -166,6 +166,7 @@ fdfAnalysisModule do
         files_d.each do |file_d|
           result = open_and_send file_d
           if result && ((@options["p"][:value] == 100 && result == 0) || result >= @options["p"][:value])
+            puts file_d
             save_result_data(file_d, result)
           end
         end
