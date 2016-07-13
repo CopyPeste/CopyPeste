@@ -37,6 +37,11 @@ gem 'mongoid'
 #   scripts/init_bdd/main.rb
 gem 'json'
 
+# Prawn is a pure Ruby PDF generation library
+# Required in
+#   lib/copy_peste/command/generate_result
+gem 'prawn'
+
 # Pretty print your Ruby objects with style.
 # Required in
 #   libs/database/DbHdlr.rb
