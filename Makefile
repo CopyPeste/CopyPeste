@@ -2,7 +2,7 @@ MODULE_PATH	= ./lib/algorithms
 
 GEMS =      bundle install
 
-INIT =      cd './public/init_bdd/' && ruby main.rb ~/test
+INIT =      cd './public/init_bdd/' && ruby main.rb ~/
 
 
 ##
