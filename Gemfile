@@ -42,6 +42,11 @@ gem 'json'
 #   lib/copy_peste/command/generate_result
 gem 'prawn'
 
+# Prawn-table is a library for creating table with Prawn
+# Required in
+#   lib/copy_peste/command/generate_result
+gem 'prawn-table'
+
 # Pretty print your Ruby objects with style.
 # Required in
 #   libs/database/DbHdlr.rb
