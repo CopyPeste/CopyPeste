@@ -49,7 +49,7 @@ fdfAnalysisModule do
         @c_file = "Fichier"
         @results = {
           module: "FDF",
-          options: [],
+          options: "List of duplicated files",
           timestamp: Time.now.getutc,
           type: "array",
           header: ["first", "second", "score"],
