@@ -1,12 +1,15 @@
 source "https://rubygems.org"
-ruby '2.2.3'
+ruby '2.2.2'
+
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
 
 # Ruby String class extension. Adds methods to set text color, background color
 # and, text effects on ruby console and command line output, using ANSI
 # escape sequences.
 # Required in
 #   config/file_handler/test_file_fandler.rb
-gem 'colorize', github: 'fazibear/colorize'
+gem 'colorize'
 
 # A ruby extension for programmatically loading dynamic libraries.
 # Required in
