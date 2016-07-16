@@ -1,4 +1,10 @@
-class Parser
+require File.join(
+  CopyPeste::Require::Path.graphics,
+  'console_mode',
+  'console_display'
+)
+
+class Parser < ConsoleDisplay
 
   def self.parse str
     str = str.delete!("\n")
@@ -28,7 +34,9 @@ class Parser
       cmd_hash[:cmd] = cmd
     end
 
-    puts "[info][Graphic] Says that your command is #{cmd_hash}.".green
+    if @@debug == true
+      puts "[info][Graphic] Says that your command is #{cmd_hash}.".green
+    end
 
     cmd_hash
 

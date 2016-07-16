@@ -13,7 +13,7 @@ class CoreRequests < ConsoleDisplay
     if hash[:code] % 10 == 0
       puts "#{hash[:data][:output]}"
 
-    elsif hash[:code] % 10 == 1
+    elsif hash[:code] % 10 == 1 && @@debug == true
       puts "[info][Core] #{hash[:data][:output]}".green
 
     elsif hash[:code] % 10 == 2
@@ -52,7 +52,10 @@ class CoreRequests < ConsoleDisplay
     lines = []
     line = []
     hash[:data][:output].each do |opt, data|
-      line = [opt, data[:helper], data[:value], data[:allowed]]
+      data[:allowed].length > 5 ?
+        (allowed = "#{data[:allowed].first} to #{data[:allowed].last}") :
+        (allowed = data[:allowed])
+      line = [opt, data[:helper], data[:value], allowed]
       lines.push line
     end
 
