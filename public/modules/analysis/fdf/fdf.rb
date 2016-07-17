@@ -145,20 +145,18 @@ fdfAnalysisModule do
           file1 = IO.read files_d[:files][0]
           file2 = IO.read files_d[:files][1]
         rescue => e # file doesn't exists, db have to be updated
-          @show.call e
+          @show.call "[Error]: #{e} Please update your database"
           return nil
         end
-        # if 100% similarity and files have the same size
-        if @options["p"][:value] == 100 && (File.size(files_d[:files][0]) == File.size(files_d[:files][1]))
-          #fdupes_match return 0 if files are equals.
-          @show.call "first: #{files_d[:files][0]} & second: #{files_d[:files][1]}"
-          begin
+        begin
+          # if 100% similarity and files have the same size
+          if @options["p"][:value] == 100 && (File.size(files_d[:files][0]) == File.size(files_d[:files][1]))
             Algorithms.fdupes_match(file1, file1.length, file2, file2.length)
-          rescue => e
-            puts e
+          else
+            Algorithms.diff(file1, file2)
           end
-        else
-          #Algorithms.diff(file1, file2)
+        rescue => e
+          @show.call "[Not treated]: #{files_d[:files][0]} & #{files_d[:files][0]}: #{e}"
         end
       end
 
@@ -171,7 +169,6 @@ fdfAnalysisModule do
         files_d.each do |file_d|
           result = open_and_send file_d
           if result && ((@options["p"][:value] == 100 && result == 0) || result >= @options["p"][:value])
-            @show.call file_d
             save_result_data(file_d, result)
           end
         end
@@ -181,15 +178,26 @@ fdfAnalysisModule do
       # Function used to initialize and run the fdf
       # and get the list of file to analyse.
       def run
+        @show.call "Get all files from database..."
         files = get_doc_to_analyse
+        @show.call "Done."
+        @show.call "Sort files depending on options..."
         file_hash = sort_files_with_rules files
+        @show.call "Done."
+        @show.call "Searching for interesting files to analyse..."
         lev = UseLevenshtein.new(file_hash)
         files_d = lev.results
+        @show.call "Done."
         if files_d.empty?
-          puts "No files to analyses"
+          @show.call "No file to analyse"
         else
+          @show.call "Searching for duplicate files..."
           check_files_similarity files_d
+          @show.call "Done."
+          @show.call "Saving analyse results in database..."
           @mongo.ins_data(@c_res, @results);
+          @show.call "Done, everything worked fine!"
+          @show.call "You can now run generate_result to extract interesting informations."
         end
       end
     end

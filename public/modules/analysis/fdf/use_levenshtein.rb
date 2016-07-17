@@ -34,7 +34,6 @@ class UseLevenshtein
           }
         end
       end
-      puts "#{i} / #{size-2}\n"
     end
   end
 
