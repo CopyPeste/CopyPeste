@@ -1,0 +1,11 @@
+---
+ignored:
+   files:
+      - GemFile
+      - Rakefile
+      - ".gitignore"
+      - elem2
+   extensions:
+      - ".trash"
+      - ".old"
+      - ".elem4"

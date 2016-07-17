@@ -15,16 +15,16 @@ fdfAnalysisModule do
 
   impl {
     require 'json'
-
     require File.join(CopyPeste::Require::Path.base, 'algorithms')
     require File.join(CopyPeste::Require::Path.algorithms, 'sort_file')
     require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
     require File.join(CopyPeste::Require::Path.analysis, 'fdf', 'use_levenshtein')
-
+    require_relative 'config_handler/Ignored_class'
+    
     class Fdf
       attr_accessor :options
       attr_accessor :show
-
+      
 
       def initialize
         @options = {
@@ -57,6 +57,7 @@ fdfAnalysisModule do
           transformation: [],
           rows: []
         }
+        @ignored_conf = Ignored_class.new()
       end
 
 
@@ -109,11 +110,12 @@ fdfAnalysisModule do
         documents = []
         query["name"] = ext
         query = nil if ext == nil
-        results = @mongo.get_data("Extension", query, nil)
+        # puts @ignored_conf.ignored_ext
+        results = @mongo.get_data("Extension", { name: { $nin: @ignored_conf.ignored_ext } }, nil)
         results.each do |data|
           data = JSON.parse(data.to_json)
           data["_id"] = BSON::ObjectId.from_string data["_id"]["$oid"]
-          documents << @mongo.get_data(@c_file, {:ext => data["_id"]})
+          documents << @mongo.get_data(@c_file, {:ext => data["_id"], name: { $nin: @ignored_conf.ignored_files }})
         end
         sort_tab documents
       end
@@ -162,11 +164,12 @@ fdfAnalysisModule do
 
 
       # Send files to the fdupes algorithms
-      #
+      # 
       # @param [Array] File array containing levenshtein's results
       # @Return
       def check_files_similarity(files_d)
-        files_d.each do |file_d|
+        files_d.each do |file_d| #test
+	# check if file has extension to be ignored	
           result = open_and_send file_d
           if result && ((@options["p"][:value] == 100 && result == 0) || result >= @options["p"][:value])
             save_result_data(file_d, result)
