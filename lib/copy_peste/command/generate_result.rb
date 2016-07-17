@@ -11,10 +11,9 @@ module CopyPeste
         begin
           data = @db[:Scoring].find().sort( { timestamp: -1 } ).limit(1).to_a
           hash = JSON.parse(data.to_json)[0]
-          puts hash
 
         rescue
-          $stderr.puts "Collection Scoring doesn't exist"
+          @graph_com.cmd_return(@cmd, "Collection Scoring doesn't exist", true)
           raise
         end
 
@@ -25,7 +24,7 @@ module CopyPeste
           table([
             ["#{hash['header'][0]}", "#{hash['header'][1]}", "#{hash['header'][2]}"],
             *rows
-          ])
+          ], :cell_style => { :size => 9})
         end
       end
 
@@ -41,7 +40,7 @@ module CopyPeste
           @db = Mongo::Client.new(["#{host}:#{port}"], :database => db)
 
         rescue
-          $stderr.puts "[DbHdlr]:Error while connecting the DB. Are you sure your Mongo Server is running on #{host}:#{port} ?"
+          @graph_com.cmd_return(@cmd, "Error while connecting the DB. Are you sure your Mongo Server is running on #{host}:#{port}", true)
         end
       end
 
