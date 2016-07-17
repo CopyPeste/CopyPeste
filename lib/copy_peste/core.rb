@@ -3,6 +3,9 @@ require File.join CopyPeste::Require::Path.public, 'tmp_logo'
 
 module CopyPeste
   class Core
+
+    attr_accessor :core_state
+
     def initialize(conf)
       @core_state = CoreState.new
       @core_state.conf = conf
@@ -12,6 +15,7 @@ module CopyPeste
         #'console_mode/console_mode.rb'
       )
       @graphic_mod.set_debug_mode(CopyPeste.debug_mode)
+      @core_state.events_to_command = @graphic_mod.get_events
       exec_func = Proc.new do |msg|
         @graphic_mod.exec msg
       end

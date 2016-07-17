@@ -18,18 +18,9 @@ class Parser < ConsoleDisplay
     end
 
     cmd_hash = {:cmd => "", :opts => opts}
-    if cmd == "exit"
-      cmd_hash[:cmd] = "exit"
-    elsif cmd == "lam"
-      cmd_hash[:cmd] = "list_analysis_modules"
-    elsif cmd == "set_opts"
-      cmd_hash[:cmd] = "set_analysis_mod_options"
-    elsif cmd == "show_opts"
-      cmd_hash[:cmd] = "show_analysis_mod_options"
-    elsif cmd == "use"
-      cmd_hash[:cmd] = "use_analysis_module"
-    elsif cmd == "run"
-      cmd_hash[:cmd] = "run_analysis_module"
+
+    if @@events_to_command.has_key? cmd
+      cmd_hash[:cmd] = @@events_to_command[cmd]
     else
       cmd_hash[:cmd] = cmd
     end

@@ -33,6 +33,10 @@ class CoreRequests < ConsoleDisplay
 
       elsif hash[:data][:cmd] == "list_analysis_modules"
         cmd_list_analysis_modules hash
+
+      elsif hash[:data][:cmd] == "help"
+        cmd_help hash
+
       end
     end
   end
@@ -74,4 +78,17 @@ class CoreRequests < ConsoleDisplay
     table = TTY::Table.new column_names, lines
     puts table.render(:ascii, alignment: [:center])
   end
+
+  def cmd_help hash
+    column_names = ['Commands', 'Help']
+    lines = []
+    hash[:data][:output].each do |cmd, helper|
+      line = [cmd, helper]
+      lines.push line
+    end
+
+    table = TTY::Table.new column_names, lines
+    puts table.render(:ascii, alignment: [:left])
+  end
+
 end

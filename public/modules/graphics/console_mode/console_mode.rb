@@ -43,6 +43,10 @@ consoleGraphicalModule  do
         ConsoleDisplay.debug = debug_mode
       end
 
+      def get_events
+        ConsoleDisplay.events_to_command
+      end
+
       def loop
         print ConsoleDisplay.prompt
         cmd = STDIN.gets
