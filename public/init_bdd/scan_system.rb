@@ -11,7 +11,7 @@ class ScanSystem
     @start_point = start_point
     @dir = Dir.new(@start_point)
     @tab_file = []
-    @index = 0
+    @fm = FileMagic.new(FileMagic::MAGIC_MIME)
   end
 
 
@@ -41,12 +41,7 @@ class ScanSystem
   # @param [String] full path file
   # @Return [Bool] return whether the file is a binary
   def binary?(filename)
-    begin
-      fm = FileMagic.new(FileMagic::MAGIC_MIME)
-      !(fm.file(filename)=~ /^text\//)
-    ensure
-      fm.close
-    end
+    !(@fm.file(filename)=~ /^text\//)
   end
 
 
@@ -54,10 +49,8 @@ class ScanSystem
   #
   # @parma [String] file full path (/home/test/toto.c)
   def put_in_list(file)
-    if binary?(file) == false
-      @tab_file[@index] = file
-      @index += 1
-    end
+    #return if binary?(file) == true
+    @tab_file << file
   end
 
 
@@ -69,8 +62,11 @@ class ScanSystem
 
   # initialize the start point for the scan
   def init
+    puts "Start browsing files..."
     path = @start_point
-    start(path)
+    start path
+    puts "Stop browsing files"
+    @fm.close
   end
 
   # Create a hash that will contains informations about one file

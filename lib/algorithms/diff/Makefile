@@ -4,8 +4,10 @@ RM =		rm -f
 
 CFLAGS +=	-Wextra -Wall -Werror
 CFLAGS +=	-pedantic -std=gnu99
-CFLAGS +=	-fmax-errors=2
 CFLAGS +=	-I../levenshtein/
+
+#optimisation flag
+CFLAGS +=	-O2
 
 NAME =		my_diff
 

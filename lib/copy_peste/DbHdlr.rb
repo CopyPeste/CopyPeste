@@ -11,6 +11,7 @@ module CopyPeste
     # @param [String] port to access the db service
     # @param [String] the selected database
     def initialize(host="127.0.0.1", port="27017", db="CopyPeste500")
+      Mongo::Logger.logger.level = ::Logger::FATAL
       begin
         @db_inst = Mongo::Client.new(["#{host}:#{port}"], :database => db)
       rescue

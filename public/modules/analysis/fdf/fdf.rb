@@ -145,13 +145,18 @@ fdfAnalysisModule do
           file1 = IO.read files_d[:files][0]
           file2 = IO.read files_d[:files][1]
         rescue => e # file doesn't exists, db have to be updated
-          puts e
+          @show.call e
           return nil
         end
         # if 100% similarity and files have the same size
         if @options["p"][:value] == 100 && (File.size(files_d[:files][0]) == File.size(files_d[:files][1]))
           #fdupes_match return 0 if files are equals.
-          Algorithms.fdupes_match(file1, file1.length, file2, file2.length)
+          @show.call "first: #{files_d[:files][0]} & second: #{files_d[:files][1]}"
+          begin
+            Algorithms.fdupes_match(file1, file1.length, file2, file2.length)
+          rescue => e
+            puts e
+          end
         else
           #Algorithms.diff(file1, file2)
         end
@@ -166,7 +171,7 @@ fdfAnalysisModule do
         files_d.each do |file_d|
           result = open_and_send file_d
           if result && ((@options["p"][:value] == 100 && result == 0) || result >= @options["p"][:value])
-            puts file_d
+            @show.call file_d
             save_result_data(file_d, result)
           end
         end
