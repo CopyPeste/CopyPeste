@@ -18,6 +18,13 @@ module CopyPeste
       def list_files_from_dir(path)
         Dir[path + "/*/"].map { |file| File.basename(file) }
       end
+
+      module_function
+
+      def helper
+        "List all currently available analysis modules."
+      end
+
     end
   end
 end

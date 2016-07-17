@@ -5,7 +5,6 @@ module CopyPeste
       @opts = cmd_hash[:opts]
       @graph_com = graph_com
       @core_state = core_state
-      @update_core_state = false
 
       specialize_into @cmd
       @graph_com.info(
@@ -20,14 +19,6 @@ module CopyPeste
 
     def init
       #@exec.call "Error: please implement init command method."
-    end
-
-    def update_core_state?
-      @update_core_state
-    end
-
-    def get_core_update
-      @core_state
     end
 
     private

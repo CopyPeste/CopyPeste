@@ -12,6 +12,13 @@ module CopyPeste
       end
 
       def init; end
+
+      module_function
+
+      def helper
+        "Display all available options on the selected analysis module."
+      end
+
     end
   end
 end

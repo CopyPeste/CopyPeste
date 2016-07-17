@@ -32,15 +32,24 @@ consoleGraphicalModule  do
     end
 
     class ConsoleMode
+
       def initialize
         @alive = true
         @core_req = CoreRequests.new
         @analysis_req = AnalysisRequests.new
       end
 
+      def set_debug_mode(debug_mode)
+        ConsoleDisplay.debug = debug_mode
+      end
+
+      def get_events
+        ConsoleDisplay.events_to_command
+      end
+
       def loop
         print ConsoleDisplay.prompt
-        cmd = gets
+        cmd = STDIN.gets
         cmd_hash = Parser.parse cmd
         @alive = false if cmd_hash[:cmd] == "exit"
         cmd_hash
