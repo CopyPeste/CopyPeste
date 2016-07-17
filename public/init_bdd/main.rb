@@ -104,7 +104,7 @@ end
 def clear_database(mongo)
   mongo.rm_data(nil, "Fichier")
   mongo.rm_data(nil, "Extension")
-  mongo.rm_data(nil, "Duplicate")
+  mongo.rm_data(nil, "Scoring")
 end
 
 # Start the scan of the system
