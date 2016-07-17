@@ -6,6 +6,13 @@ module CopyPeste
       end
 
       def init; end
+
+      module_function
+
+      def helper
+        "Exit properly CopyPeste Framework."
+      end
+
     end
   end
 end

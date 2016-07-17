@@ -3,14 +3,19 @@ require File.join CopyPeste::Require::Path.public, 'tmp_logo'
 
 module CopyPeste
   class Core
+
+    attr_accessor :core_state
+
     def initialize(conf)
       @core_state = CoreState.new
       @core_state.conf = conf
       @graphic_mod = Utils.load_module(
         CopyPeste::Require::Path.graphics,
-        # conf['modules']['graphics']['default']
-        'console_mode/console_mode.rb'
+        conf['modules']['graphics']['default']
+        #'console_mode/console_mode.rb'
       )
+      @graphic_mod.set_debug_mode(CopyPeste.debug_mode)
+      @core_state.events_to_command = @graphic_mod.get_events
       exec_func = Proc.new do |msg|
         @graphic_mod.exec msg
       end
@@ -37,7 +42,6 @@ module CopyPeste
       cmd = Command.new(cmd_hash, @graph_com, @core_state)
       cmd.init
       cmd.run
-      @core_state = cmd.get_core_update if cmd.update_core_state?
     end
   end
 end

@@ -17,6 +17,13 @@ module CopyPeste
       end
 
       def init; end
+
+      module_function
+
+      def helper
+        "Run the selected analysis module."
+      end
+
     end
   end
 end

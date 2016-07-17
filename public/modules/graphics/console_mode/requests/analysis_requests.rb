@@ -9,7 +9,7 @@ class AnalysisRequests < ConsoleDisplay
   end
 
   def exec hash
-    if hash[:code] % 10 == 1
+    if hash[:code] % 10 == 1 && @@debug == true
       puts "[info][Analysis] #{hash[:data][:output]}".green
     elsif hash[:code] % 10 == 0
       puts "[Analysis] #{hash[:data][:output]}"
