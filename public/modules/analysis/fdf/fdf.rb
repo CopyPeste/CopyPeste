@@ -111,11 +111,11 @@ fdfAnalysisModule do
         query["name"] = ext
         query = nil if ext == nil
         # puts @ignored_conf.ignored_ext
-        results = @mongo.get_data("Extension", { name: { $nin: @ignored_conf.ignored_ext } }, nil)
+        results = @mongo.get_data("Extension", {name: {$nin => @ignored_conf.ignored_ext}}, nil)
         results.each do |data|
           data = JSON.parse(data.to_json)
           data["_id"] = BSON::ObjectId.from_string data["_id"]["$oid"]
-          documents << @mongo.get_data(@c_file, {:ext => data["_id"], name: { $nin: @ignored_conf.ignored_files }})
+          documents << @mongo.get_data(@c_file, {:ext => data["_id"], name: { $nin => @ignored_conf.ignored_files }})
         end
         sort_tab documents
       end
