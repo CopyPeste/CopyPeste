@@ -40,7 +40,7 @@ fdfAnalysisModule do
           },
           "p" => {
             helper: "minimum percentage of similarity between 2 files",
-            allowed: [*10..100],
+            allowed: [*60..100],
             value: 100
           }
         }
