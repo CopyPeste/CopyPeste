@@ -4,8 +4,9 @@ ignored:
       - GemFile
       - Rakefile
       - ".gitignore"
-      - elem2
+      - Makefile.in
    extensions:
       - ".trash"
       - ".old"
       - ".elem4"
+      - ".build"

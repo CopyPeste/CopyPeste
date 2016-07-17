@@ -19,7 +19,7 @@ fdfAnalysisModule do
     require File.join(CopyPeste::Require::Path.algorithms, 'sort_file')
     require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
     require File.join(CopyPeste::Require::Path.analysis, 'fdf', 'use_levenshtein')
-    require_relative 'config_handler/Ignored_class'
+    require File.join(CopyPeste::Require::Path.analysis, 'fdf', 'config_handler', 'Ignored_class')
     
     class Fdf
       attr_accessor :options
@@ -103,21 +103,18 @@ fdfAnalysisModule do
 
       # Get files from the database that will be analysed
       #
-      # @param [String] File extension to analyse. Nil by default (take all th file from the database).
       # @Return [Array] return a file Array with the full file path :  Array[0] = /home/test/expemple.c
-      def get_doc_to_analyse(ext = nil)
-        query = {}
+      def get_doc_to_analyse
+        query = {name: {"$nin" => @ignored_conf.ignored_ext}}
         documents = []
-        query["name"] = ext
-        query = nil if ext == nil
         # puts @ignored_conf.ignored_ext
-        #results = @mongo.get_data("Extension", {:name => {$nin => @ignored_conf.ignored_ext}}, nil)
         results = @mongo.get_data("Extension", query, nil)
+        #results = @mongo.get_data("Extension", query, nil)
         results.each do |data|
-          data = JSON.parse(data.to_json)
+          data = JSON.parse data.to_json
           data["_id"] = BSON::ObjectId.from_string data["_id"]["$oid"]
-          #documents << @mongo.get_data(@c_file, {:ext => data["_id"], :name => { $nin => @ignored_conf.ignored_files }})
-          documents << @mongo.get_data(@c_file, {:ext => data["_id"]})
+          documents << @mongo.get_data(@c_file, {ext: data["_id"], name: {"$nin" => @ignored_conf.ignored_files }})
+          #documents << @mongo.get_data(@c_file, {ext: data["_id"]})
         end
         sort_tab documents
       end
