@@ -16,5 +16,4 @@
 ** @return: Integer - returns the comparison value in percentage
 ** or -1 in case of null strings
 */
-/* int	compare_words_strings(const s_line *string1, const s_line *string2); */
-int	compare_words_strings_inline(const s_line *line1, const s_line *line2);
+int	compare_words_strings(const s_line *string1, const s_line *string2);
