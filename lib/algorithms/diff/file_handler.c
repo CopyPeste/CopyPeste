@@ -171,10 +171,10 @@ void	destroy_file_handler(s_file *struct_file)
 	    free(struct_file->lines[i]);
 	    free(struct_file->lines[i]->tmp_line);
 	  }
-      free(struct_file->tmp_file);
-      free(struct_file->file);
-      free(struct_file->lines);
-      free(struct_file);
+      //free(struct_file->tmp_file);
+      //free(struct_file->file);
+      //free(struct_file->lines);
+      //free(struct_file);
       struct_file = NULL;
     }
 }

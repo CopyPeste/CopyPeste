@@ -18,8 +18,8 @@ fdfAnalysisModule do
     require File.join(CopyPeste::Require::Path.base, 'algorithms')
     require File.join(CopyPeste::Require::Path.algorithms, 'sort_file')
     require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
-    require File.join(CopyPeste::Require::Path.analysis, 'fdf', 'use_levenshtein')
-    require File.join(CopyPeste::Require::Path.analysis, 'fdf', 'config_handler', 'Ignored_class')
+    require File.join(CopyPeste::Require::Path.analysis, 'fdf/use_levenshtein')
+    require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Ignored_class')
     
     class Fdf
       attr_accessor :options
@@ -107,14 +107,12 @@ fdfAnalysisModule do
       def get_doc_to_analyse
         query = {name: {"$nin" => @ignored_conf.ignored_ext}}
         documents = []
-        # puts @ignored_conf.ignored_ext
         results = @mongo.get_data("Extension", query, nil)
-        #results = @mongo.get_data("Extension", query, nil)
         results.each do |data|
           data = JSON.parse data.to_json
           data["_id"] = BSON::ObjectId.from_string data["_id"]["$oid"]
-          documents << @mongo.get_data(@c_file, {ext: data["_id"], name: {"$nin" => @ignored_conf.ignored_files }})
-          #documents << @mongo.get_data(@c_file, {ext: data["_id"]})
+          query = {ext: data["_id"], name: {"$nin" => @ignored_conf.ignored_files }}
+          documents << @mongo.get_data(@c_file, query)
         end
         sort_tab documents
       end
@@ -165,10 +163,9 @@ fdfAnalysisModule do
       # Send files to the fdupes algorithms
       # 
       # @param [Array] File array containing levenshtein's results
-      # @Return
       def check_files_similarity(files_d)
         files_d.each do |file_d| #test
-	# check if file has extension to be ignored	
+	  # check if file has an extension to be ignored	
           result = open_and_send file_d
           if result && ((@options["p"][:value] == 100 && result == 0) || result >= @options["p"][:value])
             save_result_data(file_d, result)
