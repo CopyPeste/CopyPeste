@@ -163,18 +163,16 @@ void	destroy_file_handler(s_file *struct_file)
 	    if (struct_file->lines[i]->words)
 	      {
 		for (j = 0; struct_file->lines[i]->words[j]; ++j)
-		  {
-		    free(struct_file->lines[i]->words[j]);
-		  }
+		  free(struct_file->lines[i]->words[j]);
 		free(struct_file->lines[i]->words);
 	      }
-	    free(struct_file->lines[i]);
 	    free(struct_file->lines[i]->tmp_line);
+	    free(struct_file->lines[i]);
 	  }
-      //free(struct_file->tmp_file);
-      //free(struct_file->file);
-      //free(struct_file->lines);
-      //free(struct_file);
+      free(struct_file->tmp_file);
+      free(struct_file->file);
+      free(struct_file->lines);
+      free(struct_file);
       struct_file = NULL;
     }
 }
