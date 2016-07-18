@@ -35,9 +35,9 @@ module CopyPeste
     def ins_data(collection, data, ins_type = false)
       begin
         if ins_type == false
-          res = @db_inst[collection].insert_one(data)
+          res = @db_inst[collection].insert_one data
         elsif ins_type == true
-          res = @db_inst[collection].insert_many(data)
+          res = @db_inst[collection].insert_many data
         end
       rescue
         $stderr.puts "[DbHdlr]:Error while inserting data to the database. Trying to record the following data in #{collection}:"
@@ -77,9 +77,9 @@ module CopyPeste
         if filter == nil
           res = @db_inst[collection].find().delete_many
         elsif del_type == false
-          res = @db_inst[collection].delete_one(filter)
+          res = @db_inst[collection].delete_one filter
         elsif del_type == true
-          res = @db_inst[collection].delete_many(filter)
+          res = @db_inst[collection].delete_many filter
         end
       rescue
         $stderr.puts 	"[DbHdlr]:Error while deleting data from the database. Trying to delete the document(s) matching the following

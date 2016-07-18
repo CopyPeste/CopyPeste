@@ -1,6 +1,6 @@
 require 'yaml'
 
-$CONFIG_FILES_PATH = "../../config_files/"
+$CONFIG_FILES_PATH = "../config_files/"
 
 class Config_class
 
