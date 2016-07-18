@@ -26,6 +26,7 @@ module CopyPeste
           return
         end
 
+        @graph_com.display(10, "Gathering data.")
         duplicated_files_nb = 0
         duplicates = []
 
@@ -55,7 +56,8 @@ module CopyPeste
         end
 
         extension = get_extension(duplicates)
-
+        @graph_com.display(10, "Creation & printing PDF.")
+        
         Prawn::Document.generate("#{hash['module']} results at #{hash['timestamp']}.pdf") do
           text "Module #{hash['module']}"
           move_up 17
