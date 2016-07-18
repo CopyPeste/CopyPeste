@@ -71,6 +71,12 @@ module CopyPeste
         end
       end
 
+      module_function
+
+      def helper
+        "Generate a pdf that contain results of the previous analysis."
+      end
+
     end
   end
 end

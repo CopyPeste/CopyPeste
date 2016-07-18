@@ -40,6 +40,9 @@ class CoreRequests < ConsoleDisplay
       elsif hash[:data][:cmd] == "help"
         cmd_help hash
 
+      elsif hash[:data][:cmd] == "generate_result"
+        puts hash[:data][:output]
+
       end
     end
   end
