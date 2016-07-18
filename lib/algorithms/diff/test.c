@@ -14,7 +14,7 @@ static char *get_string_file(char *path)
   char *buf;
   long size;
 
-  ptr_file = fopen(path, "r");
+  ptr_file = fopen(path, "w");
   if (!ptr_file)
     {
       printf("Fail fopen\n");

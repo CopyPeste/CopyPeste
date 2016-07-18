@@ -1,12 +1,13 @@
 
 /* INCLUDES */
-#include "file_handler.h"
-#include "filter.h"
-
 #include <string.h>
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "file_handler.h"
+#include "filter.h"
+
 
 /*
 ** Gets the number of line in a file.
@@ -23,6 +24,8 @@ unsigned int	count_lines(const char *file)
     cpt += (*file == '\n');
    return cpt;
 }
+
+
 
 /*
 ** Gets the number of words in a string.
@@ -49,7 +52,6 @@ int	count_words(const char *string)
 static
 int	set_array_words(s_line *struct_line)
 {
-  /* char *tmp_line; */
   char *str1;
   int j;
   const char *delim = " \t\n";
@@ -72,6 +74,7 @@ int	set_array_words(s_line *struct_line)
 	  break;
 	}
       struct_line->words[j]->size = strlen(struct_line->words[j]->word);
+      struct_line->words[j]->at = j;
     }
   return 0;
 }
@@ -85,7 +88,6 @@ int	set_array_words(s_line *struct_line)
 static
 int	set_array_lines(s_file *struct_file)
 {
-  /* char *tmp_file; */
   char *str1;
   int j;
   const char *delim = "\n";
@@ -100,6 +102,7 @@ int	set_array_lines(s_file *struct_file)
     {
       if (!(struct_file->lines[j] = malloc(sizeof(s_line) + 1)))
 	return -1;
+
       struct_file->lines[j]->line = strtok(str1, delim);
       if (struct_file->lines[j]->line == NULL)
 	{
@@ -109,6 +112,7 @@ int	set_array_lines(s_file *struct_file)
 	}
       struct_file->lines[j]->size = strlen(struct_file->lines[j]->line);
     }
+
   for (j = 0; struct_file->lines[j]; ++j)
     set_array_words(struct_file->lines[j]);
   return 0;
@@ -129,7 +133,7 @@ s_file	*init_file_handler(char *str_file)
     return NULL;
 
   str_file = filter_space(str_file);
-  str_file = filter_newline(str_file);
+  /* str_file = filter_newline(str_file); */ // Remove to find number of line
 
   if (!(struct_file = malloc(sizeof(s_file) + 1)))
     return NULL;
