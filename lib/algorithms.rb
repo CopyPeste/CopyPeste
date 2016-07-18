@@ -11,7 +11,7 @@ module Algorithms
   attach_function :levenshtein, [:string, :string], :int
   attach_function :fdupes_match, [:string, :int, :string, :int], :int
   attach_function :diff, [:string, :string], :double
-  attach_function :fslice, [:string, :string, S_result], :int
+  #attach_function :fslice, [:string, :string, S_result], :int
 end
 
 result = S_result.new
