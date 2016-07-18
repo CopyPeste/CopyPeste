@@ -10,6 +10,7 @@ Development currently in progress.
 ```sh
 $> git clone https://github.com/CopyPeste/CopyPeste.git
 $> cd CopyPeste
+$> sudo gem install bundler  
 $> sudo -E make install
 ```
 
