@@ -36,13 +36,11 @@ module CopyPeste
                                .join("")
             cmd_module = Command.const_get cmd_name
             helpers.store(event, cmd_module.helper)
-          else
-            next
+          else next
           end
         end
 
         helpers
-
       end
 
       def available_commands

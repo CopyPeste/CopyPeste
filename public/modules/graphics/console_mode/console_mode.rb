@@ -32,7 +32,6 @@ consoleGraphicalModule  do
     end
 
     class ConsoleMode
-
       def initialize
         @alive = true
         @core_req = CoreRequests.new
