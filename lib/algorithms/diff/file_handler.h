@@ -14,6 +14,7 @@ typedef struct	t_line
 {
   unsigned int	size;
   unsigned int	nb_words;
+  unsigned int	at;
   char		*line;
   char		*tmp_line;
   struct t_word	**words;
@@ -22,6 +23,7 @@ typedef struct	t_line
 typedef struct	t_word
 {
   unsigned int	size;
+  unsigned int	at;
   char		*word;
 } s_word;
 
