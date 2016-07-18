@@ -26,7 +26,6 @@ module CopyPeste
           return
         end
         
-        extension = get_extension(rows)
         duplicated_files_nb = 0
         duplicates = []
         
@@ -38,7 +37,7 @@ module CopyPeste
           duplicate = [
             rows[index][0], [ [rows[index][1], rows[index][2]] ]
           ]
-          duplicated_files_nb = duplicated_files_nb + 1
+          duplicated_files_nb += 1
           clean(index, rows.size - 1, rows, index)
           # iterate over all other left files to search duplications
           ((index + 1)..(rows.size - 1)).each do |index2|
@@ -47,13 +46,15 @@ module CopyPeste
             # if a left file is similar to another, save it
             if rows[index2][0] == rows[index][0]
               duplicate[1] << [ rows[index2][1], rows[index2][2] ]
-              duplicated_files_nb = duplicated_files_nb + 1
+              duplicated_files_nb += 1
               clean(index2, rows.size - 1, rows, index2)
               rows[index2] = nil
             end
           end
           duplicates << duplicate
         end
+
+        extension = get_extension(duplicates)
 
         puts "pdf generation"
         Prawn::Document.generate("#{hash['module']} results at #{hash['timestamp']}.pdf") do
@@ -85,13 +86,16 @@ module CopyPeste
         @graph_com.cmd_return(@cmd, "PDF has been successfully created.", false)
       end
 
-      def get_extension(rows)
+      def get_extension(duplicates)
         ext = {}
-        rows = rows.map {|row| row[0]}
-        rows.each { |e| ext.has_key?(File.extname(e)) ? ext[File.extname(e)] += 1 : ext[File.extname(e)] = 1 }
-        if ext.has_key?("")
-          ext['No extension'] = ext.delete("")
+        duplicates.each do |duplicate|
+          if ext.has_key?(File.extname(duplicate[0]))
+            ext[File.extname(duplicate[0])] += 1
+          elsif
+            ext[File.extname(duplicate[0])] = 1
+          end
         end
+        ext['No extension'] = ext.delete "" if ext.has_key? ""
         return ext
       end
       
