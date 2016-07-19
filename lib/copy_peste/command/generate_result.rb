@@ -67,8 +67,8 @@ module CopyPeste
           text "#{hash['timestamp']}", align: :right
           image "./documentation/images/2017_logo_CopyPeste.png", position: :right, width: 140, height: 140
           move_up 135
-          text "Files analyzed : #{nb_file}"
-          text "Files duplicated : #{duplicated_files_nb}"
+          text "Analyzed files: #{nb_file}"
+          text "Duplicated files: #{duplicated_files_nb}"
           move_down 20
           table([
                   ["Extension", "Duplication"],
