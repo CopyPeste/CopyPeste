@@ -14,7 +14,7 @@ install:	lib gem init
 
 # install and compile c library
 lib:
-		pkg_add libmagic 
+#		pkg_add libmagic
 		$(MAKE) -C $(MODULE_PATH)
 
 # only install gems

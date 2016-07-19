@@ -53,25 +53,28 @@ module CopyPeste
             end
           end
           duplicates << duplicate
+          duplicate[1].each do |e|
+            e[1] = e[1].zero? ? 100 : e[1]
+          end
         end
 
         extension = get_extension(duplicates)
         @graph_com.display(10, "Creation & printing PDF.")
-        
+
         Prawn::Document.generate("#{hash['module']} results at #{hash['timestamp']}.pdf") do
           text "Module #{hash['module']}"
           move_up 17
           text "#{hash['timestamp']}", align: :right
           image "./documentation/images/2017_logo_CopyPeste.png", position: :right, width: 140, height: 140
           move_up 135
-          text "Files analyzed : #{nb_file}"
-          text "Files duplicated : #{duplicated_files_nb}"
+          text "Analyzed files: #{nb_file}"
+          text "Duplicated files: #{duplicated_files_nb}"
           move_down 20
           table([
                   ["Extension", "Duplication"],
                   *extension
                 ], cell_style: {size: 9})
-          move_down 20
+          move_down 60
 
           duplicates.each do |duplicate|
             text "<u>Duplication of file <b>#{duplicate[0]}</b>:</u>",

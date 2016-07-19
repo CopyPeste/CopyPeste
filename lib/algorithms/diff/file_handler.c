@@ -132,14 +132,13 @@ s_file	*init_file_handler(char *str_file)
   if (!str_file)
     return NULL;
 
-  //str_file = filter_space(str_file);
-  /* str_file = filter_newline(str_file); */ // Remove to find number of line
-
   if (!(struct_file = malloc(sizeof(s_file))))
     return NULL;
   struct_file->lines = NULL;
   if (!(struct_file->file = strdup(str_file)))
     return NULL;
+  struct_file->file = filter_space(struct_file->file);
+  struct_file->file = filter_newline(struct_file->file); 
   struct_file->size = strlen(str_file);
   if (set_array_lines(struct_file) < 0)
     return NULL;
