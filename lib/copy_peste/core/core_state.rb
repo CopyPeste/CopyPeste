@@ -4,6 +4,7 @@ module CopyPeste
       attr_accessor :analysisModule
       attr_accessor :conf
       attr_accessor :events_to_command
+      attr_accessor :analysisModOpts
 
       def initialize
         @analysisModule = nil

@@ -23,8 +23,8 @@ class UseLevenshtein
   def send_levenshtein(file_to_send)
     size = file_to_send.size()
     (0..(size - 2)).each do |i|
+      file1 = file_to_send[i].split('/')
       ((i + 1)..size - 1).each do |j|
-        file1 = file_to_send[i].split('/')
         file2 = file_to_send[j].split('/')
         distance = Algorithms.levenshtein(file1.last(), file2.last())
         if distance <= 1
@@ -34,7 +34,6 @@ class UseLevenshtein
           }
         end
       end
-      puts "#{i} / #{size-2}\n"
     end
   end
 

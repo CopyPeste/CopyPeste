@@ -9,7 +9,9 @@ class ConsoleDisplay
     "set_opts" => "set_analysis_mod_options",
     "show_opts" => "show_analysis_mod_options",
     "use" => "use_analysis_module",
-    "run" => "run_analysis_module"
+    "run" => "run_analysis_module",
+    "exit_mod" => "exit_analysis_module",
+    "generate_result" => "generate_result"
     }
 
   def self.prompt

@@ -1,0 +1,12 @@
+---
+ignored:
+   files:
+      - GemFile
+      - Rakefile
+      - ".gitignore"
+      - Makefile.in
+   extensions:
+      - ".trash"
+      - ".old"
+      - ".elem4"
+      - ".build"

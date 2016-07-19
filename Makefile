@@ -2,7 +2,7 @@ MODULE_PATH	= ./lib/algorithms
 
 GEMS =      bundle install
 
-INIT =      cd './public/init_bdd/' && ruby main.rb ~/test
+INIT =      cd './public/init_bdd/' && ruby main.rb ~/portsTreeSample
 
 
 ##
@@ -12,8 +12,9 @@ INIT =      cd './public/init_bdd/' && ruby main.rb ~/test
 # full install
 install:	lib gem init
 
-# only compile c library
+# install and compile c library
 lib:
+		pkg_add libmagic 
 		$(MAKE) -C $(MODULE_PATH)
 
 # only install gems

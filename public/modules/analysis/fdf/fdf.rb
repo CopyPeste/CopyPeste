@@ -15,16 +15,16 @@ fdfAnalysisModule do
 
   impl {
     require 'json'
-
     require File.join(CopyPeste::Require::Path.base, 'algorithms')
     require File.join(CopyPeste::Require::Path.algorithms, 'sort_file')
     require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
-    require File.join(CopyPeste::Require::Path.analysis, 'fdf', 'use_levenshtein')
-
+    require File.join(CopyPeste::Require::Path.analysis, 'fdf/use_levenshtein')
+    require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Ignored_class')
+    
     class Fdf
       attr_accessor :options
       attr_accessor :show
-
+      
 
       def initialize
         @options = {
@@ -40,7 +40,7 @@ fdfAnalysisModule do
           },
           "p" => {
             helper: "minimum percentage of similarity between 2 files",
-            allowed: [*10..100],
+            allowed: [*60..100],
             value: 100
           }
         }
@@ -49,7 +49,7 @@ fdfAnalysisModule do
         @c_file = "Fichier"
         @results = {
           module: "FDF",
-          options: [],
+          options: "List of duplicated files",
           timestamp: Time.now.getutc,
           type: "array",
           header: ["first", "second", "score"],
@@ -57,6 +57,7 @@ fdfAnalysisModule do
           transformation: [],
           rows: []
         }
+        @ignored_conf = Ignored_class.new()
       end
 
 
@@ -102,18 +103,16 @@ fdfAnalysisModule do
 
       # Get files from the database that will be analysed
       #
-      # @param [String] File extension to analyse. Nil by default (take all th file from the database).
       # @Return [Array] return a file Array with the full file path :  Array[0] = /home/test/expemple.c
-      def get_doc_to_analyse(ext = nil)
-        query = {}
+      def get_doc_to_analyse
+        query = {name: {"$nin" => @ignored_conf.ignored_ext}}
         documents = []
-        query["name"] = ext
-        query = nil if ext == nil
         results = @mongo.get_data("Extension", query, nil)
         results.each do |data|
-          data = JSON.parse(data.to_json)
+          data = JSON.parse data.to_json
           data["_id"] = BSON::ObjectId.from_string data["_id"]["$oid"]
-          documents << @mongo.get_data(@c_file, {:ext => data["_id"]})
+          query = {ext: data["_id"], name: {"$nin" => @ignored_conf.ignored_files }}
+          documents << @mongo.get_data(@c_file, query)
         end
         sort_tab documents
       end
@@ -125,12 +124,12 @@ fdfAnalysisModule do
       # @param [Hash] files and distance between their titles
       # @param [Int] result of comparison algorim
       # @return
-      def save_result_data(file_d, result)
-        result_data = {
-          "levsht_dist" => file_d[:distance],
-          "similarity" => result,
-          "files" => file_d[:files]
-        }
+      def save_result_data(file_d, similarity)
+        result_data = [
+          file_d[:files][0], #first file
+          file_d[:files][1], #second file
+          similarity #their similarity score
+        ]
         @results[:rows] << result_data
       end
 
@@ -145,25 +144,28 @@ fdfAnalysisModule do
           file1 = IO.read files_d[:files][0]
           file2 = IO.read files_d[:files][1]
         rescue => e # file doesn't exists, db have to be updated
-          puts e
+          @show.call "[Error]: #{e} Please update your database"
           return nil
         end
-        # if 100% similarity and files have the same size
-        if @options["p"][:value] == 100 && (File.size(files_d[:files][0]) == File.size(files_d[:files][1]))
-          #fdupes_match return 0 if files are equals.
-          Algorithms.fdupes_match(file1, file1.length, file2, file2.length)
-        else
-          #Algorithms.diff(file1, file2)
+        begin
+          # if 100% similarity and files have the same size
+          if @options["p"][:value] == 100 && (File.size(files_d[:files][0]) == File.size(files_d[:files][1]))
+            Algorithms.fdupes_match(file1, file1.length, file2, file2.length)
+          else
+            Algorithms.diff(file1, file2)
+          end
+        rescue => e
+          @show.call "[Not treated]: #{files_d[:files][0]} & #{files_d[:files][0]}: #{e}"
         end
       end
 
 
       # Send files to the fdupes algorithms
-      #
+      # 
       # @param [Array] File array containing levenshtein's results
-      # @Return
       def check_files_similarity(files_d)
-        files_d.each do |file_d|
+        files_d.each do |file_d| #test
+	  # check if file has an extension to be ignored	
           result = open_and_send file_d
           if result && ((@options["p"][:value] == 100 && result == 0) || result >= @options["p"][:value])
             save_result_data(file_d, result)
@@ -175,15 +177,26 @@ fdfAnalysisModule do
       # Function used to initialize and run the fdf
       # and get the list of file to analyse.
       def run
+        @show.call "Get all files from database..."
         files = get_doc_to_analyse
+        @show.call "Done."
+        @show.call "Sort files depending on options..."
         file_hash = sort_files_with_rules files
+        @show.call "Done."
+        @show.call "Searching for interesting files to analyse..."
         lev = UseLevenshtein.new(file_hash)
         files_d = lev.results
+        @show.call "Done."
         if files_d.empty?
-          puts "No files to analyses"
+          @show.call "No file to analyse"
         else
+          @show.call "Searching for duplicate files..."
           check_files_similarity files_d
+          @show.call "Done."
+          @show.call "Saving analyse results in database..."
           @mongo.ins_data(@c_res, @results);
+          @show.call "Done, everything worked fine!"
+          @show.call "You can now run generate_result to extract interesting informations."
         end
       end
     end

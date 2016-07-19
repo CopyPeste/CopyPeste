@@ -1,12 +1,15 @@
 source "https://rubygems.org"
-ruby '2.2.3'
+ruby '2.2.2'
+
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
 
 # Ruby String class extension. Adds methods to set text color, background color
 # and, text effects on ruby console and command line output, using ANSI
 # escape sequences.
 # Required in
 #   config/file_handler/test_file_fandler.rb
-gem 'colorize', github: 'fazibear/colorize'
+gem 'colorize'
 
 # A ruby extension for programmatically loading dynamic libraries.
 # Required in
@@ -36,6 +39,16 @@ gem 'mongoid'
 #   modules/graphics/console_mode/received_msgs_mng.rb
 #   scripts/init_bdd/main.rb
 gem 'json'
+
+# Prawn is a pure Ruby PDF generation library
+# Required in
+#   lib/copy_peste/command/generate_result
+gem 'prawn'
+
+# Prawn-table is a library for creating table with Prawn
+# Required in
+#   lib/copy_peste/command/generate_result
+gem 'prawn-table'
 
 # Pretty print your Ruby objects with style.
 # Required in

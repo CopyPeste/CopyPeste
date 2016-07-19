@@ -1,15 +1,14 @@
-## Makefile
-## Epitech EIP 2017 groupe Copypeste
-## @by : Guillaume Krier
-
 CC =		gcc
 
 RM =		rm -f
 
 CFLAGS +=	-Wextra -Wall -Werror
 CFLAGS +=	-pedantic -std=gnu99
-CFLAGS +=	-fmax-errors=2
 CFLAGS +=	-I../levenshtein/
+
+# Optimisation flag
+
+CFLAGS +=	-O2
 
 NAME =		my_fslice
 
@@ -17,7 +16,7 @@ SRCS =		main.c \
 		fslice.c \
 		file_handler.c \
 		filter.c \
-		compare.c \
+		compare.c
 
 OBJS =		$(SRCS:.c=.o)
 

@@ -28,6 +28,9 @@ class CoreRequests < ConsoleDisplay
       if hash[:data][:cmd] == "use_analysis_module"
         @@prompt = "cp (#{hash[:data][:output].red}) > "
 
+      elsif hash[:data][:cmd] == "exit_analysis_module"
+        @@prompt = "cp > "
+
       elsif hash[:data][:cmd] == "show_analysis_mod_options"
         cmd_show_analysis_mod_options hash
 
@@ -36,6 +39,9 @@ class CoreRequests < ConsoleDisplay
 
       elsif hash[:data][:cmd] == "help"
         cmd_help hash
+
+      elsif hash[:data][:cmd] == "generate_result"
+        puts hash[:data][:output]
 
       end
     end

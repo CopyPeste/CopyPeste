@@ -10,14 +10,15 @@ Development currently in progress.
 ```sh
 $> git clone https://github.com/CopyPeste/CopyPeste.git
 $> cd CopyPeste
-$> make install
+$> sudo gem install bundler  
+$> sudo -E make install
 ```
 
 ### How to find duplicated files:
 
 ```sh
 $> cd CopyPeste
-$> ./app/copy_peste.rb
+$> ./bin/copy_peste.rb
 $> use fdf
 $> run
 ```

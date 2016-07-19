@@ -1,14 +1,12 @@
-## Makefile
-## Epitech EIP 2017 groupe Copypeste
-## @by : Guillaume Krier
-
 CC =		gcc
 
 RM =		rm -f
 
 CFLAGS +=	-Wextra -Wall -Werror
 CFLAGS +=	-pedantic -std=gnu99
-CFLAGS +=	-fmax-errors=2
+
+#Optimisation flag
+CFLAGS +=	-O2
 
 MY_FLAGS =	-lcrypto # MD5
 

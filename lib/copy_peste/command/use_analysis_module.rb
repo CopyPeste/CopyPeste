@@ -16,7 +16,7 @@ module CopyPeste
               "Analysis mod loaded #{@core_state.analysisModule}."
             )
             @graph_com.cmd_return(@cmd, @opts[0], false)
-          rescue LoadError
+          rescue LoadError => e
             @graph_com.cmd_return(@cmd, @opts[0], true)
           end
 
