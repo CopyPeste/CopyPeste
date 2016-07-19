@@ -24,11 +24,13 @@ int find_line_in_file(const s_line *line, const s_file *struct_file, int at)
 {
   unsigned int i = (at - MAX_GAP) < 0 ? 0 : (at - MAX_GAP);
 
-  if (!line || !struct_file)
+  if (!line || !struct_file || !struct_file->lines)
     return -1;
 
   while (struct_file->lines[i] && i < (unsigned int)(at + MAX_GAP))
     {
+      if (!struct_file->lines[i])
+	return -1;
       if (compare_words_strings(line, struct_file->lines[i]) == 100)
       	return 1;
       ++i;
@@ -53,7 +55,6 @@ int compare_lines_in_file(const s_file *struct_file1, const s_file *struct_file2
 
   if (!struct_file1 || !struct_file2)
     return -1;
-
   while (struct_file1->lines[i])
     {
       result += find_line_in_file(struct_file1->lines[i], struct_file2, i);
@@ -118,7 +119,7 @@ double diff(char *str_file1, char *str_file2)
   if (!(struct_file1 = init_file_handler(str_file1))
       || !(struct_file2 = init_file_handler(str_file2)))
     return ret;
-
+  
   ret = (struct_file1->size >= struct_file2->size ?
   	 compare_lines_in_file(struct_file2, struct_file1) :
   	 compare_lines_in_file(struct_file1, struct_file2));

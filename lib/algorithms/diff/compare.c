@@ -22,8 +22,6 @@ int	compare_arrays(s_word **words1, s_word **words2)
   int	result = 0;
   int	i, j;
 
-  if (!words1 && !words2)
-    return -1;
   for (i = 0; words1[i]; ++i)
     {
       for (j = 0; words2[j]; ++j)
@@ -55,13 +53,14 @@ int	compare_words_strings(const s_line *line1, const s_line *line2)
 {
   int result = 0;
 
-  if (!line1 || !line2)
+  if (!line1 || !line2) 
+    return -1;
+  if (!line1->words || !line2->words)
     return -1;
 
   result = (line1->nb_words > line2->nb_words ?
-    compare_arrays(line1->words, line2->words) :
-  	 compare_arrays(line2->words, line1->words));
-
+	    compare_arrays(line1->words, line2->words) :
+	    compare_arrays(line2->words, line1->words));
   if ((line1->nb_words > 0 || line2->nb_words > 0) && result >= 0)
     return ((result * 100) / (line1->nb_words > line2->nb_words ?
 			      line1->nb_words : line2->nb_words));

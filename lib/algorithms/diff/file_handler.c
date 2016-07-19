@@ -18,11 +18,14 @@
 static
 unsigned int	count_lines(const char *file)
 {
-  unsigned int	cpt = 1;
+  unsigned int	cpt = 0;
 
+  if (*file == '\0')
+    return cpt;
   while (*file++)
     cpt += (*file == '\n');
-   return cpt;
+  --file;
+  return cpt + (*file != '\n');
 }
 
 
@@ -36,10 +39,17 @@ unsigned int	count_lines(const char *file)
 static
 int	count_words(const char *string)
 {
-  int	cpt = 1;
-
-  while (*string++)
-    cpt += (*string == ' ' || *string == '\t');
+  int	cpt = 0;
+  
+  do {
+    while (*string == ' ' || *string == '\t')
+      ++string;
+    if (*string == '\0')
+      return cpt;
+    while (*string != ' ' && *string != '\t' && *string != '\0')
+      ++string;
+    ++cpt;
+  } while (*string != '\0');
   return cpt;
 }
 
@@ -52,30 +62,26 @@ int	count_words(const char *string)
 static
 int	set_array_words(s_line *struct_line)
 {
-  char *str1;
+  char *str1, *token;
   int j;
   const char *delim = " \t\n";
 
   struct_line->nb_words = count_words(struct_line->line);
   if (!(struct_line->words = malloc(sizeof(s_word *) * (struct_line->nb_words + 1))))
     return -1;
-
   struct_line->tmp_line = strdup(struct_line->line);
 
-  for (j = 0, str1 = struct_line->tmp_line; ; j++, str1 = NULL)
-    {
-      if (!(struct_line->words[j] = malloc(sizeof(s_word) + 1)))
-	return -1;
-      struct_line->words[j]->word = strtok(str1, delim);
-      if (struct_line->words[j]->word == NULL)
-	{
-	  free(struct_line->words[j]);
-	  struct_line->words[j] = NULL;
-	  break;
-	}
-      struct_line->words[j]->size = strlen(struct_line->words[j]->word);
-      struct_line->words[j]->at = j;
-    }
+  str1 = struct_line->tmp_line;
+  token = strtok(str1, delim);
+  for (j = 0; token; j++) {
+    if (!(struct_line->words[j] = malloc(sizeof(s_word))))
+      return -1;
+    struct_line->words[j]->word = token;
+    struct_line->words[j]->size = strlen(struct_line->words[j]->word);
+    struct_line->words[j]->at = j;
+    token = strtok(NULL, delim);
+  }
+  struct_line->words[j] = NULL;
   return 0;
 }
 
@@ -88,30 +94,24 @@ int	set_array_words(s_line *struct_line)
 static
 int	set_array_lines(s_file *struct_file)
 {
-  char *str1;
+  char *str1, *token;
   int j;
   const char *delim = "\n";
 
   struct_file->nb_lines = count_lines(struct_file->file);
   if (!(struct_file->lines = malloc(sizeof(s_line *) * (struct_file->nb_lines + 1))))
     return -1;
-
   struct_file->tmp_file = strdup(struct_file->file);
-
-  for (j = 0, str1 = struct_file->tmp_file; ; j++, str1 = NULL)
-    {
-      if (!(struct_file->lines[j] = malloc(sizeof(s_line) + 1)))
-	return -1;
-
-      struct_file->lines[j]->line = strtok(str1, delim);
-      if (struct_file->lines[j]->line == NULL)
-	{
-	  free(struct_file->lines[j]);
-	  struct_file->lines[j] = NULL;
-	  break;
-	}
-      struct_file->lines[j]->size = strlen(struct_file->lines[j]->line);
-    }
+  str1 = struct_file->tmp_file;
+  token = strtok(str1, delim);
+  for (j = 0; token; j++) {
+    if (!(struct_file->lines[j] = malloc(sizeof(s_line))))
+      return -1;
+    struct_file->lines[j]->line = token;
+    struct_file->lines[j]->size = strlen(struct_file->lines[j]->line);
+    token = strtok(NULL, delim);
+  }
+  struct_file->lines[j] = NULL;
 
   for (j = 0; struct_file->lines[j]; ++j)
     set_array_words(struct_file->lines[j]);
@@ -132,10 +132,10 @@ s_file	*init_file_handler(char *str_file)
   if (!str_file)
     return NULL;
 
-  str_file = filter_space(str_file);
+  //str_file = filter_space(str_file);
   /* str_file = filter_newline(str_file); */ // Remove to find number of line
 
-  if (!(struct_file = malloc(sizeof(s_file) + 1)))
+  if (!(struct_file = malloc(sizeof(s_file))))
     return NULL;
   struct_file->lines = NULL;
   if (!(struct_file->file = strdup(str_file)))
