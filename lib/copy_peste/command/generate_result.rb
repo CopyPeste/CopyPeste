@@ -53,6 +53,9 @@ module CopyPeste
             end
           end
           duplicates << duplicate
+          duplicate[1].each do |e|
+            e[1] = e[1].zero? ? 100 : e[1]
+          end
         end
 
         extension = get_extension(duplicates)
@@ -71,7 +74,7 @@ module CopyPeste
                   ["Extension", "Duplication"],
                   *extension
                 ], cell_style: {size: 9})
-          move_down 40
+          move_down 60
 
           duplicates.each do |duplicate|
             text "<u>Duplication of file <b>#{duplicate[0]}</b>:</u>",
