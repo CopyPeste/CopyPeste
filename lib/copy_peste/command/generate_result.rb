@@ -30,7 +30,6 @@ module CopyPeste
         duplicated_files_nb = 0
         duplicates = []
 
-        extension = get_extension(rows)
         # iterate over all left files
         rows.size.times do |index|
           # if files have been deleted, skip
@@ -59,6 +58,7 @@ module CopyPeste
           end
         end
 
+        extension = get_extension(duplicates)
         @graph_com.display(10, "Creation & printing PDF.")
 
         Prawn::Document.generate("#{hash['module']} results at #{hash['timestamp']}.pdf") do
