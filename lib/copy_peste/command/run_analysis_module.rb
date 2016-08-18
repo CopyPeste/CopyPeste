@@ -13,7 +13,9 @@ module CopyPeste
           @graph_com.display(from, msg)
         end
 
-        @core_state.analysisModule.run
+        ar = AnalyseResult.new Time.now
+        @core_state.analysisModule.run ar
+        ar.save!
       end
 
       def init; end
