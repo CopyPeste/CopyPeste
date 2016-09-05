@@ -9,6 +9,7 @@ MKDIR	=	mkdir -p
 ## compilation paths
 ##
 LIB_NAME =	algorithms.so
+LIB =		./library/cp_library.so
 
 SRCS	 =	./levenshtein/levenshtein.c \
 		./rsync/rsync.c \
@@ -41,9 +42,17 @@ CFLAGS	+=	-O2
 all:		$(LIB_NAME)
 
 $(LIB_NAME):	$(OBJS)
-		$(CC) -o $(LIB_NAME) -shared -fPIC $(SRCS) $(CFLAGS)
+ifneq ("$(wildcard $(LIB))","")
+		echo "Library Done"
+else
+		make -C ./library
+endif
+		$(CC) -o $(LIB_NAME) $(LIB) -shared -fPIC $(SRCS) $(CFLAGS)
 
 clean:
+ifneq ("$(wildcard $(LIB))","")
+		rm $(LIB)
+endif
 		$(RM) $(LIB_NAME)
 
 re:		clean all
