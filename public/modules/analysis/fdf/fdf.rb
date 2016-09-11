@@ -176,7 +176,7 @@ fdfAnalysisModule do
 
       # Function used to initialize and run the fdf
       # and get the list of file to analyse.
-      def run
+      def run(*)
         @show.call "Get all files from database..."
         files = get_doc_to_analyse
         @show.call "Done."

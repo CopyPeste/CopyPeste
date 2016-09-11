@@ -1,3 +1,4 @@
+environment: "development"
 modules:
     graphics:
         default: "console_mode/console_mode.rb"

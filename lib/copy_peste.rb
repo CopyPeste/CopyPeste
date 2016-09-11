@@ -17,8 +17,10 @@ module CopyPeste
 
     config_path = File.join(Require::Path.root, dir, file)
     config_path = File.expand_path config_path
-
     config = YAML::load_file(config_path) if File.exists? config_path
+
+    require File.join(Require::Path.root, 'initializers.rb')
+
     core = Core.new config
     core.start
     self

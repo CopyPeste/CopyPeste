@@ -1,6 +1,6 @@
 development:
   clients:
     default:
-      database: CopyPeste500
+      database: CopyPeste
       hosts:
         - localhost:27017
