@@ -41,16 +41,12 @@ CFLAGS	+=	-O2
 all:		$(LIB_NAME)
 
 $(LIB_NAME):	$(OBJS)
-ifeq ("$(wildcard $(LIB))","")
 		make -C ./library
-endif
 		$(CC) -o $(LIB_NAME) $(LIB) -shared -fPIC $(SRCS) $(CFLAGS)
 
 clean:
-ifneq ("$(wildcard $(LIB))","")
-		rm $(LIB)
-endif
 		$(RM) $(LIB_NAME)
+		rm $(LIB)
 
 re:		clean all
 
