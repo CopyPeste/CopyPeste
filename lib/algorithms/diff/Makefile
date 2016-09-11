@@ -4,7 +4,8 @@ RM =		rm -f
 
 CFLAGS +=	-Wextra -Wall -Werror \
 		-pedantic -std=gnu99 \
-		-I../library/ \
+		-I../library/includes/tools \
+		-I../library/includes/file \
 		-I../levenshtein/ \
 
 #optimisation flag

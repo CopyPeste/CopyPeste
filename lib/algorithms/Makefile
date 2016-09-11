@@ -16,10 +16,7 @@ SRCS	 =	./levenshtein/levenshtein.c \
 		./fdupes/fdupes_algo.c \
 		./fdupes/md5/md5.c \
 		./hamming_distance/hamming_distance.c \
-		./diff/file_handler.c \
-		./diff/filter.c \
 		./diff/diff.c \
-		./diff/compare.c \
 
 ##
 ## compilation flags
@@ -31,6 +28,8 @@ CFLAGS +=	-I./rsync/includes \
 		-I./rsync/message_digest \
 		-I./rsync/compare \
 		-I./rsync/errno_copypeste \
+		-I./library/includes/tools \
+		-I./library/includes/file \
 
 CFLAGS +=	-lcrypto # MD5
 
@@ -42,9 +41,7 @@ CFLAGS	+=	-O2
 all:		$(LIB_NAME)
 
 $(LIB_NAME):	$(OBJS)
-ifneq ("$(wildcard $(LIB))","")
-		echo "Library Done"
-else
+ifeq ("$(wildcard $(LIB))","")
 		make -C ./library
 endif
 		$(CC) -o $(LIB_NAME) $(LIB) -shared -fPIC $(SRCS) $(CFLAGS)
