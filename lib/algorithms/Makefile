@@ -38,15 +38,17 @@ CFLAGS +=	-lcrypto # MD5
 ##
 CFLAGS	+=	-O2
 
-all:		$(LIB_NAME)
+all:		$(LIB) $(LIB_NAME)
 
 $(LIB_NAME):	$(OBJS)
-		make -C ./library
 		$(CC) -o $(LIB_NAME) $(LIB) -shared -fPIC $(SRCS) $(CFLAGS)
+
+$(LIB):
+		make -C ./library
 
 clean:
 		$(RM) $(LIB_NAME)
-		rm $(LIB)
+		$(RM) $(LIB)
 
 re:		clean all
 
