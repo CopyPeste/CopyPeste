@@ -91,8 +91,8 @@ char	*filter_space(char *str)
     {
       if ((str[ite1] == ' ' || str[ite1] == '\t')
 	  && ((str[ite1 + 1] == ' ' || str[ite1] == '\t')
-	  || str[ite1 + 1] == '\0'
-	  || str[ite1 - 1] == '\0'))
+	      || str[ite1 + 1] == '\0'
+	      || ite1 == 0))
 	while (str[ite1] == ' ' || str[ite1] == '\t')
 	  ++ite1;
       else
@@ -137,7 +137,7 @@ char	*filter_newline(char *str)
       if (str[ite1] == '\n'
 	  && (str[ite1 + 1] == '\n'
 	      || str[ite1 + 1] == '\0'
-	      || str[ite1 - 1] == '\0'))
+	      || ite1 == 0))
 	++ite1;
       else
 	str[ite2++] = str[ite1++];
