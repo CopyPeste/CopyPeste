@@ -1,3 +1,4 @@
+require 'readline'
 require File.join(
   CopyPeste::Require::Path.graphics,
   'console_mode',
@@ -7,7 +8,6 @@ require File.join(
 class Parser < ConsoleDisplay
 
   def self.parse str
-    str = str.delete!("\n")
     str = str.squeeze(' ').strip()
     tokens = str.split(' ')
     cmd = tokens[0]
@@ -32,4 +32,19 @@ class Parser < ConsoleDisplay
     cmd_hash
 
   end
+
+  def self.get_input prompt
+    list_available_cmd = ConsoleDisplay.events_to_command.keys.sort
+    comp = proc { |s| list_available_cmd.grep(/^#{Regexp.escape(s)}/) }
+
+    Readline.completion_append_character = " "
+    Readline.completion_proc = comp
+
+    line = Readline.readline(prompt, true)
+    if line == ""
+      Readline::HISTORY.pop
+    end
+    line
+  end
+
 end

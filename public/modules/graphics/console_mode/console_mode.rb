@@ -47,8 +47,7 @@ consoleGraphicalModule  do
       end
 
       def loop
-        print ConsoleDisplay.prompt
-        cmd = STDIN.gets
+        cmd = Parser.get_input ConsoleDisplay.prompt
         cmd_hash = Parser.parse cmd
         @alive = false if cmd_hash[:cmd] == "exit"
         cmd_hash
