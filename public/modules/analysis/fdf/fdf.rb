@@ -20,6 +20,7 @@ fdfAnalysisModule do
     require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
     require File.join(CopyPeste::Require::Path.analysis, 'fdf/use_levenshtein')
     require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Ignored_class')
+    require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Comments_class')
     
     class Fdf
       attr_accessor :options
@@ -58,6 +59,7 @@ fdfAnalysisModule do
           rows: []
         }
         @ignored_conf = Ignored_class.new()
+        @comments = Comments_class.new()
       end
 
 
@@ -148,6 +150,11 @@ fdfAnalysisModule do
           return nil
         end
         begin
+          ##
+          ##
+          #ext = File.extname files_d[:files][0]
+          #file1_epured = file1.sub(comments.comment_regex[ext], '')
+          #file2_epured = file2.sub(comments.comment_regex[ext], '')
           # if 100% similarity and files have the same size
           if @options["p"][:value] == 100 && (File.size(files_d[:files][0]) == File.size(files_d[:files][1]))
             Algorithms.fdupes_match(file1, file1.length, file2, file2.length)
@@ -164,8 +171,7 @@ fdfAnalysisModule do
       # 
       # @param [Array] File array containing levenshtein's results
       def check_files_similarity(files_d)
-        files_d.each do |file_d| #test
-	  # check if file has an extension to be ignored	
+        files_d.each do |file_d|
           result = open_and_send file_d
           if result && ((@options["p"][:value] == 100 && result == 0) || result >= @options["p"][:value])
             save_result_data(file_d, result)

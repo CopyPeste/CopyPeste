@@ -8,8 +8,8 @@ class Comments_class < Config_class
     super(comments_filename);
   end
 
-  def get_comments(ext)
-    @conf["comments"][ext]
+  def comment_regex(ext)
+    @conf["comments"][ext][0]
   end
 
 end
