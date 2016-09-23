@@ -11,6 +11,13 @@ module CopyPeste
   module_function
 
   def run(dir: '/', file: 'copy_peste.yml')
+    ["INT"].each do | sig |
+      trap(sig) do
+        puts ""
+        exit
+      end
+    end
+
     if ARGV.length == 1 && (ARGV[0] == "--debug" || ARGV[0] == "-d")
       @@debug_mode = true
     end
