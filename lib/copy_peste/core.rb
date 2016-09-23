@@ -12,7 +12,6 @@ module CopyPeste
       @graphic_mod = Utils.load_module(
         CopyPeste::Require::Path.graphics,
         conf['modules']['graphics']['default']
-        #'console_mode/console_mode.rb'
       )
       @graphic_mod.set_debug_mode(CopyPeste.debug_mode)
       @core_state.events_to_command = @graphic_mod.get_events
