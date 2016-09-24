@@ -2,27 +2,28 @@ CC =		gcc
 
 RM =		rm -f
 
-CFLAGS +=	-Wextra -Wall -Werror
-CFLAGS +=	-pedantic -std=gnu99
-CFLAGS +=	-I../levenshtein/
+CFLAGS +=	-Wextra -Wall -Werror \
+		-pedantic -std=gnu99 \
+		-I../library/includes/tools \
+		-I../library/includes/file \
+		-I../levenshtein/ \
 
 #optimisation flag
 CFLAGS +=	-O2
+
+LIB +=		../library/cp_library.so
 
 NAME =		my_diff
 
 SRCS =		test.c \
 		diff.c \
-		filter.c \
-		compare.c \
-		file_handler.c \
 
 OBJS =		$(SRCS:.c=.o)
 
 all:		$(NAME)
 
 $(NAME):	$(OBJS)
-		$(CC) $(OBJS) -o $(NAME)
+		$(CC) $(OBJS) $(LIB) -o $(NAME)
 
 clean:
 		$(RM) $(OBJS)

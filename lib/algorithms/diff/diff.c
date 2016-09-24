@@ -60,6 +60,7 @@ int compare_lines_in_file(const s_file *struct_file1, const s_file *struct_file2
       result += find_line_in_file(struct_file1->lines[i], struct_file2, i);
       ++i;
     }
+
   if ((struct_file1->nb_lines > 0 || struct_file1->nb_lines > 0) && result > 0)
     result = (result * 100)
       / (struct_file1->nb_lines > struct_file2->nb_lines ?
@@ -119,7 +120,7 @@ double diff(char *str_file1, char *str_file2)
   if (!(struct_file1 = init_file_handler(str_file1))
       || !(struct_file2 = init_file_handler(str_file2)))
     return ret;
-  
+
   ret = (struct_file1->size >= struct_file2->size ?
   	 compare_lines_in_file(struct_file2, struct_file1) :
   	 compare_lines_in_file(struct_file1, struct_file2));

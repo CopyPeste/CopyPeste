@@ -37,7 +37,7 @@ static char *get_string_file(char *path)
 
   if (!ptr_file)
     return NULL;
-  fclose(ptr_file);
+  //  fclose(ptr_file);
 
   return buf;
 }
@@ -65,7 +65,7 @@ int	main(int ac, char **av)
       begin = clock();
       s_result *result;
 
-      result = malloc(sizeof(S_result));
+      result = malloc(sizeof(s_result));
       result->line = -1;
       result->prcent_rst = -1;
 

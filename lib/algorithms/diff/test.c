@@ -14,12 +14,13 @@ static char *get_string_file(char *path)
   char *buf;
   long size;
 
-  ptr_file = fopen(path, "w");
+  ptr_file = fopen(path, "r");
   if (!ptr_file)
     {
       printf("Fail fopen\n");
       return NULL;
     }
+
   fseek(ptr_file, 0L, SEEK_END);
   size = ftell(ptr_file);
   fseek(ptr_file, 0L, SEEK_SET);
@@ -37,7 +38,7 @@ static char *get_string_file(char *path)
 
   if (!ptr_file)
     return NULL;
-  fclose(ptr_file);
+  //  fclose(ptr_file);
 
   return buf;
 }

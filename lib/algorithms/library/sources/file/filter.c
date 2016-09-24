@@ -66,6 +66,7 @@ char	*filter_all_space(char *str)
 */
 char	*filter_space(char *str)
 {
+  /*
   char *tmp1 = str;
   char *tmp2 = str;
 
@@ -82,6 +83,23 @@ char	*filter_space(char *str)
     }
   *tmp1 = 0;
   return str;
+  */
+
+  int ite1 = 0, ite2 = 0;
+
+  while (str[ite1])
+    {
+      if ((str[ite1] == ' ' || str[ite1] == '\t')
+	  && ((str[ite1 + 1] == ' ' || str[ite1] == '\t')
+	      || str[ite1 + 1] == '\0'
+	      || ite1 == 0))
+	while (str[ite1] == ' ' || str[ite1] == '\t')
+	  ++ite1;
+      else
+	str[ite2++] = str[ite1++];
+    }
+  str[ite2] = 0;
+  return str;
 }
 
 /*
@@ -92,6 +110,7 @@ char	*filter_space(char *str)
 */
 char	*filter_newline(char *str)
 {
+  /*
   char *tmp1 = str;
   char *tmp2 = str;
 
@@ -108,5 +127,21 @@ char	*filter_newline(char *str)
 	*tmp1++ = *tmp2++;
     }
   *tmp1 = 0;
+  return str;
+  */
+
+  int ite1 = 0, ite2 = 0;
+
+    while (str[ite1])
+    {
+      if (str[ite1] == '\n'
+	  && (str[ite1 + 1] == '\n'
+	      || str[ite1 + 1] == '\0'
+	      || ite1 == 0))
+	++ite1;
+      else
+	str[ite2++] = str[ite1++];
+    }
+  str[ite2] = 0;
   return str;
 }
