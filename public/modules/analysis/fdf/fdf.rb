@@ -61,8 +61,8 @@ fdfAnalysisModule do
 
       # Extract path and name of each files and concat them.
       #
-      # @param [Array][Array][Hash] take an Array of Array of hash. [files by extension][one file][hash of the file]
-      # @Return [Array] return a file array with their full path and size
+      # @param [Hash] file document from the database
+      # @Return [Hash] nil if file has a size of 0 or a hash with usefull information otherwise
       def to_doc(file)
         return nil if file["size"] == 0
         return {
