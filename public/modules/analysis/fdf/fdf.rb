@@ -78,6 +78,7 @@ fdfAnalysisModule do
       # @param [Array][Array][Hash] take an Array of Array of hash. [files by extension][one file][hash of the file]
       # @Return [Array] return a file array with their full path and size
       def to_doc(file)
+        return nil if file["size"] == 0
         return {
           path: file["path"] + "/" + file["name"],
           size: file["size"],
@@ -103,7 +104,10 @@ fdfAnalysisModule do
           files = @mongo.get_data(@c_file, query)
           documents[extension["name"]] = []
           # save each file, formated, in the good extension
-          files.each {|file| documents[extension["name"]] << to_doc(file)}
+          files.each do |file|
+            doc = to_doc(file)
+            documents[extension["name"]] << doc if doc != nil
+          end
         end
         documents
       end
