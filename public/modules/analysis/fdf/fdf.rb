@@ -59,20 +59,6 @@ fdfAnalysisModule do
       end
 
 
-      # Look at the different rules and chose the right way to sort files
-      #
-      # @param [Array] Array of files to sort
-      # @Return [Hash] return an hash of all the files sorted
-      def sort_files_with_rules(documents)
-        documents.each do |extension, files|
-          @show.call "\tSorting extension '#{extension}' per size."
-          files.sort_by {|file| file[:value]}
-          documents[extension] = files
-        end
-        documents
-      end
-
-
       # Extract path and name of each files and concat them.
       #
       # @param [Array][Array][Hash] take an Array of Array of hash. [files by extension][one file][hash of the file]
@@ -108,26 +94,11 @@ fdfAnalysisModule do
             doc = to_doc(file)
             documents[extension["name"]] << doc if doc != nil
           end
+          documents[extension["name"]].sort_by! {|file| file[:size]}
         end
         documents
       end
-
-
-      # Save pair of file compared by fdupes/levenshtein, and there result
-      # This Hash is saved in an Array
-      #
-      # @param [Hash] files and distance between their titles
-      # @param [Int] result of comparison algorim
-      # @return
-      def save_result_data(file_d, similarity)
-        result_data = [
-          file_d[:files][0], #first file
-          file_d[:files][1], #second file
-          similarity #their similarity score
-        ]
-        @results[:rows] << result_data
-      end
-
+      
 
       # Open the two files and send there containt to fdupes algorithm
       #
@@ -154,21 +125,23 @@ fdfAnalysisModule do
         end
       end
 
-
+      
       # Send files to the fdupes algorithms
       # 
       # @param [Array] File array containing levenshtein's results
       def check_files_similarity(documents)
         duplicated_files = {}
+        others = {}
         # for each extension
         documents.each do |extension, files|
           next if files.length < 2
           @show.call "\tSearching for duplication with extension: '#{extension}'."
           # iterate all files to find duplications
           (files.length - 1).times do |i|
+            next if files[i] == nil
             f1 = files[i]
-            #@show.call "\tSearching if file #{f1[:name]} is duplicated"
             ((i + 1)..(files.length - 1)).each do |j|
+              next if files[j] == nil
               f2 = files[j]
               # stop loop if size is required but files aren't of the same size
               break if @options["s"][:value] == 1 && f1[:size] != f2[:size]
@@ -179,6 +152,7 @@ fdfAnalysisModule do
               f3 = f2.clone
               f3[:similarity] = result
               if (@options["p"][:value] == 100 && result == 100) || (result >= @options["p"][:value])
+                files[j] = nil
                 if duplicated_files.key?(f1[:path])
                   duplicated_files[f1[:path]] << f3
                 else
@@ -199,10 +173,10 @@ fdfAnalysisModule do
         files = get_doc_to_analyse
         @show.call "Done."
         @show.call "Sort files depending on options..."
-        sorted_file = sort_files_with_rules files
+        #sorted_file = sort_files_with_rules files
         @show.call "Done."
         @show.call "Searching for duplicated files..."
-        check_files_similarity sorted_file
+        check_files_similarity files
         @show.call "Done."
         @show.call "Saving analyse results in database..."
         @mongo.ins_data(@c_res, @results)
