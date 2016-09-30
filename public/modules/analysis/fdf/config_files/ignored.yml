@@ -5,6 +5,7 @@ ignored:
       - Rakefile
       - ".gitignore"
       - Makefile.in
+      - Makefile
    extensions:
       - ".trash"
       - ".old"

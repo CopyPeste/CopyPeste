@@ -146,7 +146,7 @@ fdfAnalysisModule do
           # if 100% similarity and files have the same size
           if @options["p"][:value] == 100
             return nil if f1[:size] != f2[:size]
-            return 100 - Algorithms.fdupes_match(file1, f1[:size], file2, f2[:size])
+            return 100 * (Algorithms.fdupes_match(file1, f1[:size], file2, f2[:size]) + 1)
           end
           Algorithms.diff(file1, file2)
         rescue => e
