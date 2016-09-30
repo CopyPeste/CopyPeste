@@ -165,7 +165,7 @@ fdfAnalysisModule do
           (files.length - 1).times do |i|
             f1 = files[i]
             #@show.call "\tSearching if file #{f1[:name]} is duplicated"
-            (i..(files.length - 1)).each do |j|
+            ((i + 1)..(files.length - 1)).each do |j|
               f2 = files[j]
               # stop loop if size is required but files aren't of the same size
               break if @options["s"][:value] == 1 && f1[:size] != f2[:size]
