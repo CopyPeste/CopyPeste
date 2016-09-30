@@ -15,10 +15,9 @@ fdfAnalysisModule do
 
   impl {
     require 'json'
+    require 'pp'
     require File.join(CopyPeste::Require::Path.base, 'algorithms')
-    require File.join(CopyPeste::Require::Path.algorithms, 'sort_file')
     require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
-    require File.join(CopyPeste::Require::Path.analysis, 'fdf/use_levenshtein')
     require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Ignored_class')
     
     class Fdf
@@ -65,21 +64,13 @@ fdfAnalysisModule do
       #
       # @param [Array] Array of files to sort
       # @Return [Hash] return an hash of all the files sorted
-      def sort_files_with_rules(files)
-        fichier = SortFile.new()
-        files.each do |file|
-          extension = fichier.get_extension file[:path]
-          if @options["e"][:value] == 0 && @options["s"][:value] == 0
-            fichier.sort_no_rulls file[:path]
-          elsif @options["e"][:value] == 1 && @options["s"][:value] == 1
-            fichier.sort_by_extension_and_size(file[:path], extension, file[:size])
-          elsif @options["s"][:value] == 1
-            fichier.sort_by_size(file[:path], file[:size])
-          else
-            fichier.sort_by_extension(file[:path], extension)
-          end
+      def sort_files_with_rules(documents)
+        documents.each do |extension, files|
+          @show.call "\tSorting extension '#{extension}' per size."
+          files.sort_by {|file| file[:value]}
+          documents[extension] = files
         end
-        fichier.get_hash()
+        documents
       end
 
 
@@ -87,17 +78,12 @@ fdfAnalysisModule do
       #
       # @param [Array][Array][Hash] take an Array of Array of hash. [files by extension][one file][hash of the file]
       # @Return [Array] return a file array with their full path and size
-      def sort_tab(documents)
-        files = []
-        documents.each do |data|
-          data.each do |file|
-            files << {
-              path: file["path"] + "/" + file["name"],
-              size: file["size"]
-            }
-          end
-        end
-        files
+      def to_doc(file)
+        return {
+          path: file["path"] + "/" + file["name"],
+          size: file["size"],
+          name: file["name"]
+        }
       end
 
 
@@ -105,16 +91,22 @@ fdfAnalysisModule do
       #
       # @Return [Array] return a file Array with the full file path :  Array[0] = /home/test/expemple.c
       def get_doc_to_analyse
+        documents = {}
         query = {name: {"$nin" => @ignored_conf.ignored_ext}}
-        documents = []
-        results = @mongo.get_data("Extension", query, nil)
-        results.each do |data|
-          data = JSON.parse data.to_json
-          data["_id"] = BSON::ObjectId.from_string data["_id"]["$oid"]
-          query = {ext: data["_id"], name: {"$nin" => @ignored_conf.ignored_files }}
-          documents << @mongo.get_data(@c_file, query)
+        # get all extensions
+        extensions = @mongo.get_data("Extension", query, nil)
+        # for each extension
+        extensions.each do |extension|
+          extension["_id"] = BSON::ObjectId.from_string extension["_id"]["$oid"]
+          @show.call "\tRetrieving files with extension: '#{extension["name"]}'."
+          query = {ext: extension["_id"], name: {"$nin" => @ignored_conf.ignored_files }}
+          # get all corresponding files
+          files = @mongo.get_data(@c_file, query)
+          documents[extension["name"]] = []
+          # save each file, formated, in the good extension
+          files.each {|file| documents[extension["name"]] << to_doc(file)}
         end
-        sort_tab documents
+        documents
       end
 
 
@@ -139,23 +131,23 @@ fdfAnalysisModule do
       # @param [Array] File Array
       # @param [Integer] Loop position
       # @return [Integer] Return the percentage of difference between files
-      def open_and_send(files_d)
+      def open_and_send(f1, f2)
         begin
-          file1 = IO.read files_d[:files][0]
-          file2 = IO.read files_d[:files][1]
+          file1 = IO.read f1[:path]
+          file2 = IO.read f2[:path]
         rescue => e # file doesn't exists, db have to be updated
-          @show.call "[Error]: #{e} Please update your database"
+          @show.call "\t[Error]: #{e} Please update your database"
           return nil
         end
         begin
           # if 100% similarity and files have the same size
-          if @options["p"][:value] == 100 && (File.size(files_d[:files][0]) == File.size(files_d[:files][1]))
-            Algorithms.fdupes_match(file1, file1.length, file2, file2.length)
-          else
-            Algorithms.diff(file1, file2)
+          if @options["p"][:value] == 100
+            return nil if f1[:size] != f2[:size]
+            return 100 - Algorithms.fdupes_match(file1, f1[:size], file2, f2[:size])
           end
+          Algorithms.diff(file1, file2)
         rescue => e
-          @show.call "[Not treated]: #{files_d[:files][0]} & #{files_d[:files][0]}: #{e}"
+          @show.call "\t[Not treated]: #{f1[:path]} & #{f2[:path]}: #{e}"
         end
       end
 
@@ -163,14 +155,38 @@ fdfAnalysisModule do
       # Send files to the fdupes algorithms
       # 
       # @param [Array] File array containing levenshtein's results
-      def check_files_similarity(files_d)
-        files_d.each do |file_d| #test
-	  # check if file has an extension to be ignored	
-          result = open_and_send file_d
-          if result && ((@options["p"][:value] == 100 && result == 0) || result >= @options["p"][:value])
-            save_result_data(file_d, result)
+      def check_files_similarity(documents)
+        duplicated_files = {}
+        # for each extension
+        documents.each do |extension, files|
+          next if files.length < 2
+          @show.call "\tSearching for duplication with extension: '#{extension}'."
+          # iterate all files to find duplications
+          (files.length - 1).times do |i|
+            f1 = files[i]
+            #@show.call "\tSearching if file #{f1[:name]} is duplicated"
+            (i..(files.length - 1)).each do |j|
+              f2 = files[j]
+              # stop loop if size is required but files aren't of the same size
+              break if @options["s"][:value] == 1 && f1[:size] != f2[:size]
+              # allow little differences in filenames
+              next if Algorithms.levenshtein(f1[:name], f2[:name]) > 1
+              result = open_and_send(f1, f2)
+              next if result == nil
+              f3 = f2.clone
+              f3[:similarity] = result
+              if (@options["p"][:value] == 100 && result == 100) || (result >= @options["p"][:value])
+                if duplicated_files.key?(f1[:path])
+                  duplicated_files[f1[:path]] << f3
+                else
+                  duplicated_files[f1[:path]] = [f3]
+                end
+              end
+            end
           end
         end
+        pp duplicated_files
+        exit
       end
 
 
@@ -181,23 +197,16 @@ fdfAnalysisModule do
         files = get_doc_to_analyse
         @show.call "Done."
         @show.call "Sort files depending on options..."
-        file_hash = sort_files_with_rules files
+        sorted_file = sort_files_with_rules files
         @show.call "Done."
-        @show.call "Searching for interesting files to analyse..."
-        lev = UseLevenshtein.new(file_hash)
-        files_d = lev.results
+        @show.call "Searching for duplicated files..."
+        check_files_similarity sorted_file
         @show.call "Done."
-        if files_d.empty?
-          @show.call "No file to analyse"
-        else
-          @show.call "Searching for duplicate files..."
-          check_files_similarity files_d
-          @show.call "Done."
-          @show.call "Saving analyse results in database..."
-          @mongo.ins_data(@c_res, @results);
-          @show.call "Done, everything worked fine!"
-          @show.call "You can now run generate_result to extract interesting informations."
-        end
+        @show.call "Saving analyse results in database..."
+        @mongo.ins_data(@c_res, @results);
+        @show.call "Done, everything worked fine!"
+        @show.call "You can now run generate_result to extract interesting informations."
+        # end
       end
     end
   }
