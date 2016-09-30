@@ -15,7 +15,6 @@ fdfAnalysisModule do
 
   impl {
     require 'json'
-    require 'pp'
     require File.join(CopyPeste::Require::Path.base, 'algorithms')
     require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
     require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Ignored_class')
@@ -185,8 +184,7 @@ fdfAnalysisModule do
             end
           end
         end
-        pp duplicated_files
-        exit
+        @results[:rows] = duplicated_files
       end
 
 
@@ -203,10 +201,9 @@ fdfAnalysisModule do
         check_files_similarity sorted_file
         @show.call "Done."
         @show.call "Saving analyse results in database..."
-        @mongo.ins_data(@c_res, @results);
+        @mongo.ins_data(@c_res, @results)
         @show.call "Done, everything worked fine!"
         @show.call "You can now run generate_result to extract interesting informations."
-        # end
       end
     end
   }

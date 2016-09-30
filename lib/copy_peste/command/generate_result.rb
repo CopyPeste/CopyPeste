@@ -27,38 +27,38 @@ module CopyPeste
         end
 
         @graph_com.display(10, "Gathering data.")
-        duplicated_files_nb = 0
-        duplicates = []
+        # duplicated_files_nb = 0
+        # duplicates = []
 
-        # iterate over all left files
-        rows.size.times do |index|
-          # if files have been deleted, skip
-          next if rows[index].nil?
-          # save filename as the current duplication list
-          duplicate = [
-            rows[index][0], [ [rows[index][1], rows[index][2]] ]
-          ]
-          duplicated_files_nb += 1
-          clean(index, rows.size - 1, rows, index)
-          # iterate over all other left files to search duplications
-          ((index + 1)..(rows.size - 1)).each do |index2|
-            # if files have been deleted, skip
-            next if rows[index2].nil?
-            # if a left file is similar to another, save it
-            if rows[index2][0] == rows[index][0]
-              duplicate[1] << [ rows[index2][1], rows[index2][2] ]
-              duplicated_files_nb += 1
-              clean(index2, rows.size - 1, rows, index2)
-              rows[index2] = nil
-            end
-          end
-          duplicates << duplicate
-          duplicate[1].each do |e|
-            e[1] = e[1].zero? ? 100 : e[1]
-          end
-        end
+        # # iterate over all left files
+        # rows.size.times do |index|
+        #   # if files have been deleted, skip
+        #   next if rows[index].nil?
+        #   # save filename as the current duplication list
+        #   duplicate = [
+        #     rows[index][0], [ [rows[index][1], rows[index][2]] ]
+        #   ]
+        #   duplicated_files_nb += 1
+        #   clean(index, rows.size - 1, rows, index)
+        #   # iterate over all other left files to search duplications
+        #   ((index + 1)..(rows.size - 1)).each do |index2|
+        #     # if files have been deleted, skip
+        #     next if rows[index2].nil?
+        #     # if a left file is similar to another, save it
+        #     if rows[index2][0] == rows[index][0]
+        #       duplicate[1] << [ rows[index2][1], rows[index2][2] ]
+        #       duplicated_files_nb += 1
+        #       clean(index2, rows.size - 1, rows, index2)
+        #       rows[index2] = nil
+        #     end
+        #   end
+        #   duplicates << duplicate
+        #   duplicate[1].each do |e|
+        #     e[1] = e[1].zero? ? 100 : e[1]
+        #   end
+        # end
 
-        extension = get_extension(duplicates)
+        # extension = get_extension(duplicates)
         @graph_com.display(10, "Creation & printing PDF.")
 
         Prawn::Document.generate("#{hash['module']} results at #{hash['timestamp']}.pdf") do
@@ -67,21 +67,27 @@ module CopyPeste
           text "#{hash['timestamp']}", align: :right
           image "./documentation/images/2017_logo_CopyPeste.png", position: :right, width: 140, height: 140
           move_up 135
+          nb_file = 1
+          duplicated_files_nb = 1
           text "Analyzed files: #{nb_file}"
           text "Duplicated files: #{duplicated_files_nb}"
           move_down 20
-          table([
-                  ["Extension", "Duplication"],
-                  *extension
-                ], cell_style: {size: 9})
+          # table([
+          #         ["Extension", "Duplication"],
+          #         *extension
+          #       ], cell_style: {size: 9})
           move_down 60
-
-          duplicates.each do |duplicate|
-            text "<u>Duplication of file <b>#{duplicate[0]}</b>:</u>",
+          
+          rows.each do |reff, files|
+            toto = []
+            files.each do |z|
+              toto << [z["path"], z["similarity"]]
+            end
+            text "<u>Duplication of file <b>#{reff}</b>:</u>",
                  inline_format: true
             table([
                     ["File", "Similarity"],
-                    *duplicate[1]
+                    *toto
                   ], cell_style: {size: 9}, :column_widths => [493, 47] )
             move_down 20
           end
