@@ -208,5 +208,5 @@ int		fdupes_match(char *file1, int size1, char *file2, int size2)
     }
   if (cmpresult == 0)
     return confirmmatch(file1, file2, size1, size2);
-  return cmpresult;
+  return -1;
 }
