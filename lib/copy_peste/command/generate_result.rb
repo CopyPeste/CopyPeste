@@ -8,12 +8,6 @@ module CopyPeste
   class Command
     module GenerateResult
 
-      def clean(from, to, rows, current)
-        (from..to).each do |i|
-          next if rows[i].nil?
-          rows[i] = nil if rows[i][0] == rows[current][1]
-        end
-      end
 
       def run
         begin
