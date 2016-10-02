@@ -25,88 +25,53 @@ module CopyPeste
           @graph_com.cmd_return(@cmd, "Collection Scoring doesn't exist", true)
           return
         end
-
+        
+        duplicated_files_nb = 0
+        extensions = {}
+        rows.each do |reff, files|
+          duplicated_files_nb += files.length
+          extension = File.extname(reff)
+          if extensions.key?(extension)
+            extensions[extension] += files.length
+          else
+            extensions[extension] = files.length
+          end
+        end
+        sorted_extensions = []
+        extensions.each {|key, value| sorted_extensions << [key, value] }
+        sorted_extensions.sort! {|a, b| b[1] <=> a[1]}
+        
         @graph_com.display(10, "Gathering data.")
-        # duplicated_files_nb = 0
-        # duplicates = []
-
-        # # iterate over all left files
-        # rows.size.times do |index|
-        #   # if files have been deleted, skip
-        #   next if rows[index].nil?
-        #   # save filename as the current duplication list
-        #   duplicate = [
-        #     rows[index][0], [ [rows[index][1], rows[index][2]] ]
-        #   ]
-        #   duplicated_files_nb += 1
-        #   clean(index, rows.size - 1, rows, index)
-        #   # iterate over all other left files to search duplications
-        #   ((index + 1)..(rows.size - 1)).each do |index2|
-        #     # if files have been deleted, skip
-        #     next if rows[index2].nil?
-        #     # if a left file is similar to another, save it
-        #     if rows[index2][0] == rows[index][0]
-        #       duplicate[1] << [ rows[index2][1], rows[index2][2] ]
-        #       duplicated_files_nb += 1
-        #       clean(index2, rows.size - 1, rows, index2)
-        #       rows[index2] = nil
-        #     end
-        #   end
-        #   duplicates << duplicate
-        #   duplicate[1].each do |e|
-        #     e[1] = e[1].zero? ? 100 : e[1]
-        #   end
-        # end
-
-        # extension = get_extension(duplicates)
         @graph_com.display(10, "Creation & printing PDF.")
-
         Prawn::Document.generate("#{hash['module']} results at #{hash['timestamp']}.pdf") do
           text "Module #{hash['module']}"
           move_up 17
           text "#{hash['timestamp']}", align: :right
           image "./documentation/images/2017_logo_CopyPeste.png", position: :right, width: 140, height: 140
           move_up 135
-          nb_file = 1
-          duplicated_files_nb = 1
           text "Analyzed files: #{nb_file}"
           text "Duplicated files: #{duplicated_files_nb}"
           move_down 20
-          # table([
-          #         ["Extension", "Duplication"],
-          #         *extension
-          #       ], cell_style: {size: 9})
+          table([
+                  ["Extension", "Duplication"],
+                  *sorted_extensions
+                ], cell_style: {size: 9})
           move_down 60
           
           rows.each do |reff, files|
-            toto = []
-            files.each do |z|
-              toto << [z["path"], z["similarity"]]
-            end
+            display_files = []
+            files.each { |file| display_files << [file["path"], file["similarity"]] }
             text "<u>Duplication of file <b>#{reff}</b>:</u>",
                  inline_format: true
             table([
                     ["File", "Similarity"],
-                    *toto
+                    *display_files
                   ], cell_style: {size: 9}, :column_widths => [493, 47] )
             move_down 20
           end
 
         end
         @graph_com.cmd_return(@cmd, "PDF has been successfully created.", false)
-      end
-
-      def get_extension(duplicates)
-        ext = {}
-        duplicates.each do |duplicate|
-          if ext.has_key?(File.extname(duplicate[0]))
-            ext[File.extname(duplicate[0])] += 1
-          elsif
-            ext[File.extname(duplicate[0])] = 1
-          end
-        end
-        ext['No extension'] = ext.delete "" if ext.has_key? ""
-        return ext
       end
 
       def init
