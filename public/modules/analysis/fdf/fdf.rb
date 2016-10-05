@@ -92,16 +92,6 @@ fdfAnalysisModule do
         check_files_similarity(files, extension)
       end
 
-      
-      #
-      # 
-      #
-      def n_fork(extensions, num)
-        extensions.each_slice(extensions.length / num) do |slice|
-          Parallel.map(extensions, in_processes: 4) { |extension| process extension }
-        end
-      end
-                      
 
       # Retrieve and sort files from database
       # FIles are sorted by extension and by size
@@ -111,7 +101,7 @@ fdfAnalysisModule do
         query = {name: {"$nin" => @ignored_conf.ignored_ext}}
         extensions = @mongo.get_data("Extension", query, nil)
         return if extensions.length == 0
-        n_fork(extensions, 4)
+        Parallel.map(extensions, in_processes: 4) { |extension| process extension }
       end
       
 
