@@ -53,7 +53,7 @@ fdfAnalysisModule do
           header: ["first", "second", "score"],
           references: [@c_file, @c_file, nil],
           transformation: [],
-          rows: []
+          rows: {}
         }
         @ignored_conf = Ignored_class.new()
       end
@@ -72,28 +72,48 @@ fdfAnalysisModule do
         }
       end
 
+      
+      #
+      #
+      #
+      def process(extension)
+        extension["_id"] = BSON::ObjectId.from_string extension["_id"]["$oid"]
+        @show.call "\tRetrieving files with extension: '#{extension["name"]}'."
+        query = {ext: extension["_id"], name: {"$nin" => @ignored_conf.ignored_files }}
+        mongo_files = @mongo.get_data(@c_file, query)
+        files = []
+        mongo_files.each do |file|
+          doc = to_doc(file)
+          files << doc if doc != nil
+        end
+        files.sort_by! {|file| file[:size]}
+        return if files.length < 2
+        check_files_similarity(files, extension)
+      end
+
+      
+      #
+      # 
+      #
+      def n_fork(extensions, num)
+        extensions.each_slice(extensions.length / num) do |slice|
+          Process.fork do
+            slice.each { |extension| process extension }
+          end
+        end
+        Process.waitall
+      end
+                      
 
       # Retrieve and sort files from database
       # FIles are sorted by extension and by size
       #
       # @Return [Hash] Each entry is a file extension that maps to an array of files order by size
       def get_doc_to_analyse
-        documents = {}
         query = {name: {"$nin" => @ignored_conf.ignored_ext}}
         extensions = @mongo.get_data("Extension", query, nil)
-        extensions.each do |extension|
-          extension["_id"] = BSON::ObjectId.from_string extension["_id"]["$oid"]
-          @show.call "\tRetrieving files with extension: '#{extension["name"]}'."
-          query = {ext: extension["_id"], name: {"$nin" => @ignored_conf.ignored_files }}
-          files = @mongo.get_data(@c_file, query)
-          documents[extension["name"]] = []
-          files.each do |file|
-            doc = to_doc(file)
-            documents[extension["name"]] << doc if doc != nil
-          end
-          documents[extension["name"]].sort_by! {|file| file[:size]}
-        end
-        documents
+        return if extensions.length == 0
+        n_fork(extensions, 4)
       end
       
 
@@ -126,49 +146,43 @@ fdfAnalysisModule do
       # Search for files duplicated according to user params
       # 
       # @param [Hash] Each entry is a file extension that maps to an array of files order by size
-      def check_files_similarity(documents)
-        duplicated_files = {}
-        documents.each do |extension, files|
-          next if files.length < 2
-          @show.call "\tSearching for duplication with extension: '#{extension}'."
-          files.each_with_index do |f1, index|
-            next if f1 == nil || index == files.length - 1
-            ((index + 1)..(files.length - 1)).each do |j|
-              next if files[j] == nil
-              f2 = files[j]
-              break if @options["s"][:value] == 1 && f1[:size] != f2[:size]
-              next if Algorithms.levenshtein(f1[:name], f2[:name]) > @options["l"][:value]
-              result = compare_files(f1, f2)
-              next if result == nil
-              f3 = f2.clone
-              f3[:similarity] = result
-              if (@options["p"][:value] == 100 && result == 100) || (result >= @options["p"][:value])
-                # remove one of the file 100% duplicated
-                # 2 files 100% duplicated will also be duplicated with other files
-                # if sim(a,b) == 100 && sim(a, c) == 100 so sim(a, c) == 100
-                files[j] = nil if @options["p"][:value] == 100 && result == 100
-                if duplicated_files.key?(f1[:path])
-                  duplicated_files[f1[:path]] << f3
-                else
-                  duplicated_files[f1[:path]] = [f3]
-                end
+      def check_files_similarity(files, extension)
+        files.each_with_index do |f1, index|
+          next if f1 == nil || index == files.length - 1
+          ((index + 1)..(files.length - 1)).each do |j|
+            next if files[j] == nil
+            f2 = files[j]
+            break if @options["s"][:value] == 1 && f1[:size] != f2[:size]
+            next if Algorithms.levenshtein(f1[:name], f2[:name]) > @options["l"][:value]
+            result = compare_files(f1, f2)
+            next if result == nil
+            f3 = f2.clone
+            f3[:similarity] = result
+            if (@options["p"][:value] == 100 && result == 100) || (result >= @options["p"][:value])
+              # remove one of the file 100% duplicated
+              # 2 files 100% duplicated will also be duplicated with other files
+              # if sim(a,b) == 100 && sim(a, c) == 100 so sim(a, c) == 100
+              files[j] = nil if @options["p"][:value] == 100 && result == 100
+              if @results[:rows].key?(f1[:path])
+                @results[:rows][f1[:path]] << f3
+              else
+                @results[:rows][f1[:path]] = [f3]
               end
             end
           end
         end
-        @results[:rows] = duplicated_files
+        puts "Process[#{Process.pid}]: Extension #{extension["name"]} processed!"
       end
 
 
       # Function used to initialize and run the fdf
       def run(*)
         @show.call "Get all files from database..."
-        files = get_doc_to_analyse
-        @show.call "Done."
-        @show.call "Searching for duplicated files..."
-        check_files_similarity files
+        get_doc_to_analyse
+        exit(0)
         @show.call "Done."
         @show.call "Saving analyse results in database..."
+        puts @results[:rows].keys.length
         @mongo.ins_data(@c_res, @results)
         @show.call "Done, everything worked fine!"
         @show.call "You can now run generate_result to extract interesting informations."
