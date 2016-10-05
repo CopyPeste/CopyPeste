@@ -1,18 +1,26 @@
 ---
 ignored:
    files:
-      - ".gitignore"
+      - .gitignore
       - GemFile
+      - LICENSE
       - Makefile
-      - Rakefile
       - Makefile.in
+      - Rakefile
+      - Readme
+      - Readme.md
+      - Readme.txt
    extensions:
       - build
       - elem4
+      - ftl
+      - gemspec
       - gz
       - lock
+      - log
       - o
       - old
+      - prop
       - ri
       - so
       - tar

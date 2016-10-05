@@ -88,7 +88,7 @@ fdfAnalysisModule do
           files << doc if doc != nil
         end
         files.sort_by! {|file| file[:size]}
-        return if files.length < 2
+        return {} if files.length < 2
         check_files_similarity(files, extension)
       end
 
@@ -101,6 +101,7 @@ fdfAnalysisModule do
         query = {name: {"$nin" => @ignored_conf.ignored_exts}}
         extensions = @mongo.get_data("Extension", query, nil)
         duplicates = Parallel.map(extensions, in_processes: 4) { |extension| process extension }
+        @show.call "Duplicates files found"
         @results[:rows] = duplicates.reduce({}, :merge)
       end
 
@@ -136,7 +137,6 @@ fdfAnalysisModule do
       # @param [Hash] Each entry is a file extension that maps to an array of files order by size
       def check_files_similarity(files, extension)
         duplicates = {}
-        return duplicates if files.length < 2
         files.each_with_index do |f1, index|
           next if f1 == nil || index == files.length - 1
           ((index + 1)..(files.length - 1)).each do |j|
