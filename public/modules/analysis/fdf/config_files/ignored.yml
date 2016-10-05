@@ -1,13 +1,20 @@
 ---
 ignored:
    files:
-      - GemFile
-      - Rakefile
       - ".gitignore"
-      - Makefile.in
+      - GemFile
       - Makefile
+      - Rakefile
+      - Makefile.in
    extensions:
-      - ".trash"
-      - ".old"
-      - ".elem4"
-      - ".build"
+      - build
+      - elem4
+      - gz
+      - lock
+      - o
+      - old
+      - ri
+      - so
+      - tar
+      - trash
+      - zip

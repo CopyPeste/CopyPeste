@@ -12,7 +12,7 @@ class Ignored_class < Config_class
     @conf["ignored"]["files"]
   end
 
-  def ignored_ext
+  def ignored_exts
     @conf["ignored"]["extensions"]
   end
 
