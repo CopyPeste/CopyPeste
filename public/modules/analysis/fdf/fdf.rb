@@ -15,6 +15,7 @@ fdfAnalysisModule do
 
   impl {
     require 'json'
+    require 'parallel'
     require File.join(CopyPeste::Require::Path.base, 'algorithms')
     require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
     require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Ignored_class')
@@ -97,11 +98,8 @@ fdfAnalysisModule do
       #
       def n_fork(extensions, num)
         extensions.each_slice(extensions.length / num) do |slice|
-          Process.fork do
-            slice.each { |extension| process extension }
-          end
+          Parallel.map(extensions, in_processes: 4) { |extension| process extension }
         end
-        Process.waitall
       end
                       
 

@@ -4,6 +4,11 @@ ruby '2.2.2'
 Encoding.default_external = Encoding::UTF_8
 Encoding.default_internal = Encoding::UTF_8
 
+# Run tasks on different processes or threads
+# Required in
+#   public/modules/analysis/fdf/fdf.rb
+gem 'parallel'
+
 # Ruby String class extension. Adds methods to set text color, background color
 # and, text effects on ruby console and command line output, using ANSI
 # escape sequences.
