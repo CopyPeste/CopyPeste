@@ -100,8 +100,8 @@ fdfAnalysisModule do
       def get_doc_to_analyse
         query = {name: {"$nin" => @ignored_conf.ignored_ext}}
         extensions = @mongo.get_data("Extension", query, nil)
-        return if extensions.length == 0
-        Parallel.map(extensions, in_processes: 4) { |extension| process extension }
+        duplicates = Parallel.map(extensions, in_processes: 4) { |extension| process extension }
+        @results[:rows] = duplicates.reduce({}, :merge)
       end
       
 
@@ -135,6 +135,8 @@ fdfAnalysisModule do
       # 
       # @param [Hash] Each entry is a file extension that maps to an array of files order by size
       def check_files_similarity(files, extension)
+        duplicates = {}
+        return duplicates if files.length < 2
         files.each_with_index do |f1, index|
           next if f1 == nil || index == files.length - 1
           ((index + 1)..(files.length - 1)).each do |j|
@@ -151,15 +153,16 @@ fdfAnalysisModule do
               # 2 files 100% duplicated will also be duplicated with other files
               # if sim(a,b) == 100 && sim(a, c) == 100 so sim(a, c) == 100
               files[j] = nil if @options["p"][:value] == 100 && result == 100
-              if @results[:rows].key?(f1[:path])
-                @results[:rows][f1[:path]] << f3
+              if duplicates.key?(f1[:path])
+                duplicates[f1[:path]] << f3
               else
-                @results[:rows][f1[:path]] = [f3]
+                duplicates[f1[:path]] = [f3]
               end
             end
           end
         end
         puts "Process[#{Process.pid}]: Extension #{extension["name"]} processed!"
+        duplicates
       end
 
 
@@ -167,7 +170,6 @@ fdfAnalysisModule do
       def run(*)
         @show.call "Get all files from database..."
         get_doc_to_analyse
-        exit(0)
         @show.call "Done."
         @show.call "Saving analyse results in database..."
         puts @results[:rows].keys.length
