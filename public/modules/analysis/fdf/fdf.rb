@@ -19,11 +19,11 @@ fdfAnalysisModule do
     require File.join(CopyPeste::Require::Path.base, 'algorithms')
     require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
     require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Ignored_class')
-    
+
     class Fdf
       attr_accessor :options
       attr_accessor :show
-      
+
 
       def initialize
         @options = {
@@ -73,7 +73,7 @@ fdfAnalysisModule do
         }
       end
 
-      
+
       #
       #
       #
@@ -98,12 +98,12 @@ fdfAnalysisModule do
       #
       # @Return [Hash] Each entry is a file extension that maps to an array of files order by size
       def get_doc_to_analyse
-        query = {name: {"$nin" => @ignored_conf.ignored_ext}}
+        query = {name: {"$nin" => @ignored_conf.ignored_exts}}
         extensions = @mongo.get_data("Extension", query, nil)
         return if extensions.length == 0
         Parallel.map(extensions, in_processes: 4) { |extension| process extension }
       end
-      
+
 
       # Open files and compare their contents with the appropriate algorithm
       #
@@ -130,9 +130,9 @@ fdfAnalysisModule do
         end
       end
 
-      
+
       # Search for files duplicated according to user params
-      # 
+      #
       # @param [Hash] Each entry is a file extension that maps to an array of files order by size
       def check_files_similarity(files, extension)
         files.each_with_index do |f1, index|

@@ -17,10 +17,10 @@ class Fdf_config_handler
     @ignored_conf.ignored_files
   end
 
-  def ignored_ext
+  def ignored_exts
     @ignored_conf.ignored_ext
   end
-  
+
   def comments_of(ext)
     @comments_conf.get_comments(ext)
   end
