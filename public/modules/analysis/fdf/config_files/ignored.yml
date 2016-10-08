@@ -12,16 +12,23 @@ ignored:
       - Readme.txt
    extensions:
       - build
+      - dll
       - elem4
       - ftl
+      - gen
       - gemspec
       - gz
+      - jar
+      - localstorage
       - lock
       - log
+      - mo
       - o
       - old
+      - png
       - prop
       - ri
+      - RSA
       - so
       - tar
       - trash

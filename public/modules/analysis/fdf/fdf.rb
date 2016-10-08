@@ -74,9 +74,9 @@ fdfAnalysisModule do
       end
 
 
+      # Search for file duplication of a particular extension
       #
-      #
-      #
+      # @param [Array]: extension to process
       def process(extension)
         extension["_id"] = BSON::ObjectId.from_string extension["_id"]["$oid"]
         @show.call "\tRetrieving files with extension: '#{extension["name"]}'."
@@ -93,15 +93,15 @@ fdfAnalysisModule do
       end
 
 
-      # Retrieve and sort files from database
-      # FIles are sorted by extension and by size
-      #
-      # @Return [Hash] Each entry is a file extension that maps to an array of files order by size
-      def get_doc_to_analyse
+      # Retrieve, sort, and analyse files from database
+      # Files are sorted by extension and size
+      def analyse
+        @show.call "Retrieving extensions from database..."
         query = {name: {"$nin" => @ignored_conf.ignored_exts}}
         extensions = @mongo.get_data("Extension", query, nil)
-        duplicates = Parallel.map(extensions, in_processes: 4) { |extension| process extension }
-        @show.call "Duplicates files found"
+        @show.call "Done!\nSearching for duplicated files..."
+        duplicates = Parallel.map(extensions) { |extension| process extension }
+        @show.call "Done!"
         @results[:rows] = duplicates.reduce({}, :merge)
       end
 
@@ -119,16 +119,12 @@ fdfAnalysisModule do
           @show.call "\t[Error]: #{e} Please update your database"
           return nil
         end
-        begin
-          # if 100% similarity and files have the same size
-          if @options["p"][:value] == 100
-            return nil if f1[:size] != f2[:size]
-            return 100 * (Algorithms.fdupes_match(file1, f1[:size], file2, f2[:size]) + 1)
-          end
-          Algorithms.diff(file1, file2)
-        rescue => e
-          @show.call "\t[Not treated]: #{f1[:path]} & #{f2[:path]}: #{e}"
+        # if 100% similarity and files have the same size
+        if @options["p"][:value] == 100
+          return nil if f1[:size] != f2[:size]
+          return 100 * (Algorithms.fdupes_match(file1, f1[:size], file2, f2[:size]) + 1)
         end
+        Algorithms.diff(file1, file2)
       end
 
 
@@ -144,7 +140,11 @@ fdfAnalysisModule do
             f2 = files[j]
             break if @options["s"][:value] == 1 && f1[:size] != f2[:size]
             next if Algorithms.levenshtein(f1[:name], f2[:name]) > @options["l"][:value]
-            result = compare_files(f1, f2)
+            begin
+              result = compare_files(f1, f2)
+            rescue => e
+              @show.call "\t[Not treated]:\n\t\t - #{f1[:path]} \n\t\t - #{f2[:path]} \n\t\t => #{e}"
+            end
             next if result == nil
             f3 = f2.clone
             f3[:similarity] = result
@@ -168,13 +168,9 @@ fdfAnalysisModule do
 
       # Function used to initialize and run the fdf
       def run(*)
-        @show.call "Get all files from database..."
-        get_doc_to_analyse
-        @show.call "Done."
-        @show.call "Saving analyse results in database..."
-        puts @results[:rows].keys.length
+        analyse
         @mongo.ins_data(@c_res, @results)
-        @show.call "Done, everything worked fine!"
+        @show.call "Done! Everything worked fine!"
         @show.call "You can now run generate_result to extract interesting informations."
       end
     end
