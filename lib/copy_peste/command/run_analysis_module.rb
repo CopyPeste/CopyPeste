@@ -1,6 +1,9 @@
 module CopyPeste
   class Command
     module RunAnalysisModule
+
+      # Run the loaded analysis module with configured parameters.
+      # @return [Boolean] True if the cmd_return methods success otherwise False.
       def run
         puts @core_state.analysisModule
         if @core_state.analysisModule.nil?
@@ -29,6 +32,9 @@ module CopyPeste
 
       module_function
 
+      # Give a string used by the help command in order to explain the aim of
+      # this command.
+      # @return [String] a string containing the explaination of the command.
       def helper
         "Run the selected analysis module."
       end

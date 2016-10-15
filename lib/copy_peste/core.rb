@@ -22,6 +22,9 @@ module CopyPeste
       @graph_com = GraphicCommunication.new exec_func
     end
 
+    # Start the execution of the CopyPeste core. This method implement
+    # the main loop of the Framework. It basically consists of getting
+    # an event from the loaded graphical module and then executing it.
     def start
       puts LOGO.blue
       @graph_com.info(GraphicCommunication.codes[:core], "Core is running !")
@@ -33,6 +36,10 @@ module CopyPeste
 
     private
 
+    # Execute a command based on the formatted hash returned by
+    # the loaded graphical module.
+    # @param [Hash] Hash generated and returned by the graphical module containing
+    # information to be treated by the core.
     def execute_command(cmd_hash)
       @graph_com.info(
         GraphicCommunication.codes[:core],
