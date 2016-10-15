@@ -1,5 +1,7 @@
 module CopyPeste
   class Core
+
+    # This class is used to store data between each execution of commands.
     class CoreState
       attr_accessor :analysisModule
       attr_accessor :conf

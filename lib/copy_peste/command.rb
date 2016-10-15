@@ -1,5 +1,10 @@
 module CopyPeste
   class Command
+
+    # Instantiate all needed information to correctly execute a command.
+    # @param [Hash] Contains command name and its options.
+    # @param [Object] Instance of the GraphicCommunication class.
+    # @param [Object] Instance of the CoreState class.
     def initialize(cmd_hash, graph_com, core_state)
       @cmd = cmd_hash[:cmd]
       @opts = cmd_hash[:opts]
@@ -13,16 +18,22 @@ module CopyPeste
       )
     end
 
+    # Execute a given command. This method has to be overrided.
     def run
       #@exec.call "Error: please implement run command method."
     end
 
+    # Initialize a given command before being run.
+    # This method has to be overrided.
     def init
       #@exec.call "Error: please implement init command method."
     end
 
     private
 
+    # Extend this Command class with a specific command that has to be
+    # executed.
+    # @param [String] Command name that has to be executed.
     def specialize_into(command)
       class_name = command.split('_').map(&:capitalize).join
       specialization = self.class.const_get class_name

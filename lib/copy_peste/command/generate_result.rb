@@ -8,7 +8,12 @@ module CopyPeste
   class Command
     module GenerateResult
 
-
+      # Generate a pdf file containing formatted results, following a FDF
+      # analysis execution.
+      # At the end of this method, the cmd_return method (from a
+      # GraphicCommunication instance) is called in order to return results
+      # of this method to the loaded graphical module.
+      # @return [Boolean] True if the cmd_return methods success otherwise False.
       def run
         begin
           data = @db[:Scoring].find().sort( { timestamp: -1 } ).limit(1).to_a
@@ -17,9 +22,9 @@ module CopyPeste
           rows = hash['rows']
         rescue
           @graph_com.cmd_return(@cmd, "Collection Scoring doesn't exist", true)
-          return
+          nil
         end
-        
+
         duplicated_files_nb = 0
         extensions = {}
         rows.each do |reff, files|
@@ -34,7 +39,7 @@ module CopyPeste
         sorted_extensions = []
         extensions.each {|key, value| sorted_extensions << [key, value] }
         sorted_extensions.sort! {|a, b| b[1] <=> a[1]}
-        
+
         @graph_com.display(10, "Gathering data.")
         @graph_com.display(10, "Creation & printing PDF.")
         Prawn::Document.generate("#{hash['module']} results at #{hash['timestamp']}.pdf") do
@@ -51,7 +56,7 @@ module CopyPeste
                   *sorted_extensions
                 ], cell_style: {size: 9})
           move_down 60
-          
+
           rows.each do |reff, files|
             display_files = []
             files.each { |file| display_files << [file["path"], file["similarity"]] }
@@ -75,6 +80,9 @@ module CopyPeste
 
       private
 
+      # Instantiate the MongoDb connection in order to get and format generated
+      # data from a given analysis.
+      # @return [Boolean] True if the cmd_return methods success otherwise False.
       def init_db(host="127.0.0.1", port="27017", db="CopyPeste500")
         begin
           @db = Mongo::Client.new(["#{host}:#{port}"], :database => db)
@@ -86,6 +94,9 @@ module CopyPeste
 
       module_function
 
+      # Give a string used by the help command in order to explain the aim of
+      # this command.
+      # @return [String] a string containing the explaination of the command.
       def helper
         "Generate a pdf that contain results of the previous analysis."
       end
