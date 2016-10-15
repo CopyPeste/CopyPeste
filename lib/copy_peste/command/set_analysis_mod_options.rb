@@ -1,6 +1,10 @@
 module CopyPeste
   class Command
     module SetAnalysisModOptions
+
+      # Allows a user to configure available options of a loaded analysis module
+      # before being executed.
+      # @return [Boolean] True if the cmd_return methods success otherwise False.
       def run
         if @core_state.analysisModule.nil?
           @graph_com.cmd_return(@cmd, "No analysis module load", true)
@@ -23,6 +27,9 @@ module CopyPeste
 
       module_function
 
+      # Give a string used by the help command in order to explain the aim of
+      # this command.
+      # @return [String] a string containing the explaination of the command.
       def helper
         "Set options on the selected analysis module."
       end
