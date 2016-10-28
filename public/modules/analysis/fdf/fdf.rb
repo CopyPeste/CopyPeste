@@ -50,11 +50,7 @@ fdfAnalysisModule do
           module: "FDF",
           options: "List of duplicated files",
           timestamp: Time.now.getutc,
-          type: "array",
-          header: ["first", "second", "score"],
-          references: [@c_file, @c_file, nil],
-          transformation: [],
-          rows: {}
+          data: []
         }
         @ignored_conf = Ignored_class.new()
       end
@@ -100,9 +96,28 @@ fdfAnalysisModule do
         query = {name: {"$nin" => @ignored_conf.ignored_exts}}
         extensions = @mongo.get_data("Extension", query, nil)
         @show.call "Done!\nSearching for duplicated files..."
-        duplicates = Parallel.map(extensions) { |extension| process extension }
+        extensions = Parallel.map(extensions) do |extension|
+          nb = 0
+          dups = []
+          process(extension).each do |key, value|
+            dups << {type: "array", header: ["Files duplicated with #{key}", "percentage"], rows: value}
+            nb += value.length + 1
+          end
+          {name: extension["name"], nb: nb, dups: dups}
+        end
+        nb = 0
+        dups_extensions = []
+        extensions.each do |value|
+          next if value[:dups] == []
+          nb += value[:nb]
+          dups_extensions.push([value[:name], value[:nb]])
+          value[:dups].each { |v| @results[:data].push v}
+        end
+        dups_extensions.sort! {|a, b| b[1] <=> a[1]}
+        @results[:data].unshift({type: "array", header: ["Extension", "number"], rows: dups_extensions})
+        @results[:data].unshift({type: "text", value: "Total number of duplication: #{nb}"})
+        @results[:data].unshift({type: "text", value: "Total number of files analyzed: #{@mongo.count(@c_file)}"})
         @show.call "Done!"
-        @results[:rows] = duplicates.reduce({}, :merge)
       end
 
 
@@ -154,14 +169,14 @@ fdfAnalysisModule do
               # if sim(a,b) == 100 && sim(a, c) == 100 so sim(a, c) == 100
               files[j] = nil if @options["p"][:value] == 100 && result == 100
               if duplicates.key?(f1[:path])
-                duplicates[f1[:path]] << f3
+                duplicates[f1[:path]] << [f3[:path], result]
               else
-                duplicates[f1[:path]] = [f3]
+                duplicates[f1[:path]] = [[f3[:path], result]]
               end
             end
           end
         end
-        puts "Process[#{Process.pid}]: Extension #{extension["name"]} processed!"
+        @show.call "Process[#{Process.pid}]: Extension #{extension["name"]} processed!"
         duplicates
       end
 
