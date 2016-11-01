@@ -17,7 +17,6 @@ fdfAnalysisModule do
     require 'json'
     require 'parallel'
     require File.join(CopyPeste::Require::Path.base, 'algorithms')
-    require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
     require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Ignored_class')
 
     class Fdf
@@ -43,9 +42,6 @@ fdfAnalysisModule do
             value: 100
           }
         }
-        @mongo = DbHdlr.new()
-        @c_res = "Scoring"
-        @c_file = "Fichier"
         @results = {
           module: "FDF",
           options: "List of duplicated files",
@@ -76,8 +72,7 @@ fdfAnalysisModule do
       def process(extension)
         extension["_id"] = BSON::ObjectId.from_string extension["_id"]["$oid"]
         @show.call "\tRetrieving files with extension: '#{extension["name"]}'."
-        query = {ext: extension["_id"], name: {"$nin" => @ignored_conf.ignored_files }}
-        mongo_files = @mongo.get_data(@c_file, query)
+        mongo_files = FileSystem.where(ext: extension["_id"]).not_in(name: @ignored_conf.ignored_files)
         files = []
         mongo_files.each do |file|
           doc = to_doc(file)
@@ -91,10 +86,11 @@ fdfAnalysisModule do
 
       # Retrieve, sort, and analyse files from database
       # Files are sorted by extension and size
-      def analyse
+      #
+      # @param [Object] result object
+      def analyse(result)
         @show.call "Retrieving extensions from database..."
-        query = {name: {"$nin" => @ignored_conf.ignored_exts}}
-        extensions = @mongo.get_data("Extension", query, nil)
+        extensions = Extension.not_in(name: @ignored_conf.ignored_exts).entries
         @show.call "Done!\nSearching for duplicated files..."
         extensions = Parallel.map(extensions) do |extension|
           nb = 0
@@ -111,12 +107,14 @@ fdfAnalysisModule do
           next if value[:dups] == []
           nb += value[:nb]
           dups_extensions.push([value[:name], value[:nb]])
-          value[:dups].each { |v| @results[:data].push v}
+          value[:dups].each do |v|
+            result.add_array(header: ["file", "percentage"], rows: v, title: "toto")
+          end
         end
         dups_extensions.sort! {|a, b| b[1] <=> a[1]}
-        @results[:data].unshift({type: "array", header: ["Extension", "number"], rows: dups_extensions})
-        @results[:data].unshift({type: "text", value: "Total number of duplication: #{nb}"})
-        @results[:data].unshift({type: "text", value: "Total number of files analyzed: #{@mongo.count(@c_file)}"})
+        result.add_array(header: ["Extension", "number"], rows: dups_extensions, title: 'toto')
+        result.add_text(text: "Total number of duplication: #{nb}")
+        result.add_text(text: "Total number of files analyzed: #{FileSystem.count}")
         @show.call "Done!"
       end
 
@@ -182,9 +180,13 @@ fdfAnalysisModule do
 
 
       # Function used to initialize and run the fdf
-      def run(*)
-        analyse
-        @mongo.ins_data(@c_res, @results)
+      # Results aren't saved because it's done into the framework
+      #
+      # @param [OBject] results object
+      def run(result)
+        result.module_name = "FDF"
+        result.options = @options
+        analyse result
         @show.call "Done! Everything worked fine!"
         @show.call "You can now run generate_result to extract interesting informations."
       end

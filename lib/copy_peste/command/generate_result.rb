@@ -2,7 +2,6 @@ require 'prawn'
 require 'prawn/table'
 require 'mongo'
 require 'json'
-require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
 
 module CopyPeste
   class Command
@@ -48,21 +47,21 @@ module CopyPeste
       # @return [Boolean] True if the cmd_return methods success otherwise False
       def run
         begin
-          scoring = @db[:Scoring].find().sort({timestamp: -1}).limit(1).to_a.first
+          ar = AnalyseResult.all.desc('_id').limit(1)
         rescue
-          @graph_com.cmd_return(@cmd, "Collection Scoring doesn't exist", true)
+          @graph_com.cmd_return(@cmd, "Collection AnalyseResult doesn't exist", true)
           return false
         end
 
         @graph_com.display(10, "Gathering data.")
         @graph_com.display(10, "Creation & printing PDF.")
-        Prawn::Document.generate("#{scoring['module']} results at #{scoring['timestamp']}.pdf") do |pdf|
-          pdf.text "Module #{scoring['module']}"
+        Prawn::Document.generate("#{ar.module_name']} results at #{ar.created_at}.pdf") do |pdf|
+          pdf.text "Module #{ar.module_name}"
           pdf.move_up 17
-          pdf.text "#{scoring['timestamp']}", align: :right
+          pdf.text "#{ar.created_at}", align: :right
           pdf.image "./documentation/images/2017_logo_CopyPeste.png", position: :right, width: 140, height: 140
 
-          scoring['data'].each do |data|
+          ar.results.each do |data|
             if data['type'] == 'array'
               generate_array(data, pdf)
             elsif data['type'] == 'text'
@@ -74,7 +73,6 @@ module CopyPeste
       end
 
       def init
-        @client = DbHdlr.new()
         init_db
       end
 
