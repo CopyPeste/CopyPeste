@@ -16,7 +16,7 @@ module CopyPeste
           @graph_com.display(from, msg)
         end
 
-        ar = AnalyseResult.new Time.now
+        ar = AnalyseResult.new
         begin
           @core_state.analysisModule.run ar
         rescue Exception => e
