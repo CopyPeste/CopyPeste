@@ -70,9 +70,9 @@ fdfAnalysisModule do
       #
       # @param [Array]: extension to process
       def process(extension)
-        extension["_id"] = BSON::ObjectId.from_string extension["_id"]["$oid"]
-        @show.call "\tRetrieving files with extension: '#{extension["name"]}'."
-        mongo_files = FileSystem.where(ext: extension["_id"]).not_in(name: @ignored_conf.ignored_files)
+        extension["_id"] = BSON::ObjectId.from_string extension.id
+        @show.call "\tRetrieving files with extension: '#{extension.name}'."
+        mongo_files = FileSystem.where(ext: extension.id).not_in(name: @ignored_conf.ignored_files)
         files = []
         mongo_files.each do |file|
           doc = to_doc(file)
@@ -90,7 +90,7 @@ fdfAnalysisModule do
       # @param [Object] result object
       def analyse(result)
         @show.call "Retrieving extensions from database..."
-        extensions = Extension.not_in(name: @ignored_conf.ignored_exts).entries
+        extensions = Extension.not_in(name: @ignored_conf.ignored_exts).to_a
         @show.call "Done!\nSearching for duplicated files..."
         extensions = Parallel.map(extensions) do |extension|
           nb = 0
@@ -99,7 +99,7 @@ fdfAnalysisModule do
             dups << {type: "array", header: ["Files duplicated with #{key}", "percentage"], rows: value}
             nb += value.length + 1
           end
-          {name: extension["name"], nb: nb, dups: dups}
+          {name: extension.name, nb: nb, dups: dups}
         end
         nb = 0
         dups_extensions = []
@@ -107,12 +107,10 @@ fdfAnalysisModule do
           next if value[:dups] == []
           nb += value[:nb]
           dups_extensions.push([value[:name], value[:nb]])
-          value[:dups].each do |v|
-            result.add_array(header: ["file", "percentage"], rows: v, title: "toto")
-          end
+          value[:dups].each { |v| result.add_array(header: v[:header], rows: v[:rows]) }
         end
         dups_extensions.sort! {|a, b| b[1] <=> a[1]}
-        result.add_array(header: ["Extension", "number"], rows: dups_extensions, title: 'toto')
+        result.add_array(header: ["Extension", "number"], rows: dups_extensions, title: "Most duplicated extensions")
         result.add_text(text: "Total number of duplication: #{nb}")
         result.add_text(text: "Total number of files analyzed: #{FileSystem.count}")
         @show.call "Done!"
@@ -174,7 +172,7 @@ fdfAnalysisModule do
             end
           end
         end
-        @show.call "Process[#{Process.pid}]: Extension #{extension["name"]} processed!"
+        @show.call "Process[#{Process.pid}]: Extension #{extension.name} processed!"
         duplicates
       end
 

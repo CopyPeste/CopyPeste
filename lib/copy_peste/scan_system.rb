@@ -63,8 +63,7 @@ class ScanSystem
   # initialize the start point for the scan
   def init
     puts "Start browsing files..."
-    path = @start_point
-    start path
+    start @start_point
     puts "Stop browsing files"
     @fm.close
   end
@@ -75,16 +74,12 @@ class ScanSystem
   # @param [String] the complete path of the file
   # @Return [nil] return nil if the file don't exist or if the file is not readable
   def set_info_file(ext_id, files)
-
-    if File.file?(files) == true && File.readable?(files)
-      hash_info = {}
-      hash_info[:name] = (File.split(files)).last
-      hash_info[:path] = (File.split(files)).first
-      hash_info[:size] = File.size(files)
-      hash_info[:ext] = ext_id
-      hash_info.to_json
-    else
-      return nil
-    end
+    return nil if File.file?(files) == false || File.readable?(files) == false
+    return {
+      name: (File.split(files)).last,
+      path: (File.split(files)).first,
+      size: File.size(files),
+      ext: ext_id
+    }
   end
 end
