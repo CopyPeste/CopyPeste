@@ -1,5 +1,6 @@
 class AnalyseResult
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :module_name, type: String
   field :options, type: Hash

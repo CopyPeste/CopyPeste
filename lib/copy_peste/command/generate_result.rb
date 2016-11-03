@@ -13,12 +13,12 @@ module CopyPeste
       # @array [Object] pdf object in which the array has to be
       def generate_array(data, pdf)
         pdf.move_down 10
-        if data['title'] && data['title'] != ''
-          pdf.text(data['title'], size: 9)
+        if data.title && data.title != ''
+          pdf.text(data.title, size: 9)
         end
         content = [
-          data['header'],
-          *data['rows']
+          data.header,
+          *data.rows
         ]
         pdf.table(content, cell_style: {size: 9}, column_widths: [480, 60], header: true) do
           cells.borders = []
@@ -34,7 +34,7 @@ module CopyPeste
       # @param [Hash] containing the text to print
       # @array [Object] pdf object in which the text has to be
       def generate_text(data, pdf)
-        pdf.text(data['value'], size: 9)
+        pdf.text(data.text, size: 9)
         pdf.move_down 2
       end
 
@@ -47,7 +47,7 @@ module CopyPeste
       # @return [Boolean] True if the cmd_return methods success otherwise False
       def run
         begin
-          ar = AnalyseResult.all.desc('_id').limit(1)
+          ar = AnalyseResult.last
         rescue
           @graph_com.cmd_return(@cmd, "Collection AnalyseResult doesn't exist", true)
           return false
@@ -55,16 +55,16 @@ module CopyPeste
 
         @graph_com.display(10, "Gathering data.")
         @graph_com.display(10, "Creation & printing PDF.")
-        Prawn::Document.generate("#{ar.module_name']} results at #{ar.created_at}.pdf") do |pdf|
+        Prawn::Document.generate("#{ar.module_name} results at #{ar.created_at}.pdf") do |pdf|
           pdf.text "Module #{ar.module_name}"
           pdf.move_up 17
           pdf.text "#{ar.created_at}", align: :right
           pdf.image "./documentation/images/2017_logo_CopyPeste.png", position: :right, width: 140, height: 140
 
           ar.results.each do |data|
-            if data['type'] == 'array'
+            if data._type == "ArrayResult"
               generate_array(data, pdf)
-            elsif data['type'] == 'text'
+            elsif data._type == "TextResult"
               generate_text(data, pdf)
             end
           end
