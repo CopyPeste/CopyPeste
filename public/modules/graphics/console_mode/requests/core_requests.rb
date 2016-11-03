@@ -45,6 +45,9 @@ class CoreRequests < ConsoleDisplay
       elsif hash[:data][:cmd] == "generate_result"
         puts hash[:data][:output]
 
+      elsif hash[:data][:cmd] == "init_bdd"
+        puts hash[:data][:output]
+
       end
     end
   end

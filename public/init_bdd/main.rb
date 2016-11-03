@@ -43,7 +43,7 @@ end
 # @param [Hash] a hash about a file that corresponds to one type of extension
 # @param [String] the extension ("c", "cpp", etc)
 def get_extension(mongo, file, key)
-  file_tab = mongo.get_data("Fichier", {ext: file["ext"]})
+  file_tab = mongo.get_data("FileSystem", {ext: file["ext"]})
   document = {}
   tab_id = []
   file_tab.each do |data|
@@ -67,7 +67,7 @@ def sort_insert_db(file_hash, mongo, scan)
     json_tab = []
     ext_id = BSON::ObjectId.from_time(Time.now, unique: true)
     file_array.each do |file|
-      if (file_info = scan.set_info_file(ext_id, file)) != nil        
+      if (file_info = scan.set_info_file(ext_id, file)) != nil
         json_document = JSON.parse file_info
         json_document["ext"] = BSON::ObjectId.from_string(json_document["ext"]["$oid"])
         json_tab << json_document
@@ -75,7 +75,7 @@ def sort_insert_db(file_hash, mongo, scan)
     end
     if json_tab.empty? == false
       # save all file of extension X
-      fill_db(mongo, "Fichier", json_tab)
+      fill_db(mongo, "FileSystem", json_tab)
       extensions << get_extension(mongo, json_tab[0], extension)
     end
   end
@@ -102,7 +102,7 @@ end
 #
 # @param [Objetc] DbHldr object (mongo object)
 def clear_database(mongo)
-  mongo.rm_data(nil, "Fichier")
+  mongo.rm_data(nil, "FileSystem")
   mongo.rm_data(nil, "Extension")
   mongo.rm_data(nil, "Scoring")
 end

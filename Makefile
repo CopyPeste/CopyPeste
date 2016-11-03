@@ -2,15 +2,12 @@ MODULE_PATH	= ./lib/algorithms
 
 GEMS =      bundle install
 
-INIT =      cd './public/init_bdd/' && ruby main.rb ~/Documents/EIP
-
-
 ##
 ## Install
 ##########
 
 # full install
-install:	lib gem init
+install:	lib gem
 
 # install and compile c library
 lib:
@@ -20,10 +17,6 @@ lib:
 # only install gems
 gem:
 		$(GEMS)
-
-# only initialise the database
-init:
-		$(INIT)
 
 ##
 ## clean

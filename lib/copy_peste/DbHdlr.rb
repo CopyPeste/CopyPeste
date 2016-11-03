@@ -104,6 +104,13 @@ module CopyPeste
       return hash
     end
 
+    # Count the number of instances in a collection
+    #
+    # @param [String] the collection that has to be counted
+    # @return [Integer] number of instance in the collection
+    def count(collection)
+      @db_inst[collection].count()
+    end
 
     def debug(collection)
       puts "\n\n"
