@@ -9,7 +9,7 @@ module CopyPeste
     module InitBdd
 
       def run()
-        scan = ScanSystem.new("../../")
+        scan = ScanSystem.new("../../BimBimGo")
         scan_sys scan
       end
 

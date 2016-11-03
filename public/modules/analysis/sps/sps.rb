@@ -16,11 +16,11 @@ spsAnalysisModule do
     require 'json'
     require 'parallel'
     require File.join(CopyPeste::Require::Path.base, 'algorithms')
-    require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
 
 
     class Sps
       attr_accessor :options
+      attr_accessor :show
 
       def initialize
         @options = {
@@ -31,27 +31,23 @@ spsAnalysisModule do
           }  
         }
         @options = options
-        #@fichier = Collection.new("Fichier")
-        #@duplicate = Collection.new("Duplicate")
-        @tab_files = []
-        # @sort_project = SortProject.new()
-        @mongo = DbHdlr.new()
       end      
 
       # Function called to start the Sps module
-      def start
-        get_file_from_db
-        sort_file
-        compare_projects
+      def analyse(result)
+        result_fdf = get_file_from_db
+        #puts result_fdf.rows
+        # sort_file
+        # compare_projects
       end      
 
       # This function get the documents to analyses
       def get_file_from_db
-        #@tab_files = @fichier.get_doc(nil)
-        @tab_files = @mongo.get_data("Duplicate", nil, nil)
+        ar = AnalyseResult.last
+        puts ar.type
       end
-      
 
+      
       # This functions set the pourcent average of two projects
       #
       # @param [Array] Array containing all files similarities from two project
@@ -95,16 +91,15 @@ spsAnalysisModule do
         @tab_files = @sort_project.get_tab_sorted
         puts @tab_files
       end
-    end
-
     
     # Function used to initialize and run the fdf
-    def run(*)
-      analyse
-      @mongo.ins_data(@c_res, @results)
-      @show.call "Done! Everything worked fine!"
-      @show.call "You can now run generate_result to extract interesting informations."
+      def run(result)
+        result.module_name = "Sps"
+        result.options = @options
+        analyse result
+        @show.call "Done! Everything worked fine!"
+        @show.call "You can now run generate_result to extract interesting informations."
+      end
     end
- 
   }
 end
