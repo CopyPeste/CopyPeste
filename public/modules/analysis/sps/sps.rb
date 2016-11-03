@@ -22,34 +22,28 @@ spsAnalysisModule do
     class Sps
       attr_accessor :options
 
-
-        def initialize
+      def initialize
         @options = {
+          "test" => {
+            helper: "Option de test",
+            allowed: [0, 1],
+            value: 0
+          }  
         }
-
-      
-      # Initialize th Sps class
-      #
-      # @param [Array] Options for the Search project similarities (sps) module
-      def initialize(options)
         @options = options
         #@fichier = Collection.new("Fichier")
         #@duplicate = Collection.new("Duplicate")
         @tab_files = []
-        @sort_project = SortProject.new()
+        # @sort_project = SortProject.new()
         @mongo = DbHdlr.new()
-      end
-      
+      end      
 
       # Function called to start the Sps module
       def start
         get_file_from_db
         sort_file
         compare_projects
-      end
-      
-      private 
-      
+      end      
 
       # This function get the documents to analyses
       def get_file_from_db
@@ -102,5 +96,15 @@ spsAnalysisModule do
         puts @tab_files
       end
     end
+
+    
+    # Function used to initialize and run the fdf
+    def run(*)
+      analyse
+      @mongo.ins_data(@c_res, @results)
+      @show.call "Done! Everything worked fine!"
+      @show.call "You can now run generate_result to extract interesting informations."
+    end
+ 
   }
 end
