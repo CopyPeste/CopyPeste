@@ -11,7 +11,8 @@ class ConsoleDisplay
     "use" => "use_analysis_module",
     "run" => "run_analysis_module",
     "exit_mod" => "exit_analysis_module",
-    "generate_result" => "generate_result"
+    "generate_result" => "generate_result",
+    "init_bdd" => "init_bdd"
     }
 
   def self.prompt
