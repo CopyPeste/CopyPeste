@@ -33,7 +33,7 @@ CP (fdf) > set_opts p 80
 CP (fdf) > run
 ... Done.
 CP (fdf) > exit_mod
-CP > generate_results
+CP > generate_result
 ... Done.
 CP > exit
 ```
