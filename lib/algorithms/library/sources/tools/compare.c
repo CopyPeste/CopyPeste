@@ -85,7 +85,7 @@ int	compare_arrays_inline(s_word **words1, s_word **words2)
   int	result = 0;
   int	i;
 
-  if (!words1 && !words2)
+  if (!words1 || !words2)
     return -1;
   for (i = 0; words1[i] && words2[i]; ++i)
     {
