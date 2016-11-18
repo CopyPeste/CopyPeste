@@ -153,9 +153,6 @@ fdfAnalysisModule do
             next if Algorithms.levenshtein(f1[:name], f2[:name]) > @options["l"][:value]
             begin
               result = compare_files(f1, f2)
-              if (result < 100)
-                p "Result: #{result}"
-              end
             rescue => e
               @show.call "\t[Not treated]:\n\t\t - #{f1[:path]} \n\t\t - #{f2[:path]} \n\t\t => #{e}"
             end
