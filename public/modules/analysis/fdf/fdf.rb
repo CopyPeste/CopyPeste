@@ -23,7 +23,7 @@ fdfAnalysisModule do
       attr_accessor :options
       attr_accessor :show
 
-
+      # Module and options initialization
       def initialize
         @options = {
           "l" => {
@@ -54,8 +54,8 @@ fdfAnalysisModule do
 
       # Extract path and name of each files and concat them.
       #
-      # @param [Hash] file document from the database
-      # @Return [Hash] nil if file has a size of 0 or a hash with usefull information otherwise
+      # @param file [Hash] Documents retreived from the database
+      # @return [Hash] nil if file has a size of 0 or a hash with usefull information otherwise
       def to_doc(file)
         return nil if file["size"] == 0
         return {
@@ -68,7 +68,7 @@ fdfAnalysisModule do
 
       # Search for file duplication of a particular extension
       #
-      # @param [Array]: extension to process
+      # @param extension [Array] list of extensions to process
       def process(extension)
         extension["_id"] = BSON::ObjectId.from_string extension.id
         @show.call "\tRetrieving files with extension: '#{extension.name}'."
@@ -87,7 +87,7 @@ fdfAnalysisModule do
       # Retrieve, sort, and analyse files from database
       # Files are sorted by extension and size
       #
-      # @param [Object] result object
+      # @param result [Object] result object
       def analyse(result)
         @show.call "Retrieving extensions from database..."
         extensions = Extension.not_in(name: @ignored_conf.ignored_exts).to_a
@@ -119,9 +119,9 @@ fdfAnalysisModule do
 
       # Open files and compare their contents with the appropriate algorithm
       #
-      # @param [Hash] f1 represents the first file
-      # @param [Hash] f2 represents the second file
-      # @return [Integer] Return the percentage of difference between files
+      # @param f1 [Hash] first file to compare
+      # @param f2 [Hash] second file to compare
+      # @return [Integer] percentage of difference between files
       def compare_files(f1, f2)
         begin
           file1 = IO.read f1[:path]
@@ -141,7 +141,9 @@ fdfAnalysisModule do
 
       # Search for files duplicated according to user params
       #
-      # @param [Hash] Each entry is a file extension that maps to an array of files order by size
+      # @param files [Array] files to analyse
+      # @param extension [Hash] Extension of the current files
+      # @return [Hash] List of similar files
       def check_files_similarity(files, extension)
         duplicates = {}
         files.each_with_index do |f1, index|
@@ -180,7 +182,7 @@ fdfAnalysisModule do
       # Function used to initialize and run the fdf
       # Results aren't saved because it's done into the framework
       #
-      # @param [OBject] results object
+      # @param result [Object] results object
       def run(result)
         result.module_name = "FDF"
         result.options = @options

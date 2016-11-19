@@ -5,10 +5,10 @@ module CopyPeste
 
       module_function
 
-      # Gives the path of the namespace.
+      # Get namespace path
       # Implementing it overrides the behavior of [Mixin]
-      # @return [String]
       #
+      # @return [String] graphic namespace path
       def namespace_path
         Path.graphics
       end
