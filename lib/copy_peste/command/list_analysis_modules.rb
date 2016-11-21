@@ -23,7 +23,7 @@ module CopyPeste
       # List all files from a given folder.
       #
       # @param path [String] absolute path of the folder to be examined.
-      # @return [List] all files in the specified folder.
+      # @return [Array] all files in the specified folder.
       def list_files_from_dir(path)
         Dir[path + "/*/"].map { |file| File.basename(file) }
       end

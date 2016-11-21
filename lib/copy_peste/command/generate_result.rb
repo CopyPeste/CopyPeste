@@ -47,7 +47,7 @@ module CopyPeste
       # Generate an array on a pdf
       #
       # @param data [Hash] data to put in the array
-      # @param pdf [Object] pdf object in which the array has to be created
+      # @param pdf [Prawn::document] pdf object in which the array has to be created
       def generate_array(data, pdf)
         pdf.move_down 10
         if data.title && data.title != ''
@@ -69,7 +69,7 @@ module CopyPeste
       # Generate a text on a pdf
       #
       # @param data [Hash] text to print
-      # @param pdf [Object] pdf object in which the text has to be created
+      # @param pdf [Prawn::document] pdf object in which the text has to be created
       def generate_text(data, pdf)
         pdf.text(data.text, size: 9)
         pdf.move_down 2

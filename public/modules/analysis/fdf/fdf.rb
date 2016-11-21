@@ -87,7 +87,8 @@ fdfAnalysisModule do
       # Retrieve, sort, and analyse files from database
       # Files are sorted by extension and size
       #
-      # @param result [Object] result object
+      # @param result [AnalyseResult] result object
+      # @see CopyPeste::Command::RunAnalysisModule#run
       def analyse(result)
         @show.call "Retrieving extensions from database..."
         extensions = Extension.not_in(name: @ignored_conf.ignored_exts).to_a
@@ -182,7 +183,8 @@ fdfAnalysisModule do
       # Function used to initialize and run the fdf
       # Results aren't saved because it's done into the framework
       #
-      # @param result [Object] results object
+      # @param result [AnalyseResult] resulting object of the analysis that will be saved later on, on which to aggregate data
+      # @see CopyPeste::Command::RunAnalysisModule#run
       def run(result)
         result.module_name = "FDF"
         result.options = @options

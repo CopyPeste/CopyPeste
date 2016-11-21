@@ -4,8 +4,8 @@ module CopyPeste
     # Instantiate all needed information to correctly execute a command.
     #
     # @param cmd_hash [Hash] Contains command name and its options.
-    # @param graph_com [Object] Instance of the GraphicCommunication class.
-    # @param core_state [Object] Instance of the CoreState class.
+    # @param graph_com [GraphicCommunication] Instance of the GraphicCommunication class.
+    # @param core_state [CoreState] Instance of the CoreState class.
     def initialize(cmd_hash, graph_com, core_state)
       @cmd = cmd_hash[:cmd]
       @opts = cmd_hash[:opts]
