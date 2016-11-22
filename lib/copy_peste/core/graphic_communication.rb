@@ -17,15 +17,19 @@ module CopyPeste
         @exec = exec_func
       end
 
+      # Get communication codes
+      #
+      # @return [Hash] communication codes
       def self.codes
         @@codes
       end
 
       # Return a formatted hash containing information resulting the execution
       # of a command by the Core to the loaded graphical module.
-      # @param [String] Treated command's name
-      # @param [String] Output's string to be displayed by the graphical module.
-      # @param [Boolean] Define if the command ended correctly or not.
+      #
+      # @param cmd [String] Treated command's name
+      # @param output [String] Output's string to be displayed by the graphical module.
+      # @param isError [Boolean] Define if the command ended correctly or not.
       def cmd_return (cmd, output, isError)
         format_hash = {
           :code => @@codes[:core] + @@codes[:cmd_return],
@@ -40,9 +44,10 @@ module CopyPeste
 
       # Return a formatted hash containing information in case of an error to be
       # displayed by the loaded graphical module.
-      # @param [Integer] Element of CopyPeste where the error occured.
-      # @param [Integer] Error code number depending of the error type.
-      # @param [String] String to be displayed by the graphical module.
+      #
+      # @param from [Integer] Element of CopyPeste where the error occured.
+      # @param error_code [Integer] Error code number depending of the error type.
+      # @param error_msg [String] String to be displayed by the graphical module.
       def error (from, error_code, error_msg)
         format_hash = {
           :code => from + @@codes[:error],
@@ -58,8 +63,9 @@ module CopyPeste
       # displayed by the loaded graphical module. This message is supposed
       # to be displayed if the verbose option is set as a parameter when
       # CopyPeste has been executed.
-      # @param [Integer] Element of CopyPeste which generate this message.
-      # @param [String] String to be displayed by the graphical module.
+      #
+      # @param from [Integer] Element of CopyPeste which generate this message.
+      # @param output [String] String to be displayed by the graphical module.
       def info (from, output)
         format_hash = {
           :code => from + @@codes[:info],
@@ -72,8 +78,9 @@ module CopyPeste
 
       # Return a formatted hash containing a message to be displayed by
       # the loaded graphical module.
-      # @param [Integer] Element of CopyPeste which generate this message.
-      # @param [String] String to be displayed by the graphical module.      
+      #
+      # @param from [Integer] Element of CopyPeste which generates this message.
+      # @param output [String] String to be displayed by the graphical module.
       def display (from, output)
         format_hash = {
           :code => from + @@codes[:display],

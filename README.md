@@ -12,7 +12,7 @@ In order to find interesting data, several analysis modules are in development. 
 
 ```sh
 $> git clone https://github.com/CopyPeste/CopyPeste.git
-$> cd CopyPeste  
+$> cd CopyPeste
 $> make install
 ```
 
@@ -38,4 +38,10 @@ CP > generate_result
 CP > exit
 ```
 
-For more information, please check our [wiki](https://github.com/CopyPeste/CopyPeste/wiki) 
+For more information, please check our [wiki](https://github.com/CopyPeste/CopyPeste/wiki)
+
+### Other
+Current Ruby comments syntax: http://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md
+
+### Contact
+If you need to contact us, please do it at: contact.copypeste@gmail.com

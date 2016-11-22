@@ -1,4 +1,4 @@
-MODULE_PATH	= ./lib/algorithms
+ALGORITHM_PATH	= ./lib/algorithms
 
 GEMS =      bundle install
 
@@ -12,11 +12,14 @@ install:	lib gem
 # install and compile c library
 lib:
 #		pkg_add libmagic
-		$(MAKE) -C $(MODULE_PATH)
+		$(MAKE) -C $(ALGORITHM_PATH)
 
 # only install gems
 gem:
 		$(GEMS)
+
+re:
+		$(MAKE) -C $(ALGORITHM_PATH) re
 
 ##
 ## clean
@@ -24,9 +27,9 @@ gem:
 
 # remove c library
 clean:
-		$(MAKE) -C $(MODULE_PATH) clean
+		$(MAKE) -C $(ALGORITHM_PATH) clean
 
 # reinstall full project
 reinstall:  clean install
 
-.PHONY:     install gem clean reinstall lib
+.PHONY:     install gem clean reinstall lib re
