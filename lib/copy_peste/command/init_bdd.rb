@@ -9,8 +9,17 @@ module CopyPeste
     module InitBdd
 
       def run()
-        scan = ScanSystem.new("../../")
-        scan_sys scan
+
+        config_path = File.join(Require::Path.root, './', 'copy_peste.yml')
+        config_path = File.expand_path config_path
+        config = YAML::load_file(config_path)
+        if File.directory? config['port_tree_path']
+          @graph_com.display(10, "Loading directory #{config['port_tree_path']}")
+          scan = ScanSystem.new(config['port_tree_path'])
+          scan_sys scan
+        else
+          @graph_com.display(12, "Fail loading directory, check path in copy_peste.yml")
+        end
       end
 
       # Add documents into the database
