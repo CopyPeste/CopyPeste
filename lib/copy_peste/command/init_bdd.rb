@@ -96,6 +96,8 @@ module CopyPeste
 
       def init; end
 
+      module_function
+ 
       # Method used by the help command in order to explain the aim of this module.
       #
       # @return [String] a string containing the command purpose.
