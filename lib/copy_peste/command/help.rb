@@ -34,7 +34,6 @@ module CopyPeste
 
         helpers = {}
         list_cmd.each do | cmd_name |
-          load(path_cmd + cmd_name)
           cmd_name = cmd_name.chomp(".rb")
 
           if @core_state.events_to_command.has_value?(cmd_name)
