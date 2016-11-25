@@ -3,7 +3,8 @@ module CopyPeste
     module RunAnalysisModule
 
       # Run the loaded analysis module with configured parameters.
-      # @return [Boolean] True if the cmd_return methods success otherwise False.
+      #
+      # @return [Boolean] True if the cmd_return method succeeds, false otherwise
       def run
         puts @core_state.analysisModule
         if @core_state.analysisModule.nil?
@@ -16,7 +17,7 @@ module CopyPeste
           @graph_com.display(from, msg)
         end
 
-        ar = AnalyseResult.new Time.now
+        ar = AnalyseResult.new
         begin
           @core_state.analysisModule.run ar
         rescue Exception => e
@@ -32,9 +33,9 @@ module CopyPeste
 
       module_function
 
-      # Give a string used by the help command in order to explain the aim of
-      # this command.
-      # @return [String] a string containing the explaination of the command.
+      # Method used by the help command in order to explain the aim of this module.
+      #
+      # @return [String] a string containing the command purpose.
       def helper
         "Run the selected analysis module."
       end

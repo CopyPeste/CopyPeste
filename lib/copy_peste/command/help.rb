@@ -2,9 +2,9 @@ module CopyPeste
   class Command
     module Help
 
-      # Execute the help command and return the output to be displayed
-      # by the loaded grapical module.
-      # @return [Boolean] True if the cmd_return methods success otherwise False.
+      # List all available commands and provides an explanation of what they do.
+      #
+      # @return [Boolean] True if the cmd_return methods succeeds, False otherwise.
       def run
         helpers = get_helpers
         @graph_com.cmd_return(@cmd, helpers, false)
@@ -18,6 +18,7 @@ module CopyPeste
 
       # Get all help strings from each command objects located in the current
       # folder.
+      #
       # @return [Hash] a formated hash containing all help strings.
       def get_helpers
         path_cmd = File.join(
@@ -33,7 +34,6 @@ module CopyPeste
 
         helpers = {}
         list_cmd.each do | cmd_name |
-          load(path_cmd + cmd_name)
           cmd_name = cmd_name.chomp(".rb")
 
           if @core_state.events_to_command.has_value?(cmd_name)
@@ -50,6 +50,7 @@ module CopyPeste
         helpers
       end
 
+      # List all available commands provided by the framework
       def available_commands
         classes = self.class.constants.map do |constant|
           constant = constant.to_s.split('::').last
@@ -59,9 +60,9 @@ module CopyPeste
 
       module_function
 
-      # Give a string used by the help command in order to explain the aim of
-      # this command.
-      # @return [String] a string containing the explaination of the command.
+      # Method used by the help command in order to explain the aim of this module.
+      #
+      # @return [String] a string containing the command purpose.
       def helper
         "Display this helper message."
       end

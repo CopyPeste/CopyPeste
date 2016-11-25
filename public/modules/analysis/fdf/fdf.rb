@@ -17,14 +17,13 @@ fdfAnalysisModule do
     require 'json'
     require 'parallel'
     require File.join(CopyPeste::Require::Path.base, 'algorithms')
-    require File.join(CopyPeste::Require::Path.copy_peste, 'DbHdlr')
     require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Ignored_class')
 
     class Fdf
       attr_accessor :options
       attr_accessor :show
 
-
+      # Module and options initialization
       def initialize
         @options = {
           "l" => {
@@ -43,18 +42,11 @@ fdfAnalysisModule do
             value: 100
           }
         }
-        @mongo = DbHdlr.new()
-        @c_res = "Scoring"
-        @c_file = "Fichier"
         @results = {
           module: "FDF",
           options: "List of duplicated files",
           timestamp: Time.now.getutc,
-          type: "array",
-          header: ["first", "second", "score"],
-          references: [@c_file, @c_file, nil],
-          transformation: [],
-          rows: {}
+          data: []
         }
         @ignored_conf = Ignored_class.new()
       end
@@ -62,8 +54,8 @@ fdfAnalysisModule do
 
       # Extract path and name of each files and concat them.
       #
-      # @param [Hash] file document from the database
-      # @Return [Hash] nil if file has a size of 0 or a hash with usefull information otherwise
+      # @param file [Hash] Documents retreived from the database
+      # @return [Hash] nil if file has a size of 0 or a hash with usefull information otherwise
       def to_doc(file)
         return nil if file["size"] == 0
         return {
@@ -76,12 +68,11 @@ fdfAnalysisModule do
 
       # Search for file duplication of a particular extension
       #
-      # @param [Array]: extension to process
+      # @param extension [Array] list of extensions to process
       def process(extension)
-        extension["_id"] = BSON::ObjectId.from_string extension["_id"]["$oid"]
-        @show.call "\tRetrieving files with extension: '#{extension["name"]}'."
-        query = {ext: extension["_id"], name: {"$nin" => @ignored_conf.ignored_files }}
-        mongo_files = @mongo.get_data(@c_file, query)
+        extension["_id"] = BSON::ObjectId.from_string extension.id
+        @show.call "\tRetrieving files with extension: '#{extension.name}'."
+        mongo_files = FileSystem.where(ext: extension.id).not_in(name: @ignored_conf.ignored_files)
         files = []
         mongo_files.each do |file|
           doc = to_doc(file)
@@ -95,22 +86,43 @@ fdfAnalysisModule do
 
       # Retrieve, sort, and analyse files from database
       # Files are sorted by extension and size
-      def analyse
+      #
+      # @param result [AnalyseResult] result object
+      # @see CopyPeste::Command::RunAnalysisModule#run
+      def analyse(result)
         @show.call "Retrieving extensions from database..."
-        query = {name: {"$nin" => @ignored_conf.ignored_exts}}
-        extensions = @mongo.get_data("Extension", query, nil)
+        extensions = Extension.not_in(name: @ignored_conf.ignored_exts).to_a
         @show.call "Done!\nSearching for duplicated files..."
-        duplicates = Parallel.map(extensions) { |extension| process extension }
+        extensions = Parallel.map(extensions) do |extension|
+          nb = 0
+          dups = []
+          process(extension).each do |key, value|
+            dups << {type: "array", header: ["Files duplicated with #{key}", "percentage"], rows: value}
+            nb += value.length + 1
+          end
+          {name: extension.name, nb: nb, dups: dups}
+        end
+        nb = 0
+        dups_extensions = []
+        extensions.each do |value|
+          next if value[:dups] == []
+          nb += value[:nb]
+          dups_extensions.push([value[:name], value[:nb]])
+          value[:dups].each { |v| result.add_array(header: v[:header], rows: v[:rows]) }
+        end
+        dups_extensions.sort! {|a, b| b[1] <=> a[1]}
+        result.add_array(header: ["Extension", "number"], rows: dups_extensions, title: "Most duplicated extensions")
+        result.add_text(text: "Total number of duplication: #{nb}")
+        result.add_text(text: "Total number of files analyzed: #{FileSystem.count}")
         @show.call "Done!"
-        @results[:rows] = duplicates.reduce({}, :merge)
       end
 
 
       # Open files and compare their contents with the appropriate algorithm
       #
-      # @param [Hash] f1 represents the first file
-      # @param [Hash] f2 represents the second file
-      # @return [Integer] Return the percentage of difference between files
+      # @param f1 [Hash] first file to compare
+      # @param f2 [Hash] second file to compare
+      # @return [Integer] percentage of difference between files
       def compare_files(f1, f2)
         begin
           file1 = IO.read f1[:path]
@@ -130,7 +142,9 @@ fdfAnalysisModule do
 
       # Search for files duplicated according to user params
       #
-      # @param [Hash] Each entry is a file extension that maps to an array of files order by size
+      # @param files [Array] files to analyse
+      # @param extension [Hash] Extension of the current files
+      # @return [Hash] List of similar files
       def check_files_similarity(files, extension)
         duplicates = {}
         files.each_with_index do |f1, index|
@@ -154,22 +168,27 @@ fdfAnalysisModule do
               # if sim(a,b) == 100 && sim(a, c) == 100 so sim(a, c) == 100
               files[j] = nil if @options["p"][:value] == 100 && result == 100
               if duplicates.key?(f1[:path])
-                duplicates[f1[:path]] << f3
+                duplicates[f1[:path]] << [f3[:path], result]
               else
-                duplicates[f1[:path]] = [f3]
+                duplicates[f1[:path]] = [[f3[:path], result]]
               end
             end
           end
         end
-        puts "Process[#{Process.pid}]: Extension #{extension["name"]} processed!"
+        @show.call "Process[#{Process.pid}]: Extension #{extension.name} processed!"
         duplicates
       end
 
 
       # Function used to initialize and run the fdf
-      def run(*)
-        analyse
-        @mongo.ins_data(@c_res, @results)
+      # Results aren't saved because it's done into the framework
+      #
+      # @param result [AnalyseResult] resulting object of the analysis that will be saved later on, on which to aggregate data
+      # @see CopyPeste::Command::RunAnalysisModule#run
+      def run(result)
+        result.module_name = "FDF"
+        result.options = @options
+        analyse result
         @show.call "Done! Everything worked fine!"
         @show.call "You can now run generate_result to extract interesting informations."
       end

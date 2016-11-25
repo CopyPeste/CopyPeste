@@ -62,10 +62,9 @@ module CopyPeste
           end
         end
 
-        # Generate the path of the namespace, called recursively
-        # over each outer namespace
-        # @return [String]
+        # Generate namespaces paths recursively over each outer namespace
         #
+        # @return [String]
         def namespace_path
           local_namespace, outer_namespace =
             self.name.reverse.split('::', 2).map(&:reverse)

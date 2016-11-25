@@ -2,9 +2,10 @@ module CopyPeste
   class Command
 
     # Instantiate all needed information to correctly execute a command.
-    # @param [Hash] Contains command name and its options.
-    # @param [Object] Instance of the GraphicCommunication class.
-    # @param [Object] Instance of the CoreState class.
+    #
+    # @param cmd_hash [Hash] Contains command name and its options.
+    # @param graph_com [GraphicCommunication] Instance of the GraphicCommunication class.
+    # @param core_state [CoreState] Instance of the CoreState class.
     def initialize(cmd_hash, graph_com, core_state)
       @cmd = cmd_hash[:cmd]
       @opts = cmd_hash[:opts]
@@ -33,7 +34,8 @@ module CopyPeste
 
     # Extend this Command class with a specific command that has to be
     # executed.
-    # @param [String] Command name that has to be executed.
+    #
+    # @param command [String] Command name that has to be executed.
     def specialize_into(command)
       class_name = command.split('_').map(&:capitalize).join
       specialization = self.class.const_get class_name

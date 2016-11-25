@@ -6,6 +6,9 @@ module CopyPeste
 
     attr_accessor :core_state
 
+    # CopyPeste core creation. Initialize it according to the current configuration.
+    #
+    # @param conf [Hash] configuration to apply.
     def initialize(conf)
       @core_state = CoreState.new
       @core_state.conf = conf
@@ -22,8 +25,8 @@ module CopyPeste
       @graph_com = GraphicCommunication.new exec_func
     end
 
-    # Start the execution of the CopyPeste core. This method implement
-    # the main loop of the Framework. It basically consists of getting
+    # Execution of CopyPeste's core. This method implements
+    # the main Framework's loop. It basically consists of getting
     # an event from the loaded graphical module and then executing it.
     def start
       puts LOGO.blue
@@ -38,13 +41,14 @@ module CopyPeste
 
     # Execute a command based on the formatted hash returned by
     # the loaded graphical module.
-    # @param [Hash] Hash generated and returned by the graphical module containing
-    # information to be treated by the core.
+    #
+    # @param cmd_hash [Hash] Next command to treat, received from a graphical module
     def execute_command(cmd_hash)
       @graph_com.info(
         GraphicCommunication.codes[:core],
         "Core execute the following command: #{cmd_hash}."
       )
+      return if cmd_hash[:cmd] == nil
       cmd = Command.new(cmd_hash, @graph_com, @core_state)
       cmd.init
       cmd.run

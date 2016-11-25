@@ -8,10 +8,10 @@ require File.join(
 class Parser < ConsoleDisplay
 
   # Parse a user entry.
-  # @param [String] string that has to be parsed.
-  # @return [Hash] a hash containing the command to be executed with its
-  # parameters.
-  def self.parse str
+  #
+  # @param str [String] string that has to be parsed.
+  # @return [Hash] a hash containing the command to be executed with its parameters.
+  def self.parse(str)
     str = str.squeeze(' ').strip()
     tokens = str.split(' ')
     cmd = tokens[0]
@@ -39,7 +39,8 @@ class Parser < ConsoleDisplay
 
   # Get a user entry string and/or execute a specific event such has Up or down
   # to browse the command history. All implemented shortcuts are EMACS like.
-  # @param [String] prompt to be displayed before waiting for a user entry.
+  #
+  # @param prompt [String] prompt to be displayed before waiting for a user entry.
   def self.get_input prompt
     list_available_cmd = ConsoleDisplay.events_to_command.keys.sort
     comp = proc { |s| list_available_cmd.grep(/^#{Regexp.escape(s)}/) }

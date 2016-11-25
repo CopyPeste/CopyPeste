@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Simple CopyPeste launcher that runs it with or without parameters.
+# Right now, the only allowed parameter is -d or --debug.
 
 if [ $# == 1 ] ; then
   ruby ./lib/copy_peste.rb $1
