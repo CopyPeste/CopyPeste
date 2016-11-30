@@ -42,6 +42,7 @@ For more information, please check our [wiki](https://github.com/CopyPeste/CopyP
 
 ### Other
 Current Ruby comments syntax: http://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md
+RubyDoc: http://www.rubydoc.info/github/CopyPeste/CopyPeste/master
 
 ### Contact
 If you need to contact us, please do it at: contact.copypeste@gmail.com
