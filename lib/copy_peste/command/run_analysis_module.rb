@@ -19,14 +19,14 @@ module CopyPeste
 
         ar = AnalyseResult.new
         begin
-          @core_state.analysisModule.run ar
+          ret = @core_state.analysisModule.run ar
         rescue Exception => e
           traceback = ""
           traceback = "(Traceback) #{e}" if !e.message.empty?
           @graph_com.cmd_return(@cmd,
             "Analysis module aborted.\n#{traceback}", true)
         end
-        ar.save!
+        ar.save! if ret == true
       end
 
       def init; end
