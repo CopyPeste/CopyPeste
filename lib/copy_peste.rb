@@ -10,10 +10,10 @@ module CopyPeste
 
   module_function
 
-  # Load the CopyPeste configuration file and run the CopyPeste
-  # Core part.
-  # @param [String] path of the folder containing the configuration file.
-  # @param [String] Configuration's filename.
+  # Load the CopyPeste configuration file and run the CopyPeste  Core part.
+  #
+  # @param dir [String] path of the folder containing the configuration file.
+  # @param file [String] Configuration's filename.
   def run(dir: '/', file: 'copy_peste.yml')
     ["INT"].each do | sig |
       trap(sig) do
@@ -38,6 +38,7 @@ module CopyPeste
   end
 
   # Return if the CopyPeste framework is runnning in debug mode or not.
+  #
   # @return [Boolean] True if the debug mode is set otherwise False.
   def debug_mode
     @@debug_mode
@@ -45,8 +46,8 @@ module CopyPeste
 
   # Gives the path of the namespace.
   # Implementing it overrides the behavior of [Require::Mixin]
-  # @return [String]
   #
+  # @return [String] namespace path
   def namespace_path
     Require::Path.copy_peste
   end

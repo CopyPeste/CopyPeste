@@ -15,14 +15,23 @@ class ConsoleDisplay
     "init_bdd" => "init_bdd"
     }
 
+  # Retreive CopyPeste current prompt
+  #
+  # @return [String] current prompt
   def self.prompt
     @@prompt
   end
 
+  # Initialise debug mode
+  #
+  # @param [Bool] whether the debug mode has to be activated
   def self.debug=(debug_mode)
     @@debug = debug_mode
   end
 
+  # Retreive all available commands
+  #
+  # @return [Hash] List of all available commands
   def self.events_to_command
     @@events_to_command
   end

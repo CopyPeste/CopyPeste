@@ -6,11 +6,10 @@ require File.join(
 )
 
 class CoreRequests < ConsoleDisplay
-  def initialize
-  end
 
   # Parse and execute a Hash returned by the Core.
-  # @param [Hash] hash containing a task to be treated by graphical module.
+  #
+  # @param hash [Hash] hash containing a task to be treated by graphical module.
   def exec(hash)
     if hash[:code] % 10 == 0
       puts "#{hash[:data][:output]}"
@@ -56,8 +55,9 @@ class CoreRequests < ConsoleDisplay
 
   # Execute and display information returned by the core after executing
   # the show_analysis_mod_options command.
-  # @param [Hash] formatted hash containing command's results to be displayed.
-  def cmd_show_analysis_mod_options hash
+  #
+  # @param hash [Hash] formatted hash containing command's results to be displayed.
+  def cmd_show_analysis_mod_options(hash)
     column_names = [
       'option',
       {
@@ -83,8 +83,9 @@ class CoreRequests < ConsoleDisplay
 
   # Execute and display information returned by the core after executing
   # the list_analysis_modules command.
-  # @param [Hash] formatted hash containing command's results to be displayed.
-  def cmd_list_analysis_modules hash
+  #
+  # @param hash [Hash] formatted hash containing command's results to be displayed.
+  def cmd_list_analysis_modules(hash)
     column_names = ['Availables analysis modules']
     lines = []
     hash[:data][:output].each do |mod|
@@ -98,8 +99,9 @@ class CoreRequests < ConsoleDisplay
 
   # Execute and display information returned by the core after executing
   # the help command.
-  # @param [Hash] formatted hash containing command's results to be displayed.
-  def cmd_help hash
+  #
+  # @param hash [Hash] formatted hash containing command's results to be displayed.
+  def cmd_help(hash)
     column_names = ['Commands', 'Help']
     lines = []
     hash[:data][:output].each do |cmd, helper|

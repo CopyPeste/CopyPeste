@@ -4,7 +4,8 @@ module CopyPeste
 
       # List all available analysis module and return results to the loaded
       # graphical module in order to be displayed.
-      # @return [Boolean] True if the cmd_return methods success otherwise False.
+      #
+      # @return [Boolean] True if the cmd_return methods succeeds, false otherwise
       def run
         files = list_files_from_dir(Require::Path.analysis)
         available_analysis_mods = []
@@ -20,17 +21,18 @@ module CopyPeste
       private
 
       # List all files from a given folder.
-      # @param [String] absolute path of the folder to be examined.
-      # @return [List] a list containing all files in the specified folder.
+      #
+      # @param path [String] absolute path of the folder to be examined.
+      # @return [Array] all files in the specified folder.
       def list_files_from_dir(path)
         Dir[path + "/*/"].map { |file| File.basename(file) }
       end
 
       module_function
 
-      # Give a string used by the help command in order to explain the aim of
-      # this command.
-      # @return [String] a string containing the explaination of the command.
+      # Method used by the help command in order to explain the aim of this module.
+      #
+      # @return [String] a string containing the command purpose.
       def helper
         "List all currently available analysis modules."
       end

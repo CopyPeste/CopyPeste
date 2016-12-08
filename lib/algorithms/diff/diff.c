@@ -27,7 +27,8 @@ int find_line_in_file(const s_line *line, const s_file *struct_file, int at)
   if (!line || !struct_file || !struct_file->lines)
     return -1;
 
-  while (struct_file->lines[i] && i < (unsigned int)(at + MAX_GAP))
+  while (struct_file->lines[i] && i < (unsigned int)(at + MAX_GAP)
+	 && i < struct_file->nb_lines)
     {
       if (!struct_file->lines[i])
 	return -1;
@@ -55,7 +56,7 @@ int compare_lines_in_file(const s_file *struct_file1, const s_file *struct_file2
 
   if (!struct_file1 || !struct_file2)
     return -1;
-  while (struct_file1->lines[i])
+  while (struct_file1->lines[i] && i < struct_file1->nb_lines)
     {
       result += find_line_in_file(struct_file1->lines[i], struct_file2, i);
       ++i;
@@ -89,7 +90,8 @@ int compare_files_percent(const s_file *struct_file1, const s_file *struct_file2
   if (!struct_file1 || !struct_file1)
     return -1;
 
-  while (struct_file1->lines[i] && struct_file2->lines[i])
+  while (struct_file1->lines[i] && struct_file2->lines[i]
+	 && i < struct_file1->nb_lines && i < struct_file2->nb_lines)
     {
       prcent += compare_words_strings(struct_file1->lines[i], struct_file2->lines[i]);
       ++i;

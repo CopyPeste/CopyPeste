@@ -9,15 +9,22 @@ module CopyPeste
     module InitBdd
 
       def run()
-        scan = ScanSystem.new("../../BimBimGo")
-        scan_sys scan
+        config_path = File.join(Require::Path.root, './', 'copy_peste.yml')
+        config_path = File.expand_path config_path
+        config = YAML::load_file(config_path)
+        if File.directory? config['port_tree_path']
+          @graph_com.display(10, "Loading directory #{config['port_tree_path']}")
+          scan = ScanSystem.new(config['port_tree_path'])
+          scan_sys scan
+        else
+          @graph_com.display(12, "Fail loading directory, check path in copy_peste.yml")
+        end
       end
 
-      # Add document into the database
+      # Add documents into the database
       #
-      # @param [String] name of the collection to use
-      # @param [JSON] a json Array (tab[0] => json_document, tab[1] => json_document).
-      #               Or a simple json file
+      # @param model [Collection] collection in which data have to be inserted
+      # @param json_tab [Json] document(s) to insert
       def fill_db(model, json_tab)
         @graph_com.cmd_return(@cmd, "Inserting #{json_tab.size} documents into #{model}", false)
         model.create!(json_tab)
@@ -42,8 +49,8 @@ module CopyPeste
 
       # Insert all documents scaned into the database,
       #
-      # @parma [Hash] a hash containing files sorted by extension
-      # @parma [Object] a ScanSystem object
+      # @param file_hash [Hash] files sorted by extension
+      # @param scan [ScanSystem] object used to retreived files
       def sort_insert_db(file_hash, scan)
         extensions = []
         file_hash.each do |extension, file_array|
@@ -65,8 +72,8 @@ module CopyPeste
 
       # Send files to SortFile object to be sorted by their extension
       #
-      # @parma [Array] File array to insert
-      # @Return [Hash] return a hash that contain files sort by extension
+      # @param tab_files [Array] files array insert
+      # @return [Hash] files sorted by extension
       def send_to_sort(tab_file)
         sort = SortFile.new()
         tab_file.each do |file|
@@ -77,16 +84,16 @@ module CopyPeste
       end
 
 
-      # Clear the database, remove all files and result
+      # Clear the database by removing all collections
       def clear_database
         FileSystem.collection.drop
         Extension.collection.drop
         AnalyseResult.collection.drop
       end
 
-      # Start the scan of the system
+      # Start the system scan
       #
-      # @param [Object] Object ScanSystem
+      # @param [ScanSystem] Object used to retreive files
       def scan_sys(scan)
         clear_database
         scan.init
@@ -95,10 +102,15 @@ module CopyPeste
         sort_insert_db(file_hash, scan)
       end
 
-      def init
-      end
+      def init; end
 
+      module_function
+ 
+      # Method used by the help command in order to explain the aim of this module.
+      #
+      # @return [String] a string containing the command purpose.
       def helper
+        "Initialise database with all files into a file system"
       end
 
     end
