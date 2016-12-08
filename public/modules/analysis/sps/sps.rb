@@ -15,12 +15,14 @@ spsAnalysisModule do
   impl {
     require 'json'
     require 'parallel'
+    require 'mongo'
     require File.join(CopyPeste::Require::Path.base, 'algorithms')
-
-
+    require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Ignored_class')
+    
     class Sps
       attr_accessor :options
       attr_accessor :show
+
 
       def initialize
         @options = {
@@ -31,20 +33,67 @@ spsAnalysisModule do
           }  
         }
         @options = options
+        @ignored_conf = Ignored_class.new()
       end      
 
       # Function called to start the Sps module
       def analyse(result)
+        res = {}
         result_fdf = get_file_from_db
-        #puts result_fdf.rows
-        # sort_file
-        # compare_projects
+        result_fdf.results.each do |data|
+          if data._type == "ArrayResult"
+            key = data.header[0].split("/")[1]
+            if key != nil
+              if !res.has_key?(key)
+                res[key] = {}
+              end
+
+              data.rows.each do |file|
+                key2 = file[0].split("/")[1]
+                if !res[key].has_key?(key2) && key != key2
+                  res[key][key2] = []
+                  res[key][key2] << file[1]
+                elsif key != key2
+                  res[key][key2] << file[1]
+                end
+
+              end
+            end
+          end
+        end
+        
+        projects = get_file_projects
+        compare_projects(res, projects)
       end      
 
-      # This function get the documents to analyses
-      def get_file_from_db
-        ar = AnalyseResult.last
-        puts ar.type
+      
+      def get_file_projects
+        files = []
+        # extensions = Extension.not_in(name: @ignored_conf.ignored_exts).to_a
+        # extensions.each do |extension|
+        #   puts extension
+        #   extension["_id"] = BSON::ObjectId.from_string extension.id
+        mongo_files = FileSystem.all#where(ext: extension.id).not_in(name: @ignored_conf.ignored_files)
+        mongo_files.each do |file|
+          files << file["path"]
+        end
+        # end
+        return get_num_files_project files
+      end
+      
+      
+      def get_num_files_project(files)
+        projects = {}
+        files.each do |file|
+          key = file.split("/")[1]
+          if !projects.has_key?(key)
+            projects[key] = 1
+          else
+            projects[key] += 1 
+          end
+        end
+
+        projects
       end
 
       
@@ -52,47 +101,41 @@ spsAnalysisModule do
       #
       # @param [Array] Array containing all files similarities from two project
       # in pourcent 
-      def compare_projects
-        @tab_files.each do |hash_proj|
-          tmp = 0
-          hash_proj["diffs"].each do |nb|
-            tmp = tmp + nb
-          end
-          hash_proj["projects similarities"] = tmp/hash_proj["diffs"].size
-          hash_proj.delete("diffs")
-        end
+      def compare_projects(res, projects)
+        puts "\n"
+        res.each do |key, value|
+          if value.keys[0] != nil
+            average = 0.0
+            nb = 0
+            value[value.keys[0]].each do |num|
+              average = average + Integer(num)
+            end
 
-        puts @tab_files
+            if projects[key].to_i > projects[value.keys[0]].to_i
+              result = average/projects[key].to_f
+            else
+              result = average/projects[value.keys[0]].to_f
+            end
+            puts "average between "+key.to_s+" and "+value.keys[0].to_s+" = "+result.to_s+"%"
+          end
+        end
+        puts "\n"
+      end
+      
+
+      # This function get the documents to analyses
+      def get_file_from_db
+        begin
+          ar = AnalyseResult.last
+          return ar
+        rescue
+          @graph_com.cmd_return(@cmd, "Collection AnalyseResult doesn't exist", true)
+          return nil
+        end
       end
 
       
-      # This function save the result of the compared project in the databases
-      #
-      # @param [String] the name of the project
-      # @param [String] the name of an other project
-      def save_in_db
-        @tab_files.each do |hash_proj|
-          if @duplicate.is_in_db?({"projects" => hash_proj["projects"]})
-            @duplicate.update_doc(hash_proj)
-          else
-            @duplicate.add_doc(hash_proj)
-          end
-        end
-      end
-
-      
-      # This function sort the documents by compared project:
-      # tab_files[0] => {projects => [proj1, proj2], diffs => [25.0, 45.7...]}
-      # tab_files[1] => {projects => [proj1, proj3], diffs => [78.0, 38.5...]}
-      # etc..
-      def sort_file
-        tab_files = []
-        @sort_project.sort_by_project(@tab_files)
-        @tab_files = @sort_project.get_tab_sorted
-        puts @tab_files
-      end
-    
-    # Function used to initialize and run the fdf
+      # Function used to initialize and run the fdf
       def run(result)
         result.module_name = "Sps"
         result.options = @options
