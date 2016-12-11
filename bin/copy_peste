@@ -1,7 +1,10 @@
 #!/bin/bash
 #
-# Simple CopyPeste launcher that runs it with or without parameters.
-# Right now, the only allowed parameter is -d or --debug.
+# Simple CopyPeste launcher that runs with or without parameters.
+# Available arguments are:
+#   --environment, -e       define the environement
+#   --ports_tree_path, -t   define path to the ports tree. Only really works on initialization
+#   --debug                 good old debug
 
 if [ $# != 0 ] ; then
   ruby ./lib/copy_peste.rb $*
