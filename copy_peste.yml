@@ -1,5 +1,13 @@
 environment: "development"
-modules:
-    graphics:
-        default: "console_mode/console_mode.rb"
-port_tree_path: "./"
+
+development:
+  modules:
+      graphics:
+          default: "console_mode/console_mode.rb"
+  ports_tree_path: "./"
+
+production:
+  modules:
+      graphics:
+          default: "console_mode/console_mode.rb"
+  ports_tree_path: "/"
