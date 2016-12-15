@@ -12,6 +12,7 @@ class ConsoleDisplay
     "run" => "run_analysis_module",
     "exit_mod" => "exit_analysis_module",
     "generate_result" => "generate_result",
+    "list_result" => "list_result",
     "init_bdd" => "init_bdd"
     }
 
