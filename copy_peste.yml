@@ -1,5 +1,5 @@
 environment: "development"
 modules:
     graphics:
-        default: "console_mode/console_mode.rb"
+        default: "console_mode"
 port_tree_path: "./"

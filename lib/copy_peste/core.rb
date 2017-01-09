@@ -12,10 +12,9 @@ module CopyPeste
       @core_state = CoreState.new
       @core_state.conf = conf
 
-      @core_state.graphic_mod = Utils.load_module(
-        CopyPeste::Require::Path.graphics,
-        conf['modules']['graphics']['default']
-      )
+      @core_state.module_mng = ModuleMng.new
+      @core_state.graphic_mod = @core_state.module_mng.get conf['modules']['graphics']['default']
+
       @core_state.graphic_mod.set_debug_mode(CopyPeste.debug_mode)
       @core_state.events_to_command = @core_state.graphic_mod.get_events
       exec_func = Proc.new do |msg|

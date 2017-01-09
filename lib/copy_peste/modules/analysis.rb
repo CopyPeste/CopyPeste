@@ -10,7 +10,7 @@ module CopyPeste
 
       def initialize
         super()
-        @type = "analysis"
+        @@type = "analysis"
         @options = {}
         @show = nil
       end

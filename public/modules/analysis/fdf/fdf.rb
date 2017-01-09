@@ -8,7 +8,7 @@ require File.join(CopyPeste::Require::Path.base, 'copy_peste/modules.rb')
 require File.join(CopyPeste::Require::Path.base, 'algorithms')
 require File.join(CopyPeste::Require::Path.analysis, 'fdf/config_handler/Ignored_class')
 
-class CopyPesteModule < CopyPeste::Modules::Analysis
+class Fdf < CopyPeste::Modules::Analysis
 
   # Module and options initialization
   def initialize

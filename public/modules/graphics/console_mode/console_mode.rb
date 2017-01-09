@@ -19,7 +19,7 @@ end
 end
 
 # Class accessible through the CopyPeste Core.
-class CopyPesteModule < CopyPeste::Modules::Graphics
+class ConsoleMode < CopyPeste::Modules::Graphics
   def initialize
     super()
     puts LOGO.blue

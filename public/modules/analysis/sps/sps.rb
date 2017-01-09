@@ -2,11 +2,11 @@
 
 require 'json'
 require_relative './collection'
-require_relative '../../../libs/modules/analysis/sort_project'
-require_relative '../../../libs/database/DbHdlr'
+require_relative '../../../../lib/algorithms/sort_project'
+require_relative '../../../../lib/copy_peste/DbHdlr'
 require File.join CopyPeste::Require::Path.base, 'copy_peste/modules.rb'
 
-class CopyPesteModule < CopyPeste::Modules::Analysis
+class Sps < CopyPeste::Modules::Analysis
   attr_accessor :options
 
 
