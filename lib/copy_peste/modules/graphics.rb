@@ -8,7 +8,7 @@ module CopyPeste
       def initialize
         super()
         @alive = true
-        @@type = "graphic"
+        @type = "graphic"
       end
 
       # Return the alive boolean variable that define if the CopyPeste Framework

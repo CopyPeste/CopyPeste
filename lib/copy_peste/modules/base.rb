@@ -27,22 +27,24 @@ module CopyPeste
         @self_registered_analysis_modules
       end
 
+
       # @param [Class] constant to register
       # @return [Class] the received constant
-      def register_mod_type(mod)
-        type = mod.superclass.name.split("::").last
-        if type.eql? "Analysis"
-          mod_name = @self_registered_analysis_modules.key(nil)
-          raise 'Unexpected analysis module registration' if mod.name.nil?
-          @self_registered_analysis_modules[mod_name] = mod
-        elsif type.eql? "Graphics"
-          mod_name = @self_registered_graphics_modules.key(nil)
-          raise 'Unexpected graphic module registration' if mod.name.nil?
-          @self_registered_graphics_modules[mod_name] = mod
-        end
-
+      def register_analysis_mod(mod)
+        mod_name = @self_registered_analysis_modules.key(nil)
+        raise 'Unexpected analysis module registration' if mod.name.nil?
+        @self_registered_analysis_modules[mod_name] = mod
       end
 
+      # @param [Class] constant to register
+      # @return [Class] the received constant
+      def register_graphics_mod(mod)
+        mod_name = @self_registered_graphics_modules.key(nil)
+        raise 'Unexpected graphic module registration' if mod.name.nil?
+        @self_registered_graphics_modules[mod_name] = mod
+      end
+
+      # Hook module superclass inheritance in order to load and customize modules
       def customize
         analysis_mod_files = Core::Utils.list_files_from_dir(Require::Path.analysis)
         graphics_mod_files = Core::Utils.list_files_from_dir(Require::Path.graphics)
