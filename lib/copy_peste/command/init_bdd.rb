@@ -13,9 +13,11 @@ module CopyPeste
         config_path = File.join(Require::Path.root, './', 'copy_peste.yml')
         config_path = File.expand_path config_path
         config = YAML::load_file(config_path)
-        if File.directory? config['port_tree_path']
-          @graph_com.display(10, "Loading directory #{config['port_tree_path']}")
-          scan = ScanSystem.new(config['port_tree_path'])
+        env = config['environment']
+        ports_tree_path = config[env]['ports_tree_path']
+        if File.directory? ports_tree_path
+          @graph_com.display(10, "Loading directory #{config['ports_tree_path']}")
+          scan = ScanSystem.new(ports_tree_path)
           scan_sys scan
         else
           @graph_com.display(12, "Fail loading directory, check path in copy_peste.yml")
@@ -106,7 +108,7 @@ module CopyPeste
       def init; end
 
       module_function
- 
+
       # Method used by the help command in order to explain the aim of this module.
       #
       # @return [String] a string containing the command purpose.

@@ -47,6 +47,9 @@ class CoreRequests < ConsoleDisplay
       elsif hash[:data][:cmd] == "init_bdd"
         puts hash[:data][:output]
 
+      elsif hash[:data][:cmd] == "current_module_info"
+        puts hash[:data][:output]
+
       end
     end
   end

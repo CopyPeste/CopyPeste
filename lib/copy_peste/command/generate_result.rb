@@ -16,6 +16,7 @@ module CopyPeste
       def run
         begin
           ar = AnalyseResult.last
+          ar.module_name # check if ar is nil
         rescue
           @graph_com.cmd_return(@cmd, "Collection AnalyseResult doesn't exist", true)
           return false

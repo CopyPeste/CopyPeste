@@ -21,6 +21,10 @@ gem 'colorize'
 #   libs/modules/algorithms.rb
 gem 'ffi'
 
+# A class factory and dsl for generating command line programs
+# Required in lib/copy_peste.rb
+gem 'main'
+
 # Toolbox for developing CLI clients.
 # Required in
 #   modules/graphics/console_mode/console_ui.rb

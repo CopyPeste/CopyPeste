@@ -1,3 +1,4 @@
+require 'main'
 require 'yaml'
 
 require_relative 'ext/string'
@@ -10,11 +11,11 @@ module CopyPeste
 
   module_function
 
-  # Load the CopyPeste configuration file and run the CopyPeste  Core part.
+  # Load the CopyPeste configuration file and run the CopyPeste Core part.
   #
-  # @param dir [String] path of the folder containing the configuration file.
-  # @param file [String] Configuration's filename.
-  def run(dir: '/', file: 'copy_peste.yml')
+  # @param configuration [Hash]
+  def run(configuration)
+    # Catching signals
     ["INT"].each do | sig |
       trap(sig) do
         puts ""
@@ -22,18 +23,17 @@ module CopyPeste
       end
     end
 
-    if ARGV.length == 1 && (ARGV[0] == "--debug" || ARGV[0] == "-d")
-      @@debug_mode = true
-    end
+    # Definning debugging behavior
+    @@debug_mode = configuration['debug']
 
-    config_path = File.join(Require::Path.root, dir, file)
-    config_path = File.expand_path config_path
-    config = YAML::load_file(config_path) if File.exists? config_path
-
+    # Initializing dependancies of the framework
     require File.join(Require::Path.root, 'initializers.rb')
+    Initializers(configuration)
 
-    core = Core.new config
+    # Launching CopyPeste
+    core = Core.new configuration
     core.start
+
     self
   end
 
@@ -53,4 +53,51 @@ module CopyPeste
   end
 end
 
-CopyPeste.run
+Main {
+  config_path File.join(CopyPeste::Require::Path.root, 'copy_peste.yml')
+
+  option('environment', 'e') {
+    description 'Set the environment to use. Overrides configuration file value.'
+    arity 1
+    argument :required
+  }
+
+  option('ports_tree_path', 't') {
+    description 'Path to the directory of the ports tree. Overrides configuration file value.'
+    argument :required
+    arity 1
+    validate { |path| File.directory? path }
+  }
+
+  option('debug') {
+    description 'Display debugging outputs.'
+    cast :bool
+    default false
+  }
+
+  def run
+    # Retrieving appropriate configuration
+    configuration_defined = config.to_h
+    environment_defined = params['environment'].value || configuration_defined['environment']
+
+    unless configuration_defined.has_key? environment_defined
+      puts "Undefined configuration for environment '#{environment_defined}'."
+      exit
+    end
+
+    # Merging everything: defaults, config file, prompt line
+    configuration_to_use = params
+      .select { |p| !p.given && !p.defaults.empty? }
+      .map { |p| [p.names.first, p.default] }
+      .to_h
+      .merge configuration_defined[environment_defined]
+      .merge params
+        .select { |p| p.given }
+        .map { |p| [p.names.first, p.value] }
+        .to_h
+      .merge Hash['environment', environment_defined]
+
+    # Good to go
+    CopyPeste.run(configuration_to_use)
+  end
+}
