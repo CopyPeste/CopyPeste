@@ -6,6 +6,7 @@ class AnalyseResult
   field :options, type: Hash
 
   embeds_many :results
+  default_scope -> { asc('_id') }
 
   def add_array(header:, rows:, title: nil)
     self.results << ArrayResult.new(header: header, rows: rows, title: title)
