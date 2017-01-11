@@ -33,6 +33,13 @@ spsAnalysisModule do
           }  
         }
         @options = options
+        @results = {
+          module: "SPS",
+          options: "List of duplicated Project",
+          timestamp: Time.now.getutc,
+          data: []
+        }
+
         @ignored_conf = Ignored_class.new()
       end      
 
@@ -63,7 +70,7 @@ spsAnalysisModule do
         end
         
         projects = get_file_projects
-        compare_projects(res, projects)
+        compare_projects(res, projects, result)
       end      
 
       
@@ -101,7 +108,7 @@ spsAnalysisModule do
       #
       # @param [Array] Array containing all files similarities from two project
       # in pourcent 
-      def compare_projects(res, projects)
+      def compare_projects(res, projects, results)
         puts "\n"
         res.each do |key, value|
           if value.keys[0] != nil
@@ -116,7 +123,7 @@ spsAnalysisModule do
             else
               result = average/projects[value.keys[0]].to_f
             end
-            puts "average between "+key.to_s+" and "+value.keys[0].to_s+" = "+result.to_s+"%"
+            results.add_text(text: "average between #{key.to_s} and #{value.keys[0].to_s} = #{result.round(2).to_s}%")
           end
         end
         puts "\n"
