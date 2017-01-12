@@ -35,7 +35,7 @@ class Sps < CopyPeste::Modules::Analysis
     res = {}
     if ((result_fdf = get_file_from_db) != nil)
       result_fdf.results.each do |data|
-        if data._type == "ArrayResult"
+        if data.instance_of? ArrayResult
           key = data.header[0].split("/")[1]
           if key != nil
             if !res.has_key?(key)
@@ -66,16 +66,12 @@ class Sps < CopyPeste::Modules::Analysis
 
   def get_file_projects
     files = []
-    # extensions = Extension.not_in(name: @ignored_conf.ignored_exts).to_a
-    # extensions.each do |extension|
-    #   puts extension
-    #   extension["_id"] = BSON::ObjectId.from_string extension.id
-    mongo_files = FileSystem.all#where(ext: extension.id).not_in(name: @ignored_conf.ignored_files)
+    mongo_files = FileSystem.all
     mongo_files.each do |file|
       files << file["path"]
     end
-    # end
-    return get_num_files_project files
+
+    get_num_files_project files
   end
 
   def get_num_files_project(files)
@@ -97,7 +93,7 @@ class Sps < CopyPeste::Modules::Analysis
   # @param [Array] Array containing all files similarities from two project
   # in pourcent
   def compare_projects(res, projects, my_result)
-    res.each do |key, value|
+    passed = res.reduce(false) do |passed, (key, value)|
       if value.keys[0] != nil
         average = 0.0
         nb = 0
@@ -110,19 +106,23 @@ class Sps < CopyPeste::Modules::Analysis
         else
           result = average/projects[value.keys[0]].to_f
         end
+
         my_result.add_text(text: "average between #{key.to_s} and #{value.keys[0].to_s} = #{result.round(2).to_s}%")
+        true
+
+      else passed
       end
     end
+
+    my_result.add_text(text: "No Duplication Found") unless passed
   end
 
   # This function get the documents to analyses
   def get_file_from_db
-    begin
-      return AnalyseResult.last
-    rescue
-      @graph_com.cmd_return(@cmd, "Collection AnalyseResult doesn't exist", true)
-      return nil
-    end
+    AnalyseResult.where(module_name: 'FDF').last
+  rescue
+    @graph_com.cmd_return(@cmd, "Collection AnalyseResult doesn't exist", true)
+    nil
   end
 
   # Function used to initialize and run the fdf
@@ -133,8 +133,8 @@ class Sps < CopyPeste::Modules::Analysis
       @show.call "Done! Everything worked fine!"
       @show.call "You can now run generate_result to extract interesting informations."
       true
-    else
-      false
+
+    else false
     end
   end
 end
