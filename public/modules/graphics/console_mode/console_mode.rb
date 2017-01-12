@@ -34,7 +34,7 @@ class ConsoleMode < CopyPeste::Modules::Graphics
 
   #Set boolean variable used to define if CopyPeste has been run
   #with or without the debug parameter.
-  def set_debug_mode(debug_mode)
+  def debug_mode=(debug_mode)
     ConsoleDisplay.debug = debug_mode
   end
 

@@ -52,6 +52,7 @@ module CopyPeste
           mod_path = "#{Require::Path.analysis}/#{mod}/#{mod}.rb"
           load_module("Analysis", mod_path, mod)
         end
+
         graphics_mod_files.each do |mod|
           mod_path = "#{Require::Path.graphics}/#{mod}/#{mod}.rb"
           load_module("Graphics", mod_path, mod)

@@ -6,19 +6,14 @@ require_relative '../../algorithms/sort_file'
 
 module CopyPeste
   class Command
-    module InitBdd
-
+    module InitDb
       def run()
-
-        config_path = File.join(Require::Path.root, './', 'copy_peste.yml')
-        config_path = File.expand_path config_path
-        config = YAML::load_file(config_path)
-        env = config['environment']
-        ports_tree_path = config[env]['ports_tree_path']
+        ports_tree_path = @core_state.conf['ports_tree_path']
         if File.directory? ports_tree_path
-          @graph_com.display(10, "Loading directory #{config['ports_tree_path']}")
+          @graph_com.display(10, "Loading directory #{ports_tree_path}")
           scan = ScanSystem.new(ports_tree_path)
           scan_sys scan
+
         else
           @graph_com.display(12, "Fail loading directory, check path in copy_peste.yml")
         end
@@ -32,7 +27,6 @@ module CopyPeste
         @graph_com.cmd_return(@cmd, "Inserting #{json_tab.size} documents into #{model}", false)
         model.create!(json_tab)
       end
-
 
       # Create the document for the Extension collection
       #

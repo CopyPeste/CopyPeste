@@ -1,5 +1,3 @@
-require_relative '../modules.rb'
-
 module CopyPeste
   class Core
 
@@ -15,22 +13,8 @@ module CopyPeste
 
           modules_base.customize
 
-          module_instantiation(modules_base.get_graphics_classes, :graphics)
-          module_instantiation(modules_base.get_analysis_classes, :analysis)
-      end
-
-      # Instantiate a given module
-      #
-      # @param mod_classes [hash] hash containing modules classes
-      # @param type [symbol] module type
-      def module_instantiation(mod_classes, type)
-        mod_classes.each do |mod|
-          begin
-            @modules_list[type][mod.first] = mod.last.new
-          rescue
-            puts "[Warning] Module not loaded. #{mod.first} is badly formatted. ".yellow
-          end
-        end
+          @modules_list[:graphics] = modules_base.get_graphics_classes
+          @modules_list[:analysis] = modules_base.get_analysis_classes
       end
 
       # Return a choosen instance of a specific module
@@ -39,9 +23,11 @@ module CopyPeste
       def get mod_name
         if @modules_list[:analysis].has_key? mod_name
           return @modules_list[:analysis][mod_name]
+
         elsif @modules_list[:graphics].has_key? mod_name
           return @modules_list[:graphics][mod_name]
         end
+
         nil
       end
 

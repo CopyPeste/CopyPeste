@@ -7,11 +7,15 @@ module CopyPeste
       # @return [Boolean] True if the cmd_return methods succeeds, false otherwise
       def run
         mod = @core_state.module_mng.get @opts[0]
+        mod = mod.new
+      rescue StandardError => emsg
+        @graph_com.cmd_return(@cmd, "Module is badly formatted. Loading aborted.", true)
+      else
         if mod != nil
-          @core_state.analysisModule = mod
+          @core_state.analysis_module = mod
           @graph_com.info(
             Core::GraphicCommunication.codes[:core],
-            "Analysis mod loaded #{@core_state.analysisModule}."
+            "Analysis mod loaded #{@core_state.analysis_module}."
           )
           @graph_com.cmd_return(@cmd, @opts[0], false)
         else

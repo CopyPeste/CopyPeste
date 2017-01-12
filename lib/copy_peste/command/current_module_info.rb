@@ -6,18 +6,11 @@ module CopyPeste
       #
       # @return [Boolean] True if the cmd_return methods success otherwise False.
       def run
-        info = ""
-        if @core_state.analysisModule.nil?
-          info << "Authors: #{@core_state.graphic_mod.authors}\n"
-          info << "Type: #{@core_state.graphic_mod.type}\n"
-          info << "Version: #{@core_state.graphic_mod.version}\n"
-          info << "Description: #{@core_state.graphic_mod.description}\n"
-        else
-          info = "Authors: #{@core_state.analysisModule.authors}\n"
-          info << "Type: #{@core_state.analysisModule.type}\n"
-          info << "Version: #{@core_state.analysisModule.version}\n"
-          info << "Description: #{@core_state.analysisModule.description}\n"
-        end
+        mod = @core_state.analysis_module || @core_state.graphic_mod
+        info = "Authors: #{mod.authors}\n"
+        info << "Type: #{mod.type}\n"
+        info << "Version: #{mod.version}\n"
+        info << "Description: #{mod.description}\n"
         @graph_com.cmd_return(@cmd, info, false)
       end
 

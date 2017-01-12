@@ -13,9 +13,9 @@ module CopyPeste
       @core_state.conf = conf
 
       @core_state.module_mng = ModuleMng.new
-      @core_state.graphic_mod = @core_state.module_mng.get conf['modules']['graphics']['default']
+      @core_state.graphic_mod = (@core_state.module_mng.get conf['modules']['graphics']['default']).new
 
-      @core_state.graphic_mod.set_debug_mode(CopyPeste.debug_mode)
+      @core_state.graphic_mod.debug_mode = CopyPeste.debug_mode
       @core_state.events_to_command = @core_state.graphic_mod.get_events
       exec_func = Proc.new do |msg|
         @core_state.graphic_mod.exec msg
