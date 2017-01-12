@@ -12,7 +12,9 @@ class ConsoleDisplay
     "run" => "run_analysis_module",
     "exit_mod" => "exit_analysis_module",
     "generate_result" => "generate_result",
-    "init_bdd" => "init_bdd"
+    "list_result" => "list_result",
+    "init_db" => "init_db",
+    "info_mod" => "current_module_info"
     }
 
   # Retreive CopyPeste current prompt

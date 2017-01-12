@@ -1,5 +1,4 @@
 require 'colorize'
-require File.join CopyPeste::Require::Path.public, 'tmp_logo'
 
 module CopyPeste
   class Core
@@ -12,14 +11,14 @@ module CopyPeste
     def initialize(conf)
       @core_state = CoreState.new
       @core_state.conf = conf
-      @graphic_mod = Utils.load_module(
-        CopyPeste::Require::Path.graphics,
-        conf['modules']['graphics']['default']
-      )
-      @graphic_mod.set_debug_mode(CopyPeste.debug_mode)
-      @core_state.events_to_command = @graphic_mod.get_events
+
+      @core_state.module_mng = ModuleMng.new
+      @core_state.graphic_mod = (@core_state.module_mng.get conf['modules']['graphics']['default']).new
+
+      @core_state.graphic_mod.debug_mode = CopyPeste.debug_mode
+      @core_state.events_to_command = @core_state.graphic_mod.get_events
       exec_func = Proc.new do |msg|
-        @graphic_mod.exec msg
+        @core_state.graphic_mod.exec msg
       end
 
       @graph_com = GraphicCommunication.new exec_func
@@ -29,10 +28,9 @@ module CopyPeste
     # the main Framework's loop. It basically consists of getting
     # an event from the loaded graphical module and then executing it.
     def start
-      puts LOGO.blue
       @graph_com.info(GraphicCommunication.codes[:core], "Core is running !")
-      while @graphic_mod.running?
-        cmd_hash = @graphic_mod.loop
+      while @core_state.graphic_mod.running?
+        cmd_hash = @core_state.graphic_mod.loop
         execute_command cmd_hash
       end
     end

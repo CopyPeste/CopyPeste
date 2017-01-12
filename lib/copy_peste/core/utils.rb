@@ -4,14 +4,30 @@ module CopyPeste
 
       module_function
 
-      # Dynamically load a Ruby file which implements CopyPeste module standard
+      # Trigger the call of method defined by 'with' on defined object 'on'
+      # with parameter the child that inherited defined 'baseclass'.
       #
-      # @param dir [String] Absolute path of the module to be load.
-      # @param file [String] File name of the module to be load.
-      # @return [Object] Instance of the loaded module.
-      def load_module (dir, file)
-        loaded_mod = ModuleLoading::Loader.load File.join dir, file
-        loaded_mod.__cp_init__
+      # @param callback [Symbol] callback triggering
+      # @param on [Class] baseclass to watch callback on
+      # @param to [Object] target object
+      # @param with [Symbol] target object's method name
+      def hook_method(callback, on:, to:, with:)
+        hook = Module.new
+        hook.send(:define_method, callback) { |child|
+          super child
+          to.send with, child
+        }
+
+        on.extend hook
+        nil
+      end
+
+      # List all files from a given folder.
+      #
+      # @param path [String] absolute path of the folder to be examined.
+      # @return [Array] all files in the specified folder.
+      def list_files_from_dir(path)
+        Dir[path + "/*/"].map { |file| File.basename(file) }
       end
 
     end

@@ -6,27 +6,26 @@ module CopyPeste
       #
       # @return [Boolean] True if the cmd_return method succeeds, false otherwise
       def run
-        puts @core_state.analysisModule
-        if @core_state.analysisModule.nil?
+        if @core_state.analysis_module.nil?
           @graph_com.cmd_return(@cmd, "No analysis module loaded.", true)
           return
         end
 
-        @core_state.analysisModule.show = Proc.new do |msg|
+        @core_state.analysis_module.show = Proc.new do |msg|
           from = Core::GraphicCommunication.codes[:analysis]
           @graph_com.display(from, msg)
         end
 
         ar = AnalyseResult.new
         begin
-          @core_state.analysisModule.run ar
-        rescue Exception => e
+          ret = @core_state.analysis_module.run ar
+        rescue StandardError => e
           traceback = ""
           traceback = "(Traceback) #{e}" if !e.message.empty?
           @graph_com.cmd_return(@cmd,
-            "Analysis module aborted.\n#{traceback}", true)
+            "Analysis module aborted.\n#{traceback} ", true)
         end
-        ar.save!
+        ar.save! if ret
       end
 
       def init; end

@@ -26,7 +26,7 @@ This example shows how to initialise the database, use a module and its options 
 
 ```sh
 $> ./bin/copy_peste.rb
-CP > init_bdd
+CP > init_db
 ... Done.
 CP > use fdf
 CP (fdf) > set_opts p 80
@@ -41,7 +41,8 @@ CP > exit
 For more information, please check our [wiki](https://github.com/CopyPeste/CopyPeste/wiki)
 
 ### Other
-Current Ruby comments syntax: http://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md
+Current Ruby comments syntax: http://www.rubydoc.info/gems/yard/file/docs/GettingStarted.md  
+RubyDoc: http://www.rubydoc.info/github/CopyPeste/CopyPeste/master  
 
 ### Contact
 If you need to contact us, please do it at: contact.copypeste@gmail.com

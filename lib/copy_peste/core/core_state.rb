@@ -3,15 +3,17 @@ module CopyPeste
 
     # This class is used to store data between each execution of commands.
     class CoreState
-      attr_accessor :analysisModule
+      attr_accessor :analysis_module
       attr_accessor :conf
       attr_accessor :events_to_command
-      attr_accessor :analysisModOpts
+      attr_accessor :graphic_mod
+      attr_accessor :module_mng
 
       def initialize
-        @analysisModule = nil
+        @graphic_mod = nil
+        @analysis_module = nil
         @conf = nil
-        @analysisModOpts = {}
+        @module_mng = nil
         @events_to_command = {}
       end
     end
