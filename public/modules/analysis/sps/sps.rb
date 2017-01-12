@@ -11,7 +11,6 @@ class Sps < CopyPeste::Modules::Analysis
   attr_accessor :options
   attr_accessor :show
 
-
   def initialize
     super()
 
