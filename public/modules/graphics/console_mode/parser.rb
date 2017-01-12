@@ -12,19 +12,21 @@ class Parser < ConsoleDisplay
   # @param str [String] string that has to be parsed.
   # @return [Hash] a hash containing the command to be executed with its parameters.
   def self.parse(str)
+    cmd_hash = {:cmd => "", :opts => []}
+
+    puts "\n" if str.nil?
+    str = '' if str.nil?
+
     str = str.squeeze(' ').strip()
     tokens = str.split(' ')
     cmd = tokens[0]
     if tokens.size > 1
-      opts = tokens[1..-1]
-    else
-      opts = []
+      cmd_hash[:opts] = tokens[1..-1]
     end
-
-    cmd_hash = {:cmd => "", :opts => opts}
 
     if @@events_to_command.has_key? cmd
       cmd_hash[:cmd] = @@events_to_command[cmd]
+
     else
       cmd_hash[:cmd] = cmd
     end
@@ -34,7 +36,6 @@ class Parser < ConsoleDisplay
     end
 
     cmd_hash
-
   end
 
   # Get a user entry string and/or execute a specific event such has Up or down

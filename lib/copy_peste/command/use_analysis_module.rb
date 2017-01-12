@@ -9,7 +9,7 @@ module CopyPeste
         mod = @core_state.module_mng.get @opts[0]
         mod = mod.new
       rescue StandardError => emsg
-        @graph_com.cmd_return(@cmd, "Module is badly formatted. Loading aborted.", true)
+        @graph_com.cmd_return(@cmd, "Module is badly formatted. Loading aborted.\n(Traceback)#{emsg}", true)
       else
         if mod != nil
           @core_state.analysis_module = mod
