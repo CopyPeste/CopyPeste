@@ -7,26 +7,15 @@ module CopyPeste
       #
       # @return [Boolean] True if the cmd_return methods succeeds, false otherwise
       def run
-        files = list_files_from_dir(Require::Path.analysis)
         available_analysis_mods = []
-        files.each do |mod|
-          available_analysis_mods.push(File.basename(mod))
+        @core_state.module_mng.modules_list[:analysis].each do |mod|
+          available_analysis_mods.push(mod.first)
         end
 
         @graph_com.cmd_return(@cmd, available_analysis_mods, false)
       end
 
       def init; end
-
-      private
-
-      # List all files from a given folder.
-      #
-      # @param path [String] absolute path of the folder to be examined.
-      # @return [Array] all files in the specified folder.
-      def list_files_from_dir(path)
-        Dir[path + "/*/"].map { |file| File.basename(file) }
-      end
 
       module_function
 

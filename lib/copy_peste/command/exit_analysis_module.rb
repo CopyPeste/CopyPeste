@@ -6,11 +6,10 @@ module CopyPeste
       #
       # @return [Boolean] True if the cmd_return methods succeed, False otherwise
       def run
-        if @core_state.analysisModule.nil?
+        if @core_state.analysis_module.nil?
           @graph_com.cmd_return(@cmd, "No analysis module loaded.", true)
         else
-          @core_state.analysisModule = nil
-          @core_state.analysisModOpts = {}
+          @core_state.analysis_module = nil
           @graph_com.cmd_return(@cmd, "", false)
         end
       end
