@@ -17,10 +17,9 @@ class Sps < CopyPeste::Modules::Analysis
 
     @version = "1.0 - beta"
     @authors = "CopyPeste Team"
-    @description = "Search source code similarities between projects."
+    @description = "Search average duplication between projects."
 
     @options = {}
-    @options = options
     @results = {
       module: "SPS",
       options: "List of duplicated Project",
