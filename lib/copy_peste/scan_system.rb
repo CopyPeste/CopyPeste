@@ -21,7 +21,7 @@ class ScanSystem
   def start(path)
     begin
       Dir.foreach(path) do |file|
-        if file != "." && file != ".." && file != ".git"
+        if file != "." && file != ".."
           if path[path.length - 1] != '/'
             tmp = path + "/" + file
           else
