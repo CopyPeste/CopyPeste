@@ -3,11 +3,11 @@ environment: "development"
 development:
   modules:
       graphics:
-          default: "console_mode/console_mode.rb"
+          default: "console_mode"
   ports_tree_path: "./"
 
 production:
   modules:
       graphics:
-          default: "console_mode/console_mode.rb"
-  ports_tree_path: "/"
+          default: "console_mode"
+  ports_tree_path: "/usr/ports/"

@@ -26,7 +26,7 @@ This example shows how to initialise the database, use a module and its options 
 
 ```sh
 $> ./bin/copy_peste.rb
-CP > init_bdd
+CP > init_db
 ... Done.
 CP > use fdf
 CP (fdf) > set_opts p 80

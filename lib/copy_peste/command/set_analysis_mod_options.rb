@@ -7,16 +7,16 @@ module CopyPeste
       #
       # @return [Boolean] True if the cmd_return methods succeeds, false otherwise
       def run
-        if @core_state.analysisModule.nil?
+        if @core_state.analysis_module.nil?
           @graph_com.cmd_return(@cmd, "No analysis module load", true)
           return
         end
 
         if @opts.length == 2 &&
-          @core_state.analysisModule.options.key?(@opts[0]) &&
-          @core_state.analysisModule.options[@opts[0]][:allowed].include?(@opts[1].to_i)
+          @core_state.analysis_module.options.key?(@opts[0]) &&
+          @core_state.analysis_module.options[@opts[0]][:allowed].include?(@opts[1].to_i)
 
-          @core_state.analysisModule.options[@opts[0]][:value] = @opts[1].to_i
+          @core_state.analysis_module.options[@opts[0]][:value] = @opts[1].to_i
           @graph_com.cmd_return(@cmd, "", false)
           return
         end
