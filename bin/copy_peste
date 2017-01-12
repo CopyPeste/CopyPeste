@@ -6,8 +6,19 @@
 #   --ports_tree_path, -t   define path to the ports tree. Only really works on initialization
 #   --debug                 good old debug
 
-if [ $# != 0 ] ; then
-  ruby ./lib/copy_peste.rb $*
+path=$0
+if [ ${#path} -ge 14 ] ; then
+    cd ${path::-14}
 else
-  ruby ./lib/copy_peste.rb
+    cd ..
+fi
+
+if [ -f "./lib/algorithms/algorithms.so" ] ; then
+    if [ $# != 0 ] ; then
+	ruby ./lib/copy_peste.rb $*
+    else
+	ruby ./lib/copy_peste.rb
+    fi
+else
+    echo "algorithms.so not found, please run make."
 fi
