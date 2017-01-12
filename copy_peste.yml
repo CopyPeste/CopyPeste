@@ -3,7 +3,7 @@ development:
   modules:
       graphics:
           default: "console_mode"
-  ports_tree_path: "./"
+  ports_tree_path: "../"
 
 production:
   modules:

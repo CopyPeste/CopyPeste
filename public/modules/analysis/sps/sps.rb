@@ -19,13 +19,7 @@ class Sps < CopyPeste::Modules::Analysis
     @authors = "CopyPeste Team"
     @description = "Search source code similarities between projects."
 
-    @options = {
-      "test" => {
-        helper: "Option de test",
-        allowed: [0, 1],
-        value: 0
-      }
-    }
+    @options = {}
     @options = options
     @results = {
       module: "SPS",
@@ -40,32 +34,36 @@ class Sps < CopyPeste::Modules::Analysis
   # Function called to start the Sps module
   def analyse(result)
     res = {}
-    result_fdf = get_file_from_db
-    result_fdf.results.each do |data|
-      if data._type == "ArrayResult"
-        key = data.header[0].split("/")[1]
-        if key != nil
-          if !res.has_key?(key)
-            res[key] = {}
-          end
-
-          data.rows.each do |file|
-            key2 = file[0].split("/")[1]
-            if !res[key].has_key?(key2) && key != key2
-              res[key][key2] = [file[1]]
-            elsif key != key2
-              res[key][key2] << file[1]
+    if ((result_fdf = get_file_from_db) != nil)
+      result_fdf.results.each do |data|
+        if data._type == "ArrayResult"
+          key = data.header[0].split("/")[1]
+          if key != nil
+            if !res.has_key?(key)
+              res[key] = {}
             end
 
+            data.rows.each do |file|
+              key2 = file[0].split("/")[1]
+              if !res[key].has_key?(key2) && key != key2
+                res[key][key2] = [file[1]]
+              elsif key != key2
+                res[key][key2] << file[1]
+              end
+
+            end
           end
         end
       end
+
+      projects = get_file_projects
+      compare_projects(res, projects, result)
+      true
+    else
+      @show.call "You must run the Fdf module before!"
+      false
     end
-
-    projects = get_file_projects
-    compare_projects(res, projects, result)
   end
-
 
   def get_file_projects
     files = []
@@ -81,7 +79,6 @@ class Sps < CopyPeste::Modules::Analysis
     return get_num_files_project files
   end
 
-
   def get_num_files_project(files)
     projects = {}
     files.each do |file|
@@ -96,13 +93,11 @@ class Sps < CopyPeste::Modules::Analysis
     projects
   end
 
-
   # This functions set the pourcent average of two projects
   #
   # @param [Array] Array containing all files similarities from two project
   # in pourcent
-  def compare_projects(res, projects, results)
-    puts "\n"
+  def compare_projects(res, projects, my_result)
     res.each do |key, value|
       if value.keys[0] != nil
         average = 0.0
@@ -116,12 +111,10 @@ class Sps < CopyPeste::Modules::Analysis
         else
           result = average/projects[value.keys[0]].to_f
         end
-        results.add_text(text: "average between #{key.to_s} and #{value.keys[0].to_s} = #{result.round(2).to_s}%")
+        my_result.add_text(text: "average between #{key.to_s} and #{value.keys[0].to_s} = #{result.round(2).to_s}%")
       end
     end
-    puts "\n"
   end
-
 
   # This function get the documents to analyses
   def get_file_from_db
@@ -137,8 +130,12 @@ class Sps < CopyPeste::Modules::Analysis
   def run(result)
     result.module_name = "Sps"
     result.options = @options
-    analyse result
-    @show.call "Done! Everything worked fine!"
-    @show.call "You can now run generate_result to extract interesting informations."
+    if analyse result
+      @show.call "Done! Everything worked fine!"
+      @show.call "You can now run generate_result to extract interesting informations."
+      true
+    else
+      false
+    end
   end
 end
