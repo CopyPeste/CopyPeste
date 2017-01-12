@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 spsAnalysisModule do
   description {
     "This is an analysis module for CopyPeste."
@@ -139,7 +138,6 @@ spsAnalysisModule do
         end
       end
 
-      
       # Function used to initialize and run the fdf
       def run(result)
         result.module_name = "Sps"
