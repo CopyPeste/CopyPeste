@@ -7,8 +7,6 @@ module CopyPeste
       # @param result [Collection] collection data of result list
       # @param name [String] Name of module, could be nil
       def display_results(results, name)
-
-
         results = (name && !name.empty?) ? results.where(:module_name => name) : results
         unless results.empty?
           @graph_com.display(10, "Module\t| Date\n------\t| ----")
