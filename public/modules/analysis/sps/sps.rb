@@ -58,8 +58,7 @@ spsAnalysisModule do
               data.rows.each do |file|
                 key2 = file[0].split("/")[1]
                 if !res[key].has_key?(key2) && key != key2
-                  res[key][key2] = []
-                  res[key][key2] << file[1]
+                  res[key][key2] = [file[1]]
                 elsif key != key2
                   res[key][key2] << file[1]
                 end
@@ -133,8 +132,7 @@ spsAnalysisModule do
       # This function get the documents to analyses
       def get_file_from_db
         begin
-          ar = AnalyseResult.last
-          return ar
+          return AnalyseResult.last
         rescue
           @graph_com.cmd_return(@cmd, "Collection AnalyseResult doesn't exist", true)
           return nil
